@@ -10,11 +10,12 @@ define('package/quiqqer/feed/bin/Manager', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
-    'qui/Locale',
     'controls/grid/Grid',
+    'package/quiqqer/feed/bin/FeedWindow',
+    'Locale',
     'Ajax'
 
-], function(QUI, QUIPanel, QUILocale, Grid, Ajax)
+], function(QUI, QUIPanel, Grid, FeedWindow, QUILocale, Ajax)
 {
     "use strict";
 
@@ -88,18 +89,28 @@ define('package/quiqqer/feed/bin/Manager', [
 
             this.$Grid = new Grid( Container, {
                 columnModel : [{
-                    header    : Locale.get( 'quiqqer/system', 'id' ),
+                    header    : QUILocale.get( 'quiqqer/system', 'id' ),
                     dataIndex : 'id',
+                    dataType  : 'string',
+                    width     : 40
+                }, {
+                    header    : QUILocale.get( lg, 'quiqqer.feed.manager.feedtype.title' ),
+                    dataIndex : 'feedtype',
                     dataType  : 'string',
                     width     : 80
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'project' ),
+                    header    : QUILocale.get( 'quiqqer/system', 'project' ),
                     dataIndex : 'project',
                     dataType  : 'string',
-                    width     : 200
+                    width     : 120
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'lang' ),
+                    header    : QUILocale.get( 'quiqqer/system', 'language' ),
                     dataIndex : 'lang',
+                    dataType  : 'string',
+                    width     : 80
+                }, {
+                    header    : QUILocale.get( lg, 'quiqqer.feed.manager.feedlimit.title' ),
+                    dataIndex : 'feedlimit',
                     dataType  : 'string',
                     width     : 80
                 }],
@@ -115,9 +126,9 @@ define('package/quiqqer/feed/bin/Manager', [
 
                 onDblClick : function(event)
                 {
-
-                    //self.$Grid.getDataByRow( event.row ).id
-
+                    self.openFeedWindow(
+                        self.$Grid.getDataByRow( event.row ).id
+                    );
                 },
 
                 onClick : function() {
@@ -137,9 +148,11 @@ define('package/quiqqer/feed/bin/Manager', [
                 return;
             }
 
+            var self = this;
+
             Ajax.get('package_quiqqer_feed_ajax_getList', function(result)
             {
-                console.log( result );
+                self.$Grid.setData( result );
             }, {
                 'package'  : 'quiqqer/feed',
                 gridParams : JSON.encode( this.$Grid.getPaginationData() )
@@ -168,12 +181,23 @@ define('package/quiqqer/feed/bin/Manager', [
         },
 
         /**
+         * Open an feed window
          *
-         * @param {Integer} feedId
+         * @param {Integer} feedId - [optional] ID of the Feed, if no ID a new Feed would be added
          */
         openFeedWindow : function(feedId)
         {
+            var self = this;
 
+            new FeedWindow({
+                feedId : feedId,
+                events :
+                {
+                    onClose : function() {
+                        self.refresh();
+                    }
+                }
+            }).open();
         }
     });
 });

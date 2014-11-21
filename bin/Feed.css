@@ -1,0 +1,26 @@
+
+.qui-control-feed select,
+.qui-control-feed input{
+    width: 200px;
+}
+
+.qui-control-feed fieldset {
+    border: none;
+    clear: both;
+}
+
+.qui-control-feed label {
+    float: left;
+    line-height: 32px;
+    width: 130px;
+}
+
+.qui-control-feed-feedsites label {
+    width: 100%;
+}
+
+.qui-control-feed-feedsites textarea {
+    clear: both;
+    max-width:400px;
+    width: 100%;
+}

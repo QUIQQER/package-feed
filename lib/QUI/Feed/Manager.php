@@ -18,8 +18,43 @@ use QUI\Utils\Grid;
  * @package QUI\Feed
  * @author www.pcsg.de (Henning Leutz
  */
-class Manager extends \QUI\QDOM
+class Manager
 {
+    /**
+     * Feed Table
+     */
+    const TABLE = 'feeds';
+
+    /**
+     * Add a new feed
+     */
+    public function addFeed($params)
+    {
+        \QUI::getDataBase()->insert(
+            QUI::getDBTableName( self::TABLE ),
+            array( 'feedtype' => 'rss' )
+        );
+
+        $id   = \QUI::getDataBase()->getPDO()->lastInsertId();
+        $Feed = new Feed( $id );
+
+        $Feed->setAttributes( $params );
+        $Feed->save();
+
+        return $Feed->getAttributes();
+    }
+
+    /**
+     * Return the Feed
+     *
+     * @param Integer $feedId - ID of the Feed
+     * @return Feed
+     */
+    public function getFeed($feedId)
+    {
+        return new Feed( $feedId );
+    }
+
     /**
      * Return the feed entries
      *
@@ -31,14 +66,14 @@ class Manager extends \QUI\QDOM
         if ( empty( $params ) )
         {
             return QUI::getDataBase()->fetch(array(
-                'from'  => QUI::getDBTableName( 'feeds' )
+                'from'  => QUI::getDBTableName( self::TABLE )
             ));
         }
 
         $Grid = new Grid();
 
         $params = array_merge( $Grid->parseDBParams( $params ), array(
-            'from'  => QUI::getDBTableName( 'feeds' )
+            'from'  => QUI::getDBTableName( self::TABLE )
         ));
 
         return QUI::getDataBase()->fetch( $params );
@@ -56,7 +91,7 @@ class Manager extends \QUI\QDOM
                 'select' => 'id',
                 'as'     => 'count'
             ),
-            'from' => QUI::getDBTableName( 'feeds' )
+            'from' => QUI::getDBTableName( self::TABLE )
         ));
 
         return (int)$result[ 0 ][ 'count' ];
