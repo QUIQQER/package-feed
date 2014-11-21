@@ -2,7 +2,7 @@
     "name" : "quiqqer/feed",
     "type" : "library",
     "description" : "QUIQQER Feed Plugin",
-    "version" : "dev-master",
+    "version" : "dev-dev",
 
     "authors" : [{
         "name": "Henning Leutz",
