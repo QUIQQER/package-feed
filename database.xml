@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+
+    <global>
+        <table name="feeds">
+            <field type="bigint( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY">id</field>
+            <field type="varchar(255)">project</field>
+            <field type="varchar(2)">lang</field>
+            <field type="text">feedsites</field>
+            <field type="varchar(255)">feedtype</field>
+            <field type="int(100)">feedlimit</field>
+        </table>
+    </global>
+
+</database>
