@@ -11,7 +11,6 @@
  * @param String $gridParams - grid params
  * @return Array
  */
-
 function package_quiqqer_feed_ajax_getList($gridParams)
 {
     $FeedManager = new \QUI\Feed\Manager();
