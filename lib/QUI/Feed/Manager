@@ -18,7 +18,7 @@ use QUI\Utils\Grid;
  * @package QUI\Feed
  * @author www.pcsg.de (Henning Leutz
  */
-class Manager
+class Manager extends \QUI\QDOM
 {
     /**
      * Return the feed entries
