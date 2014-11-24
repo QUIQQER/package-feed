@@ -8,12 +8,17 @@ namespace QUI\Feed;
 
 use QUI;
 
+use QUI\Feed\Handler\RSS\Feed as RSS;
+use QUI\Feed\Handler\Atom\Feed as Atom;
+use QUI\Feed\Handler\GoogleSitemap\Feed as GoogleSitemap;
+use QUI\Utils\Security\Orthos;
+
 /**
  * Class Feed
  * One Feed, you can edit and save the feed, and get the feed as an XML / RSS Feed
  *
+ * @package quiqqer/feed
  * @author www.pcsg.de (Henning Leutz)
- * @package QUI\Feed
  */
 
 class Feed extends \QUI\QDOM
@@ -98,16 +103,147 @@ class Feed extends \QUI\QDOM
      */
     public function save()
     {
-        $table     = QUI::getDBTableName( Manager::TABLE );
-        $feedlimit = (int)$this->getAttribute('feedlimit');
+        $table = QUI::getDBTableName( Manager::TABLE );
+
+        $feedlimit       = (int)$this->getAttribute('feedlimit');
+        $feedName        = '';
+        $feedDescription = '';
+
+        if ( $this->getAttribute( 'feedName' ) ) {
+            $feedName = Orthos::clear( $this->getAttribute('feedName') );
+        }
+
+        if ( $this->getAttribute( 'feedDescription' ) ) {
+            $feedDescription = Orthos::clear( $this->getAttribute('feedDescription') );
+        }
 
         \QUI::getDataBase()->update($table, array(
-            'project'   => $this->getAttribute('project'),
-            'lang'      => $this->getAttribute('lang'),
-            'feedsites' => $this->getFeedType(),
-            'feedlimit' => $feedlimit ? $feedlimit : ''
+            'project'   => $this->getAttribute( 'project' ),
+            'lang'      => $this->getAttribute( 'lang' ),
+            'feedtype'  => $this->getFeedType(),
+            'feedsites' => $this->getAttribute( 'feedsites' ),
+            'feedlimit' => $feedlimit ? $feedlimit : '',
+            'feedName'  => $feedName,
+            'feedDescription' => $feedDescription
         ), array(
             'id' => $this->getId()
         ));
+    }
+
+    /**
+     * Output the feed as XML
+     *
+     * @return String
+     */
+    public function output()
+    {
+        $feedType  = $this->getFeedType();
+        $feedSites = $this->getAttribute( 'feedsites' );
+        $feedLimit = (int)$this->getAttribute( 'feedlimit' );
+
+        if ( !$feedLimit ) {
+            $feedLimit = 10;
+        }
+
+        $Project = \QUI::getProject(
+            $this->getAttribute( 'project' ),
+            $this->getAttribute( 'lang' )
+        );
+
+        $projectHost = $Project->getVHost( true, true );
+        $feedUrl     = $projectHost . URL_DIR . 'feed='. $this->getId() .'.rss';
+
+
+        switch ( $feedType )
+        {
+            case 'atom':
+                $Feed = new Atom();
+            break;
+
+            case 'googleSitemap':
+                $Feed = new GoogleSitemap();
+            break;
+
+            default:
+                $Feed = new RSS();
+            break;
+        }
+
+        $Channel = $Feed->createChannel();
+
+        $Channel->setLanguage( $Project->getLang() );
+        $Channel->setHost( $projectHost . URL_DIR );
+
+        $Channel->setAttribute( 'link', $feedUrl );
+        $Channel->setAttribute( 'description', $this->getAttribute( 'feedDescription' ) );
+        $Channel->setAttribute( 'title', $this->getAttribute( 'feedName' ) );
+        $Channel->setDate( time() );
+
+
+        // search children
+        $ids = array();
+
+        if ( !empty( $feedSites ) )
+        {
+            $feedSites = explode( ',', $feedSites );
+
+            foreach ( $feedSites as $params )
+            {
+                $params;
+            }
+
+        } else
+        {
+            $ids = $Project->getSitesIds(array(
+                'limit' => $feedLimit,
+                'order' => 'release_from DESC, c_date DESC'
+            ));
+        }
+
+        // items
+        foreach ( $ids as $id )
+        {
+            $id = (int)$id['id'];
+
+            try
+            {
+                $Site = $Project->get( $id );
+                $date = $Site->getAttribute( 'release_from' );
+
+                $url = $Site->getUrlRewrited();
+
+                if ( $date == '0000-00-00 00:00:00' ) {
+                    $date = $Site->getAttribute( 'c_date' );
+                }
+
+                $Item = $Channel->createItem(array(
+                    'title'       => $Site->getAttribute( 'title' ),
+                    'description' => $Site->getAttribute( 'short' ),
+                    'language'    => $Project->getLang(),
+                    'date'        => strtotime( $date ),
+                    'link'        => $projectHost . URL_DIR . $url,
+                    'permalink'   => $projectHost . URL_DIR . $Site->getCanonical()
+                ));
+
+                // Image
+                $image = $Site->getAttribute( 'image_site' );
+
+                if ( !$image ) {
+                    continue;
+                }
+
+                $Image = QUI\Projects\Media\Utils::getImageByUrl( $image );
+
+                if ( QUI\Projects\Media\Utils::isImage( $Image ) ) {
+                    $Item->setImage( $Image );
+                }
+
+            } catch ( QUI\Exception $Exception )
+            {
+
+            }
+        }
+
+        return $Feed->create();
     }
 }

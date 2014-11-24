@@ -1,17 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
 
-    <groups name="quiqqer/feed" type="php,js">
+    <groups name="quiqqer/feed" datatype="js">
+        <locale name="feed.manager.title">
+            <de><![CDATA[Feed Manager]]></de>
+            <en><![CDATA[Feed manager]]></en>
+        </locale>
+        <locale name="quiqqer.feed.feedtype">
+            <de><![CDATA[Feed-Art]]></de>
+            <en><![CDATA[Feed type]]></en>
+        </locale>
+        <locale name="quiqqer.feed.feedlimit">
+            <de><![CDATA[Maximale Einträge im Feed]]></de>
+            <en><![CDATA[Maximum entries in the feed]]></en>
+        </locale>
+        <locale name="quiqqer.feed.feedName">
+            <de><![CDATA[Name des Feeds]]></de>
+            <en><![CDATA[Name of the feed]]></en>
+        </locale>
+        <locale name="quiqqer.feed.feedDescription">
+            <de><![CDATA[Beschreibung des Feeds]]></de>
+            <en><![CDATA[Description of the feed]]></en>
+        </locale>
 
+        <locale name="window.title.feed.create">
+            <de><![CDATA[Neue Feed anlegen]]></de>
+            <en><![CDATA[Create a new feed]]></en>
+        </locale>
+        <locale name="window.title.feed.edit">
+            <de><![CDATA[Feed bearbeten]]></de>
+            <en><![CDATA[Edit the feed]]></en>
+        </locale>
     </groups>
 
-
-    <groups name="quiqqer/feed" type="js">
-
-    </groups>
-
-
-    <groups name="quiqqer/feed" type="php">
+    <groups name="quiqqer/feed" datatype="php">
 
     </groups>
 

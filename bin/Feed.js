@@ -20,6 +20,8 @@ define('package/quiqqer/feed/bin/Feed', [
 {
     "use strict";
 
+    var lg = 'quiqqer/feed';
+
     return new Class({
 
         Extends : QUIControl,
@@ -43,12 +45,14 @@ define('package/quiqqer/feed/bin/Feed', [
             this.$Project  = null;
             this.$Limit    = null;
             this.$Sites    = null;
+            this.$Name     = null;
+            this.$Desc     = null;
         },
 
         /**
          * create the DOMNode
          *
-         * @return {DOMNode}
+         * @return {Element}
          */
         create : function()
         {
@@ -56,7 +60,7 @@ define('package/quiqqer/feed/bin/Feed', [
                 'class' : 'qui-control-feed',
                 html    : '<fieldset>'+
                               '<label>'+
-                                  'Feed Art'+
+                                  QUILocale.get( lg, 'quiqqer.feed.feedtype' ) +
                               '</label>'+
                               '<select name="feedtype">'+
                                   '<option value="rss">RSS</option>'+
@@ -66,13 +70,27 @@ define('package/quiqqer/feed/bin/Feed', [
                           '</fieldset>'+
                           '<fieldset>'+
                               '<label>'+
-                                  'Projekt'+
+                                  QUILocale.get( lg, 'quiqqer.feed.feedName' ) +
                               '</label>'+
-                              '<input type="text"name="project" class="project"  />'+
+                              '<input type="text" name="feedName"  />'+
                           '</fieldset>'+
                           '<fieldset>'+
                               '<label>'+
-                                  'Max. Anzahl der Einträge'+
+                                  QUILocale.get( lg, 'quiqqer.feed.feedDescription' ) +
+                              '</label>'+
+                              '<input type="text" name="feedDescription"  />'+
+                          '</fieldset>'+
+                          '<fieldset>'+
+                              '<label>'+
+                                  QUILocale.get( 'quiqqer/system', 'project' ) +
+                              '</label>'+
+                              '<div class="qui-control-feed-project">'+
+                                  '<input type="text" name="project" class="project"  />'+
+                              '</div>'+
+                          '</fieldset>'+
+                          '<fieldset>'+
+                              '<label>'+
+                                  QUILocale.get( lg, 'quiqqer.feed.feedlimit' ) +
                               '</label>'+
                               '<input type="number" name="feedlimit" />'+
                           '</fieldset>'+
@@ -90,6 +108,8 @@ define('package/quiqqer/feed/bin/Feed', [
             this.$Project  = this.$Elm.getElement( '[name="project"]' );
             this.$Limit    = this.$Elm.getElement( '[name="feedlimit"]' );
             this.$Sites    = this.$Elm.getElement( '[name="feedsites"]' );
+            this.$Name     = this.$Elm.getElement( '[name="feedName"]' );
+            this.$Desc     = this.$Elm.getElement( '[name="feedDescription"]' );
 
             if ( this.getAttribute( 'feedId' ) ) {
                 this.refresh();
@@ -107,17 +127,24 @@ define('package/quiqqer/feed/bin/Feed', [
 
             Ajax.get('package_quiqqer_feed_ajax_getFeed', function(result)
             {
-                console.warn( result );
-
                 self.$Sites.value    = result.feedsites;
                 self.$Feedtype.value = result.feedtype;
                 self.$Limit.value    = result.feedlimit;
+                self.$Name.value     = result.feedName;
+                self.$Desc.value     = result.feedDescription;
+                self.$Project.value  = JSON.encode([{
+                    project : result.project,
+                    lang    : result.lang
+                }]);
 
-                var quiid = self.$Project.get( 'data-quiid'),
+                var quiid          = self.$Project.get( 'data-quiid'),
                     ProjectControl = QUI.Controls.getById( quiid );
 
-                if ( result.project !== '' ) {
-                    ProjectControl.addProject( result.project, result.lang );
+                if ( result.project !== '' )
+                {
+                    if ( ProjectControl ) {
+                        ProjectControl.addProject(result.project, result.lang);
+                    }
                 }
 
             }, {
@@ -151,7 +178,9 @@ define('package/quiqqer/feed/bin/Feed', [
                 lang      : projectLang,
                 feedsites : this.$Sites.value,
                 feedtype  : this.$Feedtype.value,
-                feedlimit : this.$Limit.value
+                feedlimit : this.$Limit.value,
+                feedName  : this.$Name.value,
+                feedDescription : this.$Desc.value
             };
         },
 
@@ -162,8 +191,6 @@ define('package/quiqqer/feed/bin/Feed', [
          */
         save : function(callback)
         {
-            console.log( this.getFeedData() );
-
             Ajax.post('package_quiqqer_feed_ajax_setFeed', function()
             {
                 if ( typeof callback !== 'undefined' ) {

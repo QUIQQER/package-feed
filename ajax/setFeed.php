@@ -19,8 +19,6 @@ function package_quiqqer_feed_ajax_setFeed($feedId, $params)
 
     if ( $feedId )
     {
-        \QUI\System\Log::writeRecursive( $params );
-
         $Feed = $FeedManager->getFeed( $feedId );
         $Feed->setAttributes( $params );
         $Feed->save();

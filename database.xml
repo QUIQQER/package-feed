@@ -8,6 +8,8 @@
             <field type="varchar(2)">lang</field>
             <field type="text">feedsites</field>
             <field type="varchar(255)">feedtype</field>
+            <field type="varchar(255)">feedName</field>
+            <field type="varchar(255)">feedDescription</field>
             <field type="int(100)">feedlimit</field>
         </table>
     </global>

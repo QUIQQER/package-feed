@@ -32,11 +32,12 @@ define('package/quiqqer/feed/bin/FeedWindow', [
 
                 // defaults
             this.setAttributes({
-                maxHeight : 500,
-                maxWidth  : 600,
+                maxHeight : 540,
+                maxWidth  : 470,
                 feedId    : false,
                 icon      : 'icon-rss',
-                autoclose : false
+                autoclose : false,
+                title     : Locale.get( 'quiqqer/feed', 'window.title.feed.edit' )
             });
 
             this.parent( options );
@@ -59,7 +60,7 @@ define('package/quiqqer/feed/bin/FeedWindow', [
                 this.setAttribute( 'title', Locale.get( 'quiqqer/feed', 'window.title.feed.create' ) );
             } else
             {
-                this.setAttribute( 'title', Locale.get( 'quiqqer/feed', 'window.title.feed.add' ) );
+                this.setAttribute( 'title', Locale.get( 'quiqqer/feed', 'window.title.feed.edit' ) );
             }
 
 

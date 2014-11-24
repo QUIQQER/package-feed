@@ -94,7 +94,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     dataType  : 'string',
                     width     : 40
                 }, {
-                    header    : QUILocale.get( lg, 'quiqqer.feed.manager.feedtype.title' ),
+                    header    : QUILocale.get( lg, 'quiqqer.feed.feedtype' ),
                     dataIndex : 'feedtype',
                     dataType  : 'string',
                     width     : 80
@@ -109,7 +109,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     dataType  : 'string',
                     width     : 80
                 }, {
-                    header    : QUILocale.get( lg, 'quiqqer.feed.manager.feedlimit.title' ),
+                    header    : QUILocale.get( lg, 'quiqqer.feed.feedlimit' ),
                     dataIndex : 'feedlimit',
                     dataType  : 'string',
                     width     : 80

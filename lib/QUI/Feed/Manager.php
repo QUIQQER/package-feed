@@ -7,15 +7,12 @@
 namespace QUI\Feed;
 
 use QUI;
-use QUI\Utils\Security\Orthos;
-use QUI\Projects\Site\Edit;
-use QUI\Rights\Permission;
 use QUI\Utils\Grid;
 
 /**
  * Class Feed Manager
  *
- * @package QUI\Feed
+ * @package quiqqer/feed
  * @author www.pcsg.de (Henning Leutz
  */
 class Manager
@@ -27,6 +24,9 @@ class Manager
 
     /**
      * Add a new feed
+     *
+     * @param Array $params - Feed attributes
+     * @return Feed
      */
     public function addFeed($params)
     {
@@ -41,7 +41,7 @@ class Manager
         $Feed->setAttributes( $params );
         $Feed->save();
 
-        return $Feed->getAttributes();
+        return $Feed;
     }
 
     /**

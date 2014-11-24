@@ -1,26 +1,36 @@
 
 .qui-control-feed select,
 .qui-control-feed input{
-    width: 200px;
+    width: 50%;
 }
 
 .qui-control-feed fieldset {
     border: none;
     clear: both;
+    margin: 0;
 }
 
 .qui-control-feed label {
     float: left;
-    line-height: 32px;
-    width: 130px;
+    padding-top: 8px;
+    width: 50%;
 }
 
 .qui-control-feed-feedsites label {
+    padding: 10px 0;
     width: 100%;
 }
 
 .qui-control-feed-feedsites textarea {
     clear: both;
-    max-width:400px;
+    width: 100%;
+}
+
+.qui-control-feed-project {
+    float: left;
+    width: 50%
+}
+
+.qui-control-feed-project input {
     width: 100%;
 }
