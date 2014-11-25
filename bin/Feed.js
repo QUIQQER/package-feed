@@ -67,7 +67,7 @@ define('package/quiqqer/feed/bin/Feed', [
                               '<select name="feedtype">'+
                                   '<option value="rss">RSS</option>'+
                                   '<option value="atom">Atom</option>'+
-                                  '<option value="googleSitemap">Google Sitemap</option>'+
+                                  //'<option value="googleSitemap">Google Sitemap</option>'+
                               '</select>'+
                           '</fieldset>'+
                           '<fieldset>'+
