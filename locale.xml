@@ -24,11 +24,11 @@
         </locale>
 
         <locale name="window.title.feed.create">
-            <de><![CDATA[Neue Feed anlegen]]></de>
+            <de><![CDATA[Neuen Feed anlegen]]></de>
             <en><![CDATA[Create a new feed]]></en>
         </locale>
         <locale name="window.title.feed.edit">
-            <de><![CDATA[Feed bearbeten]]></de>
+            <de><![CDATA[Feed bearbeiten]]></de>
             <en><![CDATA[Edit the feed]]></en>
         </locale>
     </groups>

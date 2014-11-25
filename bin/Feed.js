@@ -56,6 +56,8 @@ define('package/quiqqer/feed/bin/Feed', [
          */
         create : function()
         {
+            var self = this;
+
             this.$Elm = new Element('div', {
                 'class' : 'qui-control-feed',
                 html    : '<fieldset>'+
@@ -98,11 +100,12 @@ define('package/quiqqer/feed/bin/Feed', [
                               '<label>'+
                                   'Welche Seiten sollen in dem Feed enthalten sein?'+
                               '</label>'+
-                              '<textarea name="feedsites"></textarea>'+
+                              '<input name="feedsites" ' +
+                '                     data-qui="controls/projects/project/site/Select" ' +
+                '                     data-project="" data-lang="" ' +
+                '              />'+
                           '</fieldset>'
             });
-
-            ControlUtils.parse( this.$Elm );
 
             this.$Feedtype = this.$Elm.getElement( '[name="feedtype"]' );
             this.$Project  = this.$Elm.getElement( '[name="project"]' );
@@ -111,9 +114,14 @@ define('package/quiqqer/feed/bin/Feed', [
             this.$Name     = this.$Elm.getElement( '[name="feedName"]' );
             this.$Desc     = this.$Elm.getElement( '[name="feedDescription"]' );
 
-            if ( this.getAttribute( 'feedId' ) ) {
-                this.refresh();
-            }
+            ControlUtils.parse( this.$Elm );
+
+            QUI.parse(this.$Elm, function()
+            {
+                if ( self.getAttribute( 'feedId' ) ) {
+                    self.refresh();
+                }
+            });
 
             return this.$Elm;
         },
@@ -127,24 +135,47 @@ define('package/quiqqer/feed/bin/Feed', [
 
             Ajax.get('package_quiqqer_feed_ajax_getFeed', function(result)
             {
+                var quiid, Cntrl;
+
                 self.$Sites.value    = result.feedsites;
                 self.$Feedtype.value = result.feedtype;
                 self.$Limit.value    = result.feedlimit;
                 self.$Name.value     = result.feedName;
                 self.$Desc.value     = result.feedDescription;
-                self.$Project.value  = JSON.encode([{
+
+                self.$Project.value = JSON.encode([{
                     project : result.project,
                     lang    : result.lang
                 }]);
 
-                var quiid          = self.$Project.get( 'data-quiid'),
-                    ProjectControl = QUI.Controls.getById( quiid );
+                // project
+                quiid = self.$Project.get( 'data-quiid');
+                Cntrl = QUI.Controls.getById( quiid );
 
                 if ( result.project !== '' )
                 {
-                    if ( ProjectControl ) {
-                        ProjectControl.addProject(result.project, result.lang);
+                    if ( Cntrl ) {
+                        Cntrl.addProject( result.project, result.lang );
                     }
+                }
+
+                // site types
+                quiid = self.$Sites.get( 'data-quiid');
+                Cntrl = QUI.Controls.getById( quiid );
+
+                self.$Sites.set( 'data-project', result.project );
+                self.$Sites.set( 'data-lang', result.lang );
+
+                if ( Cntrl )
+                {
+                    Cntrl.setAttribute(
+                        'placeholder',
+                        'Wenn Sie keine Einstellungen tätigen, werden im Projekt alle Seiten beachtet'
+                    );
+
+                    Cntrl.setProject( result.project, result.lang );
+                    Cntrl.setValue( self.$Sites.value );
+                    Cntrl.refresh();
                 }
 
             }, {

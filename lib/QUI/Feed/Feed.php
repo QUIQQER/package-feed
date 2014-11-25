@@ -197,7 +197,7 @@ class Feed extends QUI\QDOM
             // search selected sites
             $PDO       = QUI::getPDO();
             $table     = $Project->getAttribute('db_table');
-            $feedSites = explode( ',', $feedSites );
+            $feedSites = explode( ';', $feedSites );
 
             $idCount  = 0;
             $strCount = 0;
