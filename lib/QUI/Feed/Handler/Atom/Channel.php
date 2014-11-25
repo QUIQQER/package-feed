@@ -18,7 +18,7 @@ class Channel extends AbstractChannel
 {
     /**
      * @param array $params
-     * @return \QUI\Feed\Interfaces\Item
+     * @return \QUI\Feed\Interfaces\FeedItem
      */
     public function createItem(array $params=array())
     {

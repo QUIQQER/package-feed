@@ -21,7 +21,7 @@ use QUI\Utils\Security\Orthos;
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Feed extends \QUI\QDOM
+class Feed extends QUI\QDOM
 {
     /**
      * ID of the Feed
@@ -33,7 +33,7 @@ class Feed extends \QUI\QDOM
      * Constructor
      *
      * @param Integer $feedId
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function __construct($feedId)
     {
@@ -117,7 +117,7 @@ class Feed extends \QUI\QDOM
             $feedDescription = Orthos::clear( $this->getAttribute('feedDescription') );
         }
 
-        \QUI::getDataBase()->update($table, array(
+        QUI::getDataBase()->update($table, array(
             'project'   => $this->getAttribute( 'project' ),
             'lang'      => $this->getAttribute( 'lang' ),
             'feedtype'  => $this->getFeedType(),
@@ -145,7 +145,7 @@ class Feed extends \QUI\QDOM
             $feedLimit = 10;
         }
 
-        $Project = \QUI::getProject(
+        $Project = QUI::getProject(
             $this->getAttribute( 'project' ),
             $this->getAttribute( 'lang' )
         );
@@ -181,30 +181,97 @@ class Feed extends \QUI\QDOM
 
 
         // search children
-        $ids = array();
-
-        if ( !empty( $feedSites ) )
-        {
-            $feedSites = explode( ',', $feedSites );
-
-            foreach ( $feedSites as $params )
-            {
-                $params;
-            }
-
-        } else
+        if ( empty( $feedSites ) )
         {
             $ids = $Project->getSitesIds(array(
                 'limit' => $feedLimit,
                 'order' => 'release_from DESC, c_date DESC'
             ));
+
+            $ids = array_map(function($entry) {
+                return (int)$entry['id'];
+            }, $ids);
+
+        } else
+        {
+            // search selected sites
+            $PDO       = QUI::getPDO();
+            $table     = $Project->getAttribute('db_table');
+            $feedSites = explode( ',', $feedSites );
+
+            $idCount  = 0;
+            $strCount = 0;
+
+            $whereParts    = array();
+            $wherePrepared = array();
+
+            foreach ( $feedSites as $param )
+            {
+                if ( is_numeric( $param ) )
+                {
+                    $_id = ':id'. $idCount;
+
+                    $whereParts[] = " id = {$_id} ";
+
+                    $wherePrepared[] = array(
+                        'type'  => \PDO::PARAM_INT,
+                        'value' => $param,
+                        'name'  => $_id
+                    );
+
+                    $idCount++;
+                    continue;
+                }
+
+                $_id = ':str'. $strCount;
+
+                $whereParts[]    = " type LIKE {$_id} ";
+                $wherePrepared[] = array(
+                    'type'  => \PDO::PARAM_STR,
+                    'value' => $param,
+                    'name'  => $_id
+                );
+
+                $strCount++;
+            }
+
+            $where = implode( ' OR ', $whereParts );
+
+            // query
+            $query = "
+                SELECT id
+                FROM {$table}
+                WHERE active = 1 AND ({$where})
+                ORDER BY release_from DESC, c_date DESC
+                LIMIT :limit
+            ";
+
+            // search
+            $Statement = $PDO->prepare( $query );
+
+            foreach ( $wherePrepared as $prepared )
+            {
+                $Statement->bindValue(
+                    $prepared['name'],
+                    $prepared['value'],
+                    $prepared['type']
+                );
+            }
+
+            $Statement->bindValue( ':limit', $feedLimit, \PDO::PARAM_INT );
+            $Statement->execute();
+
+            $result = $Statement->fetchAll( \PDO::FETCH_ASSOC );
+
+            $ids = array_map(function($entry) {
+                return (int)$entry['id'];
+            }, $result);
         }
 
-        // items
+
+        // create feed
         foreach ( $ids as $id )
         {
-            $id = (int)$id['id'];
-
             try
             {
                 $Site = $Project->get( $id );
@@ -233,10 +300,7 @@ class Feed extends \QUI\QDOM
                 }
 
                 $Image = QUI\Projects\Media\Utils::getImageByUrl( $image );
-
-                if ( QUI\Projects\Media\Utils::isImage( $Image ) ) {
-                    $Item->setImage( $Image );
-                }
+                $Item->setImage( $Image );
 
             } catch ( QUI\Exception $Exception )
             {
