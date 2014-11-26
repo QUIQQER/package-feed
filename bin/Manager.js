@@ -4,6 +4,13 @@
  *
  * @module packages/quiqqer/feed/bin/Manager
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require controls/grid/Grid
+ * @require package/quiqqer/feed/bin/FeedWindow
+ * @require Locale
+ * @require Ajax
  */
 
 define('package/quiqqer/feed/bin/Manager', [
@@ -183,7 +190,7 @@ define('package/quiqqer/feed/bin/Manager', [
         /**
          * Open an feed window
          *
-         * @param {Integer} feedId - [optional] ID of the Feed, if no ID a new Feed would be added
+         * @param {Number} feedId - [optional] ID of the Feed, if no ID a new Feed would be added
          */
         openFeedWindow : function(feedId)
         {

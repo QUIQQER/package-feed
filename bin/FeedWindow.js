@@ -4,7 +4,13 @@
  *
  * @module package/quiqqer/feed/bin/FeedWindow
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/windows/Confirm
+ * @require package/quiqqer/feed/bin/Feed
+ * @require Locale
  */
+
 define('package/quiqqer/feed/bin/FeedWindow', [
 
     'qui/QUI',
@@ -51,7 +57,7 @@ define('package/quiqqer/feed/bin/FeedWindow', [
         /**
          * event : on open
          *
-         * @param {qui/controls/windows/Popup} Win
+         * @param {Object} Win - qui/controls/windows/Popup
          */
         $onOpen : function(Win)
         {

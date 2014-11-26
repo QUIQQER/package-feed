@@ -4,6 +4,13 @@
  *
  * @module package/quiqqer/feed/bin/Feed
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require utils/Controls
+ * @require Ajax
+ * @require Locale
+ * @require css!package/quiqqer/feed/bin/Feed
  */
 
 define('package/quiqqer/feed/bin/Feed', [
@@ -52,7 +59,7 @@ define('package/quiqqer/feed/bin/Feed', [
         /**
          * create the DOMNode
          *
-         * @return {Element}
+         * @return {HTMLElement}
          */
         create : function()
         {
