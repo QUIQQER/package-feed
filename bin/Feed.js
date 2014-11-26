@@ -56,8 +56,6 @@ define('package/quiqqer/feed/bin/Feed', [
          */
         create : function()
         {
-            var self = this;
-
             this.$Elm = new Element('div', {
                 'class' : 'qui-control-feed',
                 html    : '<fieldset>'+
@@ -113,6 +111,31 @@ define('package/quiqqer/feed/bin/Feed', [
             this.$Sites    = this.$Elm.getElement( '[name="feedsites"]' );
             this.$Name     = this.$Elm.getElement( '[name="feedName"]' );
             this.$Desc     = this.$Elm.getElement( '[name="feedDescription"]' );
+
+            var self = this;
+
+            this.$Project.addEvent('change', function()
+            {
+                var TypeSelect = QUI.Controls.getById(
+                    self.$Sites.get( 'data-quiid')
+                );
+
+                var ProjectSelect = QUI.Controls.getById(
+                    self.$Project.get( 'data-quiid')
+                );
+
+                if ( TypeSelect && ProjectSelect )
+                {
+                    ProjectSelect.getProjects().each(function(Project)
+                    {
+                        TypeSelect.setProject(
+                            Project.getName(),
+                            Project.getLang()
+                        );
+                    });
+                }
+            });
+
 
             ControlUtils.parse( this.$Elm );
 

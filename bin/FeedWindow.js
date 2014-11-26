@@ -63,6 +63,8 @@ define('package/quiqqer/feed/bin/FeedWindow', [
                 this.setAttribute( 'title', Locale.get( 'quiqqer/feed', 'window.title.feed.edit' ) );
             }
 
+            this.refresh();
+
 
             this.$Feed = new Feed({
                 feedId : this.getAttribute( 'feedId' )
