@@ -21,7 +21,7 @@ define('package/quiqqer/feed/bin/Feed', [
     'Ajax',
     'Locale',
 
-    'css!package/quiqqer/feed/bin/Feed'
+    'css!package/quiqqer/feed/bin/Feed.css'
 
 ], function(QUI, QUIControl, ControlUtils, Ajax, QUILocale)
 {
