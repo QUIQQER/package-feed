@@ -30,11 +30,19 @@ class Feed extends AbstractFeed
     }
 
     /**
-     * Return the feed
-     * @return String
+     * Return XML of the feed
+     * @return \SimpleXMLElement
      */
-    public function getDom()
+    public function getXML()
     {
+        $XML = new SimpleXML(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'
+        );
 
+
+
+
+        return $XML;
     }
 }

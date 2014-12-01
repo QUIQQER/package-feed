@@ -30,12 +30,12 @@ class Manager
      */
     public function addFeed($params)
     {
-        \QUI::getDataBase()->insert(
+        QUI::getDataBase()->insert(
             QUI::getDBTableName( self::TABLE ),
             array( 'feedtype' => 'rss' )
         );
 
-        $id   = \QUI::getDataBase()->getPDO()->lastInsertId();
+        $id   = QUI::getDataBase()->getPDO()->lastInsertId();
         $Feed = new Feed( $id );
 
         $Feed->setAttributes( $params );
@@ -66,14 +66,14 @@ class Manager
         if ( empty( $params ) )
         {
             return QUI::getDataBase()->fetch(array(
-                'from'  => QUI::getDBTableName( self::TABLE )
+                'from' => QUI::getDBTableName( self::TABLE )
             ));
         }
 
         $Grid = new Grid();
 
         $params = array_merge( $Grid->parseDBParams( $params ), array(
-            'from'  => QUI::getDBTableName( self::TABLE )
+            'from' => QUI::getDBTableName( self::TABLE )
         ));
 
         return QUI::getDataBase()->fetch( $params );

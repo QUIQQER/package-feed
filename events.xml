@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <events>
     <event on="onRequest" fire="\QUI\Feed\Events::onRequest" />
+    <event on="onSiteActivate" fire="\QUI\Feed\Events::onSiteChange" />
+    <event on="onSiteDeactivate" fire="\QUI\Feed\Events::onSiteChange" />
+    <event on="onSiteSave" fire="\QUI\Feed\Events::onSiteChange" />
 </events>
