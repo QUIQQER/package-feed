@@ -48,6 +48,7 @@ class Events
         {
 
             echo QUI\Cache\Manager::get( $cacheName );
+            exit;
 
         } catch ( QUI\Exception $Exception )
         {
@@ -63,7 +64,7 @@ class Events
 
             $output = $Feed->output();
 
-            QUI\Cache\Manager::get( $output );
+            QUI\Cache\Manager::set( $cacheName, $output );
 
             echo $output;
             exit;

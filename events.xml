@@ -4,4 +4,5 @@
     <event on="onSiteActivate" fire="\QUI\Feed\Events::onSiteChange" />
     <event on="onSiteDeactivate" fire="\QUI\Feed\Events::onSiteChange" />
     <event on="onSiteSave" fire="\QUI\Feed\Events::onSiteChange" />
+    <event on="onSiteDestroy" fire="\QUI\Feed\Events::onSiteChange" />
 </events>
