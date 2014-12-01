@@ -17,12 +17,13 @@ define('package/quiqqer/feed/bin/Manager', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
+    'qui/controls/window/Confirm',
     'controls/grid/Grid',
     'package/quiqqer/feed/bin/FeedWindow',
     'Locale',
     'Ajax'
 
-], function(QUI, QUIPanel, Grid, FeedWindow, QUILocale, Ajax)
+], function(QUI, QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax)
 {
     "use strict";
 
@@ -84,8 +85,13 @@ define('package/quiqqer/feed/bin/Manager', [
                 disabled  : true,
                 events :
                 {
-                    onClick : function() {
-                        console.log( 'asd' );
+                    onClick : function()
+                    {
+                        var ids = self.$Grid.getSelectedData().map(function(entry) {
+                            return entry.id;
+                        });
+
+                        self.openFeedDeleteWindow( ids );
                     }
                 }
             });
@@ -188,20 +194,59 @@ define('package/quiqqer/feed/bin/Manager', [
         },
 
         /**
-         * Open an feed window
+         * Open the feed window
          *
-         * @param {Number} feedId - [optional] ID of the Feed, if no ID a new Feed would be added
+         * @param {Number} [feedId] - (optional) ID of the Feed, if no ID a new Feed would be added
          */
         openFeedWindow : function(feedId)
         {
             var self = this;
 
             new FeedWindow({
-                feedId : feedId,
+                feedId : feedId || false,
                 events :
                 {
                     onClose : function() {
                         self.refresh();
+                    }
+                }
+            }).open();
+        },
+
+        /**
+         * Open the feed deletion
+         *
+         * @param {Array} feedIds - ID of the Feed
+         */
+        openFeedDeleteWindow : function(feedIds)
+        {
+            if ( typeOf( feedIds ) !== 'array' ) {
+                return;
+            }
+
+            var self = this;
+
+            new QUIConfirm({
+                title : 'Feeds löschen',
+                icon  : 'icon-trash',
+                text  : 'Möchten Sie folgende Feeds wirklich löschen?',
+                information : feedIds.join(', '),
+                autoclose : false,
+                events :
+                {
+                    onSubmit : function(Win)
+                    {
+                        Win.Loader.show();
+
+                        Ajax.post('package_quiqqer_feed_ajax_delete', function()
+                        {
+                            self.refresh();
+                            Win.close();
+
+                        }, {
+                            'package' : 'quiqqer/feed',
+                            feedIds   : JSON.encode( feedIds )
+                        });
                     }
                 }
             }).open();

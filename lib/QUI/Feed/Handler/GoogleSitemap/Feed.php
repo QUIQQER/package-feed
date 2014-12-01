@@ -36,6 +36,25 @@ class Feed extends AbstractFeed
      */
     public function getXML()
     {
+        /*
+         @todo more thang 40k sites
+        <?xml version="1.0" encoding="UTF-8"?>
+        <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <sitemap>
+                <loc>http://www.pontikis.net/sitemap-main.xml</loc>
+            </sitemap>
+            <sitemap>
+                <loc>http://www.pontikis.net/blog/sitemap.php</loc>
+            </sitemap>
+            <sitemap>
+                <loc>http://www.pontikis.net/labs/sitemap-labs.xml</loc>
+            </sitemap>
+            <sitemap>
+                <loc>http://www.pontikis.net/bbs/sitemap.php</loc>
+            </sitemap>
+        </sitemapindex>
+        */
+
         $XML = new SimpleXML(
             '<?xml version="1.0" encoding="UTF-8"?>
             <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'

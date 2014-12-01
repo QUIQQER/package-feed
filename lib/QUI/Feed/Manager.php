@@ -49,10 +49,37 @@ class Manager
      *
      * @param Integer $feedId - ID of the Feed
      * @return Feed
+     * @throws QUI\Exception
      */
     public function getFeed($feedId)
     {
         return new Feed( $feedId );
+    }
+
+    /**
+     * Delete a feed
+     *
+     * @param Integer $feedId - ID of the Feed
+     */
+    public function deleteFeed($feedId)
+    {
+        try
+        {
+            $feedId = (int)$feedId;
+
+            $this->getFeed( $feedId );
+
+            QUI::getDataBase()->delete(
+                QUI::getDBTableName( Manager::TABLE ),
+                array(
+                    'id' => $feedId
+                )
+            );
+
+        } catch ( QUI\Exception $Exception )
+        {
+            // feed not exist
+        }
     }
 
     /**

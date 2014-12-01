@@ -160,6 +160,7 @@ class Feed extends QUI\QDOM
                 $Feed = new Atom();
             break;
 
+            // @todo more thang 20k sites
             case 'googleSitemap':
                 $Feed = new GoogleSitemap();
             break;
