@@ -11,6 +11,7 @@
  * @require package/quiqqer/feed/bin/FeedWindow
  * @require Locale
  * @require Ajax
+ * @require Projects
  */
 
 define('package/quiqqer/feed/bin/Manager', [
@@ -21,9 +22,10 @@ define('package/quiqqer/feed/bin/Manager', [
     'controls/grid/Grid',
     'package/quiqqer/feed/bin/FeedWindow',
     'Locale',
-    'Ajax'
+    'Ajax',
+    'Projects'
 
-], function(QUI, QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax)
+], function(QUI, QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax, Projects)
 {
     "use strict";
 
@@ -127,8 +129,33 @@ define('package/quiqqer/feed/bin/Manager', [
                     dataType  : 'string',
                     width     : 80
                 }],
-                pagination        : true,
-                multipleSelection : true
+                pagination            : true,
+                multipleSelection     : true,
+                accordion             : true,
+                openAccordionOnClick  : false,
+                accordionLiveRenderer : function(data)
+                {
+                    var GridObj = data.grid,
+                        Parent  = data.parent,
+                        row     = data.row,
+                        rowData = GridObj.getDataByRow( row );
+
+                    Parent.set( 'html', '' );
+
+                    var Project = Projects.get( rowData.project, rowData.lang);
+
+                    Project.getHost(function(host)
+                    {
+                        var url = host +'/feed='+ rowData.id +'.xml';
+
+                        new Element('div', {
+                            html   : 'Feed URL: '+ url,
+                            styles : {
+                                padding: 10
+                            }
+                        }).inject( Parent );
+                    });
+                }
             });
 
             this.$Grid.addEvents({
