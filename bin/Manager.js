@@ -17,7 +17,7 @@ define('package/quiqqer/feed/bin/Manager', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
-    'qui/controls/window/Confirm',
+    'qui/controls/windows/Confirm',
     'controls/grid/Grid',
     'package/quiqqer/feed/bin/FeedWindow',
     'Locale',
