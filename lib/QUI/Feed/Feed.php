@@ -184,10 +184,19 @@ class Feed extends QUI\QDOM
         // search children
         if ( empty( $feedSites ) )
         {
-            $ids = $Project->getSitesIds(array(
-                'limit' => $feedLimit,
-                'order' => 'release_from DESC, c_date DESC'
-            ));
+            if ( $feedLimit < 1 )
+            {
+                $ids = $Project->getSitesIds(array(
+                    'order' => 'release_from DESC, c_date DESC'
+                ));
+
+            } else
+            {
+                $ids = $Project->getSitesIds(array(
+                    'limit' => $feedLimit,
+                    'order' => 'release_from DESC, c_date DESC'
+                ));
+            }
 
             $ids = array_map(function($entry) {
                 return (int)$entry['id'];
@@ -244,8 +253,11 @@ class Feed extends QUI\QDOM
                 FROM {$table}
                 WHERE active = 1 AND ({$where})
                 ORDER BY release_from DESC, c_date DESC
-                LIMIT :limit
             ";
+
+            if ( $feedLimit > 0 ) {
+                $query .= "LIMIT :limit";
+            }
 
             // search
             $Statement = $PDO->prepare( $query );
@@ -259,7 +271,10 @@ class Feed extends QUI\QDOM
                 );
             }
 
-            $Statement->bindValue( ':limit', $feedLimit, \PDO::PARAM_INT );
+            if ( $feedLimit > 0 ) {
+                $Statement->bindValue(':limit', $feedLimit, \PDO::PARAM_INT);
+            }
+            
             $Statement->execute();
 
             $result = $Statement->fetchAll( \PDO::FETCH_ASSOC );
