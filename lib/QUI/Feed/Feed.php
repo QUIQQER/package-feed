@@ -128,6 +128,9 @@ class Feed extends QUI\QDOM
         ), array(
             'id' => $this->getId()
         ));
+        
+        // clear cache
+        QUI\Cache\Manager::clear( 'quiqqer/feed/'. $this->getId() );
     }
 
     /**
@@ -274,7 +277,7 @@ class Feed extends QUI\QDOM
             if ( $feedLimit > 0 ) {
                 $Statement->bindValue(':limit', $feedLimit, \PDO::PARAM_INT);
             }
-            
+
             $Statement->execute();
 
             $result = $Statement->fetchAll( \PDO::FETCH_ASSOC );
