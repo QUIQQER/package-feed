@@ -30,11 +30,11 @@ class Events
             return;
         }
 
-        if ( strpos( $url, '.rss' ) === false ) {
+        if ( strpos( $url, '.xml' ) === false ) {
             return;
         }
 
-        $params = str_replace( '.rss', '', $url );
+        $params = str_replace( '.xml', '', $url );
         $params = explode( '=', $params );
 
         if ( !isset( $params[ 1 ] ) ) {

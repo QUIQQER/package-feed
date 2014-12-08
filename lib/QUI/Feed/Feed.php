@@ -128,7 +128,7 @@ class Feed extends QUI\QDOM
         ), array(
             'id' => $this->getId()
         ));
-        
+
         // clear cache
         QUI\Cache\Manager::clear( 'quiqqer/feed/'. $this->getId() );
     }
