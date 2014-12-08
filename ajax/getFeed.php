@@ -13,7 +13,8 @@
  */
 function package_quiqqer_feed_ajax_getFeed($feedId)
 {
-    return ( new \QUI\Feed\Manager() )->getFeed( $feedId )->getAttributes();
+    $FeedManager = new \QUI\Feed\Manager();
+    return $FeedManager->getFeed( $feedId )->getAttributes();
 }
 
 \QUI::$Ajax->register(
