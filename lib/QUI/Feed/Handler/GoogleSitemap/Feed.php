@@ -37,7 +37,7 @@ class Feed extends AbstractFeed
     public function getXML()
     {
         /*
-         @todo more thang 40k sites
+         @todo more thang 50k sites
         <?xml version="1.0" encoding="UTF-8"?>
         <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
             <sitemap>
@@ -76,7 +76,7 @@ class Feed extends AbstractFeed
 
                 $ItemXml->addChild(
                     'lastmod',
-                    date( \DateTime::RFC2822, (int)$Item->getAttribute('date'))
+                    date( \DateTime::ATOM, (int)$Item->getAttribute('date'))
                 );
             }
         }
