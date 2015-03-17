@@ -1,6 +1,6 @@
 {
     "name" : "quiqqer/feed",
-    "type" : "library",
+    "type" : "quiqqer-module",
     "description" : "QUIQQER Feed Plugin",
     "version" : "dev-dev",
 
