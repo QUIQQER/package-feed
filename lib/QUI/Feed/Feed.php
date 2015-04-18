@@ -18,13 +18,13 @@ use QUI\Utils\Security\Orthos;
  * One Feed, you can edit and save the feed, and get the feed as an XML / RSS Feed
  *
  * @package quiqqer/feed
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  */
-
 class Feed extends QUI\QDOM
 {
     /**
      * ID of the Feed
+     *
      * @var Integer
      */
     protected $_feedId;
@@ -33,6 +33,7 @@ class Feed extends QUI\QDOM
      * Constructor
      *
      * @param Integer $feedId
+     *
      * @throws QUI\Exception
      */
     public function __construct($feedId)
@@ -40,25 +41,25 @@ class Feed extends QUI\QDOM
         $this->_feedId = (int)$feedId;
 
         $data = QUI::getDataBase()->fetch(array(
-            'from' => QUI::getDBTableName( Manager::TABLE ),
+            'from'  => QUI::getDBTableName(Manager::TABLE),
             'where' => array(
                 'id' => $this->_feedId
             ),
             'limit' => 1
         ));
 
-        if ( !isset( $data[ 0 ] ) )
-        {
+        if (!isset($data[0])) {
             throw new QUI\Exception(
                 'Feed not found'
             );
         }
 
-        $this->setAttributes( $data[ 0 ] );
+        $this->setAttributes($data[0]);
     }
 
     /**
      * Return the Feed-ID
+     *
      * @return Integer
      */
     public function getId()
@@ -75,12 +76,11 @@ class Feed extends QUI\QDOM
     {
         $feedtype = 'rss';
 
-        switch ( $this->getAttribute( 'feedtype' ) )
-        {
+        switch ($this->getAttribute('feedtype')) {
             case 'atom':
             case 'googleSitemap':
-                $feedtype = $this->getAttribute( 'feedtype' );
-            break;
+                $feedtype = $this->getAttribute('feedtype');
+                break;
         }
 
         return $feedtype;
@@ -88,6 +88,7 @@ class Feed extends QUI\QDOM
 
     /**
      * Return the feed attributes
+     *
      * @return Array
      */
     public function getAttributes()
@@ -103,34 +104,35 @@ class Feed extends QUI\QDOM
      */
     public function save()
     {
-        $table = QUI::getDBTableName( Manager::TABLE );
+        $table = QUI::getDBTableName(Manager::TABLE);
 
-        $feedlimit       = (int)$this->getAttribute('feedlimit');
-        $feedName        = '';
+        $feedlimit = (int)$this->getAttribute('feedlimit');
+        $feedName = '';
         $feedDescription = '';
 
-        if ( $this->getAttribute( 'feedName' ) ) {
-            $feedName = Orthos::clear( $this->getAttribute('feedName') );
+        if ($this->getAttribute('feedName')) {
+            $feedName = Orthos::clear($this->getAttribute('feedName'));
         }
 
-        if ( $this->getAttribute( 'feedDescription' ) ) {
-            $feedDescription = Orthos::clear( $this->getAttribute('feedDescription') );
+        if ($this->getAttribute('feedDescription')) {
+            $feedDescription
+                = Orthos::clear($this->getAttribute('feedDescription'));
         }
 
         QUI::getDataBase()->update($table, array(
-            'project'   => $this->getAttribute( 'project' ),
-            'lang'      => $this->getAttribute( 'lang' ),
-            'feedtype'  => $this->getFeedType(),
-            'feedsites' => $this->getAttribute( 'feedsites' ),
-            'feedlimit' => $feedlimit ? $feedlimit : '',
-            'feedName'  => $feedName,
+            'project'         => $this->getAttribute('project'),
+            'lang'            => $this->getAttribute('lang'),
+            'feedtype'        => $this->getFeedType(),
+            'feedsites'       => $this->getAttribute('feedsites'),
+            'feedlimit'       => $feedlimit ? $feedlimit : '',
+            'feedName'        => $feedName,
             'feedDescription' => $feedDescription
         ), array(
             'id' => $this->getId()
         ));
 
         // clear cache
-        QUI\Cache\Manager::clear( 'quiqqer/feed/'. $this->getId() );
+        QUI\Cache\Manager::clear('quiqqer/feed/'.$this->getId());
     }
 
     /**
@@ -140,89 +142,83 @@ class Feed extends QUI\QDOM
      */
     public function output()
     {
-        $feedType  = $this->getFeedType();
-        $feedSites = $this->getAttribute( 'feedsites' );
-        $feedLimit = (int)$this->getAttribute( 'feedlimit' );
+        $feedType = $this->getFeedType();
+        $feedSites = $this->getAttribute('feedsites');
+        $feedLimit = (int)$this->getAttribute('feedlimit');
 
-        if ( !$feedLimit ) {
+        if (!$feedLimit) {
             $feedLimit = 10;
         }
 
         $Project = QUI::getProject(
-            $this->getAttribute( 'project' ),
-            $this->getAttribute( 'lang' )
+            $this->getAttribute('project'),
+            $this->getAttribute('lang')
         );
 
-        $projectHost = $Project->getVHost( true, true );
-        $feedUrl     = $projectHost . URL_DIR . 'feed='. $this->getId() .'.rss';
+        $projectHost = $Project->getVHost(true, true);
+        $feedUrl = $projectHost.URL_DIR.'feed='.$this->getId().'.rss';
 
 
-        switch ( $feedType )
-        {
+        switch ($feedType) {
             case 'atom':
                 $Feed = new Atom();
-            break;
+                break;
 
             // @todo more thang 20k sites
             case 'googleSitemap':
                 $Feed = new GoogleSitemap();
-            break;
+                break;
 
             default:
                 $Feed = new RSS();
-            break;
+                break;
         }
 
         $Channel = $Feed->createChannel();
 
-        $Channel->setLanguage( $Project->getLang() );
-        $Channel->setHost( $projectHost . URL_DIR );
+        $Channel->setLanguage($Project->getLang());
+        $Channel->setHost($projectHost.URL_DIR);
 
-        $Channel->setAttribute( 'link', $feedUrl );
-        $Channel->setAttribute( 'description', $this->getAttribute( 'feedDescription' ) );
-        $Channel->setAttribute( 'title', $this->getAttribute( 'feedName' ) );
-        $Channel->setDate( time() );
+        $Channel->setAttribute('link', $feedUrl);
+        $Channel->setAttribute('description',
+            $this->getAttribute('feedDescription'));
+        $Channel->setAttribute('title', $this->getAttribute('feedName'));
+        $Channel->setDate(time());
 
 
         // search children
-        if ( empty( $feedSites ) )
-        {
-            if ( $feedLimit < 1 )
-            {
+        if (empty($feedSites)) {
+            if ($feedLimit < 1) {
                 $ids = $Project->getSitesIds(array(
                     'order' => 'release_from DESC, c_date DESC'
                 ));
 
-            } else
-            {
+            } else {
                 $ids = $Project->getSitesIds(array(
                     'limit' => $feedLimit,
                     'order' => 'release_from DESC, c_date DESC'
                 ));
             }
 
-            $ids = array_map(function($entry) {
+            $ids = array_map(function ($entry) {
                 return (int)$entry['id'];
             }, $ids);
 
-        } else
-        {
+        } else {
             // search selected sites
-            $PDO       = QUI::getPDO();
-            $table     = $Project->getAttribute('db_table');
-            $feedSites = explode( ';', $feedSites );
+            $PDO = QUI::getPDO();
+            $table = $Project->getAttribute('db_table');
+            $feedSites = explode(';', $feedSites);
 
-            $idCount  = 0;
+            $idCount = 0;
             $strCount = 0;
 
-            $whereParts    = array();
+            $whereParts = array();
             $wherePrepared = array();
 
-            foreach ( $feedSites as $param )
-            {
-                if ( is_numeric( $param ) )
-                {
-                    $_id = ':id'. $idCount;
+            foreach ($feedSites as $param) {
+                if (is_numeric($param)) {
+                    $_id = ':id'.$idCount;
 
                     $whereParts[] = " id = {$_id} ";
 
@@ -236,9 +232,9 @@ class Feed extends QUI\QDOM
                     continue;
                 }
 
-                $_id = ':str'. $strCount;
+                $_id = ':str'.$strCount;
 
-                $whereParts[]    = " type LIKE {$_id} ";
+                $whereParts[] = " type LIKE {$_id} ";
                 $wherePrepared[] = array(
                     'type'  => \PDO::PARAM_STR,
                     'value' => $param,
@@ -248,25 +244,25 @@ class Feed extends QUI\QDOM
                 $strCount++;
             }
 
-            $where = implode( ' OR ', $whereParts );
+            $where = implode(' OR ', $whereParts);
 
             // query
-            $query = "
+            $query
+                = "
                 SELECT id
                 FROM {$table}
                 WHERE active = 1 AND ({$where})
                 ORDER BY release_from DESC, c_date DESC
             ";
 
-            if ( $feedLimit > 0 ) {
+            if ($feedLimit > 0) {
                 $query .= "LIMIT :limit";
             }
 
             // search
-            $Statement = $PDO->prepare( $query );
+            $Statement = $PDO->prepare($query);
 
-            foreach ( $wherePrepared as $prepared )
-            {
+            foreach ($wherePrepared as $prepared) {
                 $Statement->bindValue(
                     $prepared['name'],
                     $prepared['value'],
@@ -274,55 +270,52 @@ class Feed extends QUI\QDOM
                 );
             }
 
-            if ( $feedLimit > 0 ) {
+            if ($feedLimit > 0) {
                 $Statement->bindValue(':limit', $feedLimit, \PDO::PARAM_INT);
             }
 
             $Statement->execute();
 
-            $result = $Statement->fetchAll( \PDO::FETCH_ASSOC );
+            $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
 
-            $ids = array_map(function($entry) {
+            $ids = array_map(function ($entry) {
                 return (int)$entry['id'];
             }, $result);
         }
 
 
         // create feed
-        foreach ( $ids as $id )
-        {
-            try
-            {
-                $Site = $Project->get( $id );
-                $date = $Site->getAttribute( 'release_from' );
+        foreach ($ids as $id) {
+            try {
+                $Site = $Project->get($id);
+                $date = $Site->getAttribute('release_from');
 
                 $url = $Site->getUrlRewrited();
 
-                if ( $date == '0000-00-00 00:00:00' ) {
-                    $date = $Site->getAttribute( 'c_date' );
+                if ($date == '0000-00-00 00:00:00') {
+                    $date = $Site->getAttribute('c_date');
                 }
 
                 $Item = $Channel->createItem(array(
-                    'title'       => $Site->getAttribute( 'title' ),
-                    'description' => $Site->getAttribute( 'short' ),
+                    'title'       => $Site->getAttribute('title'),
+                    'description' => $Site->getAttribute('short'),
                     'language'    => $Project->getLang(),
-                    'date'        => strtotime( $date ),
-                    'link'        => $projectHost . URL_DIR . $url,
-                    'permalink'   => $projectHost . URL_DIR . $Site->getCanonical()
+                    'date'        => strtotime($date),
+                    'link'        => $projectHost.URL_DIR.$url,
+                    'permalink'   => $projectHost.URL_DIR.$Site->getCanonical()
                 ));
 
                 // Image
-                $image = $Site->getAttribute( 'image_site' );
+                $image = $Site->getAttribute('image_site');
 
-                if ( !$image ) {
+                if (!$image) {
                     continue;
                 }
 
-                $Image = QUI\Projects\Media\Utils::getImageByUrl( $image );
-                $Item->setImage( $Image );
+                $Image = QUI\Projects\Media\Utils::getImageByUrl($image);
+                $Item->setImage($Image);
 
-            } catch ( QUI\Exception $Exception )
-            {
+            } catch (QUI\Exception $Exception) {
 
             }
         }

@@ -15,13 +15,14 @@ class SimpleXML extends \SimpleXMLElement
 {
     /**
      * Add an ![CDATA[ ]]> Entry
+     *
      * @param String $cdata - CDATA value
      */
     public function addCData($cdata)
     {
-        $Node   = dom_import_simplexml( $this );
+        $Node = dom_import_simplexml($this);
         $OwnDoc = $Node->ownerDocument;
 
-        $Node->appendChild( $OwnDoc->createCDATASection( $cdata ) );
+        $Node->appendChild($OwnDoc->createCDATASection($cdata));
     }
 }

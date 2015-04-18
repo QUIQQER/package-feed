@@ -13,7 +13,7 @@ use QUI\Utils\Grid;
  * Class Feed Manager
  *
  * @package quiqqer/feed
- * @author www.pcsg.de (Henning Leutz
+ * @author  www.pcsg.de (Henning Leutz
  */
 class Manager
 {
@@ -26,19 +26,20 @@ class Manager
      * Add a new feed
      *
      * @param Array $params - Feed attributes
+     *
      * @return Feed
      */
     public function addFeed($params)
     {
         QUI::getDataBase()->insert(
-            QUI::getDBTableName( self::TABLE ),
-            array( 'feedtype' => 'rss' )
+            QUI::getDBTableName(self::TABLE),
+            array('feedtype' => 'rss')
         );
 
-        $id   = QUI::getDataBase()->getPDO()->lastInsertId();
-        $Feed = new Feed( $id );
+        $id = QUI::getDataBase()->getPDO()->lastInsertId();
+        $Feed = new Feed($id);
 
-        $Feed->setAttributes( $params );
+        $Feed->setAttributes($params);
         $Feed->save();
 
         return $Feed;
@@ -48,12 +49,13 @@ class Manager
      * Return the Feed
      *
      * @param Integer $feedId - ID of the Feed
+     *
      * @return Feed
      * @throws QUI\Exception
      */
     public function getFeed($feedId)
     {
-        return new Feed( $feedId );
+        return new Feed($feedId);
     }
 
     /**
@@ -63,21 +65,19 @@ class Manager
      */
     public function deleteFeed($feedId)
     {
-        try
-        {
+        try {
             $feedId = (int)$feedId;
 
-            $this->getFeed( $feedId );
+            $this->getFeed($feedId);
 
             QUI::getDataBase()->delete(
-                QUI::getDBTableName( Manager::TABLE ),
+                QUI::getDBTableName(Manager::TABLE),
                 array(
                     'id' => $feedId
                 )
             );
 
-        } catch ( QUI\Exception $Exception )
-        {
+        } catch (QUI\Exception $Exception) {
             // feed not exist
         }
     }
@@ -86,24 +86,24 @@ class Manager
      * Return the feed entries
      *
      * @param array $params
+     *
      * @return Array
      */
-    public function getList($params=array())
+    public function getList($params = array())
     {
-        if ( empty( $params ) )
-        {
+        if (empty($params)) {
             return QUI::getDataBase()->fetch(array(
-                'from' => QUI::getDBTableName( self::TABLE )
+                'from' => QUI::getDBTableName(self::TABLE)
             ));
         }
 
         $Grid = new Grid();
 
-        $params = array_merge( $Grid->parseDBParams( $params ), array(
-            'from' => QUI::getDBTableName( self::TABLE )
+        $params = array_merge($Grid->parseDBParams($params), array(
+            'from' => QUI::getDBTableName(self::TABLE)
         ));
 
-        return QUI::getDataBase()->fetch( $params );
+        return QUI::getDataBase()->fetch($params);
     }
 
     /**
@@ -118,9 +118,9 @@ class Manager
                 'select' => 'id',
                 'as'     => 'count'
             ),
-            'from' => QUI::getDBTableName( self::TABLE )
+            'from'  => QUI::getDBTableName(self::TABLE)
         ));
 
-        return (int)$result[ 0 ][ 'count' ];
+        return (int)$result[0]['count'];
     }
 }
