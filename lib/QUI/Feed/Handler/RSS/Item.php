@@ -13,7 +13,6 @@ use QUI\Feed\Handler\AbstractItem;
  *
  * @package quiqqer/feed
  */
-
 class Item extends AbstractItem
 {
 

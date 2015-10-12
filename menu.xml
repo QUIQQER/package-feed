@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
-    <item parent="/extras/"
+    <item parent="/apps/"
           name="feeds"
           icon="icon-rss"
           require="package/quiqqer/feed/bin/Manager"

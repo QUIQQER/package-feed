@@ -14,18 +14,20 @@ use QUI\Feed\Interfaces\Channel as ChannelInterface;
  * Class AbstractFeed
  *
  * @package quiqqer/feed
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  */
 abstract class AbstractFeed extends QDOM implements FeedInterface
 {
     /**
      * Channel list
+     *
      * @var array
      */
     protected $_channels = array();
 
     /**
      * Add a channel to the feed
+     *
      * @param ChannelInterface $Channel
      */
     public function addChannel(ChannelInterface $Channel)
@@ -35,6 +37,7 @@ abstract class AbstractFeed extends QDOM implements FeedInterface
 
     /**
      * Return the channels
+     *
      * @return Array
      */
     public function getChannels()
@@ -44,16 +47,17 @@ abstract class AbstractFeed extends QDOM implements FeedInterface
 
     /**
      * Return the XML of the feed
+     *
      * @return String
      */
     public function create()
     {
         $XML = $this->getXML();
 
-        $Dom = new \DOMDocument( '1.0', 'UTF-8' );
+        $Dom = new \DOMDocument('1.0', 'UTF-8');
         $Dom->preserveWhiteSpace = false;
-        $Dom->formatOutput       = true;
-        $Dom->loadXML( $XML->asXML() );
+        $Dom->formatOutput = true;
+        $Dom->loadXML($XML->asXML());
 
         return $Dom->saveXML();
     }

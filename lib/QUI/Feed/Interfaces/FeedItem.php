@@ -12,30 +12,34 @@ use QUI\Projects\Media\Image;
  * Interface Feed
  *
  * @package quiqqer/feed
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  */
 interface FeedItem
 {
     /**
      * Set the title of the feed item
+     *
      * @param String $title
      */
     public function setTitle($title);
 
     /**
      * Set the description of the feed item
+     *
      * @param String $description
      */
     public function setDescription($description);
 
     /**
      * Set the unix timestamp
+     *
      * @param Integer $timestamp - Unix timestamp
      */
     public function setDate($timestamp);
 
     /**
      * Set the link of the feed item
+     *
      * @param String $link
      */
     public function setLink($link);
@@ -50,6 +54,7 @@ interface FeedItem
 
     /**
      * Set the language of the feed item
+     *
      * @param String $language
      */
     public function setLanguage($language);
@@ -60,12 +65,14 @@ interface FeedItem
 
     /**
      * Set an image for the feed item
+     *
      * @param Image $Image - Image Object
      */
     public function setImage(Image $Image);
 
     /**
      * Return the feed image
+     *
      * @return null|Image
      */
     public function getImage();

@@ -14,59 +14,65 @@ use QUI\Feed\Interfaces\FeedItem as InterfaceItem;
  * Class AbstractFeed
  *
  * @package quiqqer/feed
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  */
 abstract class AbstractItem extends QDOM implements InterfaceItem
 {
     /**
      * Image for the feed item
+     *
      * @var null
      */
     protected $_Image = null;
 
     /**
      * constructor
+     *
      * @param array $params
      */
-    public function __construct(array $params=array())
+    public function __construct(array $params = array())
     {
-        $this->setAttributes( $params );
+        $this->setAttributes($params);
     }
 
     /**
      * Set the title of the feed item
+     *
      * @param String $title
      */
     public function setTitle($title)
     {
-        $this->setAttribute( 'title', $title );
+        $this->setAttribute('title', $title);
     }
 
     /**
      * Set the description of the feed item
+     *
      * @param String $description
      */
     public function setDescription($description)
     {
-        $this->setAttribute( 'description', $description );
+        $this->setAttribute('description', $description);
     }
 
     /**
      * Set the unix timestamp
+     *
      * @param Integer $timestamp - Unix timestamp
      */
     public function setDate($timestamp)
     {
-        $this->setAttribute( 'time', $timestamp );
+        $this->setAttribute('time', $timestamp);
     }
 
     /**
      * Set the link of the feed item
+     *
      * @param String $link
      */
     public function setLink($link)
     {
-        $this->setAttribute( 'link', $link );
+        $this->setAttribute('link', $link);
     }
 
     /**
@@ -77,16 +83,17 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      */
     public function setPermaLink($link)
     {
-        $this->setAttribute( 'permalink', $link );
+        $this->setAttribute('permalink', $link);
     }
 
     /**
      * Set the language of the feed item
+     *
      * @param String $language
      */
     public function setLanguage($language)
     {
-        $this->setAttribute( 'lang', $language );
+        $this->setAttribute('lang', $language);
     }
 
     /**
@@ -95,6 +102,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
 
     /**
      * Set an image for the feed item
+     *
      * @param $Image
      */
     public function setImage(QUI\Projects\Media\Image $Image)
@@ -104,6 +112,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
 
     /**
      * Return the feed image
+     *
      * @return null|QUI\Projects\Media\Image
      */
     public function getImage()
