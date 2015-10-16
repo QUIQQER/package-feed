@@ -93,7 +93,7 @@ class Feed extends QUI\QDOM
      */
     public function getAttributes()
     {
-        $attributes = parent::getAttributes();
+        $attributes       = parent::getAttributes();
         $attributes['id'] = $this->_feedId;
 
         return $attributes;
@@ -106,8 +106,8 @@ class Feed extends QUI\QDOM
     {
         $table = QUI::getDBTableName(Manager::TABLE);
 
-        $feedlimit = (int)$this->getAttribute('feedlimit');
-        $feedName = '';
+        $feedlimit       = (int)$this->getAttribute('feedlimit');
+        $feedName        = '';
         $feedDescription = '';
 
         if ($this->getAttribute('feedName')) {
@@ -132,7 +132,7 @@ class Feed extends QUI\QDOM
         ));
 
         // clear cache
-        QUI\Cache\Manager::clear('quiqqer/feed/'.$this->getId());
+        QUI\Cache\Manager::clear('quiqqer/feed/' . $this->getId());
     }
 
     /**
@@ -142,7 +142,7 @@ class Feed extends QUI\QDOM
      */
     public function output()
     {
-        $feedType = $this->getFeedType();
+        $feedType  = $this->getFeedType();
         $feedSites = $this->getAttribute('feedsites');
         $feedLimit = (int)$this->getAttribute('feedlimit');
 
@@ -156,7 +156,7 @@ class Feed extends QUI\QDOM
         );
 
         $projectHost = $Project->getVHost(true, true);
-        $feedUrl = $projectHost.URL_DIR.'feed='.$this->getId().'.rss';
+        $feedUrl     = $projectHost . URL_DIR . 'feed=' . $this->getId() . '.rss';
 
 
         switch ($feedType) {
@@ -177,7 +177,7 @@ class Feed extends QUI\QDOM
         $Channel = $Feed->createChannel();
 
         $Channel->setLanguage($Project->getLang());
-        $Channel->setHost($projectHost.URL_DIR);
+        $Channel->setHost($projectHost . URL_DIR);
 
         $Channel->setAttribute('link', $feedUrl);
         $Channel->setAttribute('description',
@@ -206,19 +206,19 @@ class Feed extends QUI\QDOM
 
         } else {
             // search selected sites
-            $PDO = QUI::getPDO();
-            $table = $Project->getAttribute('db_table');
+            $PDO       = QUI::getPDO();
+            $table     = $Project->getAttribute('db_table');
             $feedSites = explode(';', $feedSites);
 
-            $idCount = 0;
+            $idCount  = 0;
             $strCount = 0;
 
-            $whereParts = array();
+            $whereParts    = array();
             $wherePrepared = array();
 
             foreach ($feedSites as $param) {
                 if (is_numeric($param)) {
-                    $_id = ':id'.$idCount;
+                    $_id = ':id' . $idCount;
 
                     $whereParts[] = " id = {$_id} ";
 
@@ -232,9 +232,9 @@ class Feed extends QUI\QDOM
                     continue;
                 }
 
-                $_id = ':str'.$strCount;
+                $_id = ':str' . $strCount;
 
-                $whereParts[] = " type LIKE {$_id} ";
+                $whereParts[]    = " type LIKE {$_id} ";
                 $wherePrepared[] = array(
                     'type'  => \PDO::PARAM_STR,
                     'value' => $param,
@@ -290,8 +290,6 @@ class Feed extends QUI\QDOM
                 $Site = $Project->get($id);
                 $date = $Site->getAttribute('release_from');
 
-                $url = $Site->getUrlRewrited();
-
                 if ($date == '0000-00-00 00:00:00') {
                     $date = $Site->getAttribute('c_date');
                 }
@@ -301,8 +299,8 @@ class Feed extends QUI\QDOM
                     'description' => $Site->getAttribute('short'),
                     'language'    => $Project->getLang(),
                     'date'        => strtotime($date),
-                    'link'        => $projectHost.URL_DIR.$url,
-                    'permalink'   => $projectHost.URL_DIR.$Site->getCanonical()
+                    'link'        => $projectHost . $Site->getUrlRewritten(),
+                    'permalink'   => $projectHost . $Site->getCanonical()
                 ));
 
                 // Image

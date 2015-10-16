@@ -53,26 +53,40 @@ class Feed extends AbstractFeed
             $date = date(\DateTime::RFC2822,
                 (int)$Channel->getAttribute('timestamp'));
 
-            $Atomlink = $ChannelXml->addChild('link', '',
-                'http://www.w3.org/2005/Atom');
+            $Atomlink = $ChannelXml->addChild(
+                'link',
+                '',
+                'http://www.w3.org/2005/Atom'
+            );
+
             $Atomlink->addAttribute('href', $Channel->getAttribute('link'));
             $Atomlink->addAttribute('rel', "self");
             $Atomlink->addAttribute('type', "application/rss+xml");
 
             $ChannelXml->addChild('link', $Channel->getAttribute('link'));
             $ChannelXml->addChild('pubDate', $date);
-            $ChannelXml->addChild('language',
-                $Channel->getAttribute('language'));
-            $ChannelXml->addChild('generator',
-                'quiqqer.com (http://www.quiqqer.com)');
+
+            $ChannelXml->addChild(
+                'language',
+                $Channel->getAttribute('language')
+            );
+
+            $ChannelXml->addChild(
+                'generator',
+                'quiqqer.com (http://www.quiqqer.com)'
+            );
+
             $ChannelXml->addChild('description')
                        ->addCData($Channel->getAttribute('description'));
+
             $ChannelXml->addChild('title')
                        ->addCData($Channel->getAttribute('title'));
 
             if ($Channel->getAttribute('author')) {
-                $ChannelXml->addChild('webMaster',
-                    $Channel->getAttribute('author'));
+                $ChannelXml->addChild(
+                    'webMaster',
+                    $Channel->getAttribute('author')
+                );
             }
 
             // channel feed items
@@ -80,15 +94,19 @@ class Feed extends AbstractFeed
 
             foreach ($items as $Item) {
                 /* @var $Item Item */
-                $date = date(\DateTime::RFC2822,
-                    (int)$Item->getAttribute('date'));
+                $date = date(
+                    \DateTime::RFC2822,
+                    (int)$Item->getAttribute('date')
+                );
 
                 $ItemXml = $ChannelXml->addChild('item');
                 $ItemXml->addChild('link', $Item->getAttribute('link'));
                 $ItemXml->addChild('pubDate', $date);
                 $ItemXml->addChild('guid', $Item->getAttribute('permalink'));
+
                 $ItemXml->addChild('title')
                         ->addCData($Item->getAttribute('title'));
+
                 $ItemXml->addChild('description')
                         ->addCData($Item->getAttribute('description'));
 
@@ -104,12 +122,20 @@ class Feed extends AbstractFeed
                 }
 
                 $EnclosureDom = $ItemXml->addChild('enclosure');
-                $EnclosureDom->addAttribute('url',
-                    $host.trim($Image->getUrl(true), '/'));
-                $EnclosureDom->addAttribute('length',
-                    $Image->getAttribute('filesize'));
-                $EnclosureDom->addAttribute('type',
-                    $Image->getAttribute('mime_type'));
+                $EnclosureDom->addAttribute(
+                    'url',
+                    $host.trim($Image->getUrl(true), '/')
+                );
+
+                $EnclosureDom->addAttribute(
+                    'length',
+                    $Image->getAttribute('filesize')
+                );
+
+                $EnclosureDom->addAttribute(
+                    'type',
+                    $Image->getAttribute('mime_type')
+                );
             }
         }
 

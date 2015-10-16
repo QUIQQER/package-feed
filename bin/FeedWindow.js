@@ -1,4 +1,3 @@
-
 /**
  * Feed window
  *
@@ -10,7 +9,6 @@
  * @require package/quiqqer/feed/bin/Feed
  * @require Locale
  */
-
 define('package/quiqqer/feed/bin/FeedWindow', [
 
     'qui/QUI',
@@ -18,39 +16,38 @@ define('package/quiqqer/feed/bin/FeedWindow', [
     'package/quiqqer/feed/bin/Feed',
     'Locale'
 
-], function(QUI, QUIConfirm, Feed, Locale)
-{
+], function (QUI, QUIConfirm, Feed, Locale) {
     "use strict";
 
     return new Class({
 
-        Extends : QUIConfirm,
-        Type    : 'package/quiqqer/feed/bin/Manager',
+        Extends: QUIConfirm,
+        Type   : 'package/quiqqer/feed/bin/Manager',
 
-        Binds : [
+        Binds: [
             '$onOpen',
             '$onSubmit'
         ],
 
-        initialize : function(options)
-        {
+        initialize: function (options) {
             this.$Feed = null;
 
-                // defaults
+            // defaults
             this.setAttributes({
-                maxHeight : 580,
-                maxWidth  : 470,
-                feedId    : false,
-                icon      : 'icon-rss',
-                autoclose : false,
-                title     : Locale.get( 'quiqqer/feed', 'window.title.feed.edit' )
+                maxHeight: 580,
+                maxWidth : 470,
+                feedId   : false,
+                icon     : 'icon-rss',
+                autoclose: false,
+                title    : Locale.get('quiqqer/feed', 'window.title.feed.edit'),
+                texticon : false
             });
 
-            this.parent( options );
+            this.parent(options);
 
             this.addEvents({
-                onOpen   : this.$onOpen,
-                onSubmit : this.$onSubmit
+                onOpen  : this.$onOpen,
+                onSubmit: this.$onSubmit
             });
         },
 
@@ -59,32 +56,28 @@ define('package/quiqqer/feed/bin/FeedWindow', [
          *
          * @param {Object} Win - qui/controls/windows/Popup
          */
-        $onOpen : function(Win)
-        {
-            if ( !this.getAttribute( 'feedId' ) )
-            {
-                this.setAttribute( 'title', Locale.get( 'quiqqer/feed', 'window.title.feed.create' ) );
-            } else
-            {
-                this.setAttribute( 'title', Locale.get( 'quiqqer/feed', 'window.title.feed.edit' ) );
+        $onOpen: function (Win) {
+            if (!this.getAttribute('feedId')) {
+                this.setAttribute('title', Locale.get('quiqqer/feed', 'window.title.feed.create'));
+            } else {
+                this.setAttribute('title', Locale.get('quiqqer/feed', 'window.title.feed.edit'));
             }
 
             this.refresh();
 
 
             this.$Feed = new Feed({
-                feedId : this.getAttribute( 'feedId' )
-            }).inject( Win.getContent()  );
+                feedId: this.getAttribute('feedId')
+            }).inject(Win.getContent());
         },
 
         /**
          * event : on submit
          */
-        $onSubmit : function(Win)
-        {
+        $onSubmit: function (Win) {
             Win.Loader.show();
 
-            this.$Feed.save(function() {
+            this.$Feed.save(function () {
                 Win.close();
             });
         }
