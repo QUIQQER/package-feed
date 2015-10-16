@@ -1,4 +1,3 @@
-
 /**
  * Feed manager
  *
@@ -13,7 +12,6 @@
  * @require Ajax
  * @require Projects
  */
-
 define('package/quiqqer/feed/bin/Manager', [
 
     'qui/QUI',
@@ -25,154 +23,146 @@ define('package/quiqqer/feed/bin/Manager', [
     'Ajax',
     'Projects'
 
-], function(QUI, QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax, Projects)
-{
+], function (QUI, QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax, Projects) {
     "use strict";
 
     var lg = 'quiqqer/feed';
 
     return new Class({
 
-        Extends : QUIPanel,
-        Type    : 'package/quiqqer/feed/bin/Manager',
+        Extends: QUIPanel,
+        Type   : 'package/quiqqer/feed/bin/Manager',
 
-        Binds : [
+        Binds: [
             '$onCreate',
             '$onResize'
         ],
 
-        options : {
-            title : QUILocale.get( lg, 'feed.manager.title' )
+        options: {
+            title: QUILocale.get(lg, 'feed.manager.title')
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.$Grid = null;
 
             this.addEvents({
-                onCreate : this.$onCreate,
-                onResize : this.$onResize
+                onCreate: this.$onCreate,
+                onResize: this.$onResize
             });
         },
 
         /**
          * Create the panel
          */
-        $onCreate : function()
-        {
+        $onCreate: function () {
             var self = this;
 
             this.addButton({
-                name : 'add',
-                text : 'Neuen Feed anlegen',
-                textimage : 'icon-plus',
-                events :
-                {
-                    onClick : function() {
+                name     : 'add',
+                text     : 'Neuen Feed anlegen',
+                textimage: 'icon-plus',
+                events   : {
+                    onClick: function () {
                         self.openFeedWindow();
                     }
                 }
             });
 
             this.addButton({
-                type : 'seperator'
+                type: 'seperator'
             });
 
             this.addButton({
-                name : 'delete',
-                text : 'Markierten Feed löschen',
-                textimage : 'icon-trash',
-                disabled  : true,
-                events :
-                {
-                    onClick : function()
-                    {
-                        var ids = self.$Grid.getSelectedData().map(function(entry) {
+                name     : 'delete',
+                text     : 'Markierten Feed löschen',
+                textimage: 'icon-trash',
+                disabled : true,
+                events   : {
+                    onClick: function () {
+                        var ids = self.$Grid.getSelectedData().map(function (entry) {
                             return entry.id;
                         });
 
-                        self.openFeedDeleteWindow( ids );
+                        self.openFeedDeleteWindow(ids);
                     }
                 }
             });
 
             // Grid
             var Content   = this.getContent(),
-                Container = new Element('div').inject( Content );
+                Container = new Element('div').inject(Content);
 
-            this.$Grid = new Grid( Container, {
-                columnModel : [{
-                    header    : QUILocale.get( 'quiqqer/system', 'id' ),
-                    dataIndex : 'id',
-                    dataType  : 'string',
-                    width     : 40
+            this.$Grid = new Grid(Container, {
+                columnModel          : [{
+                    header   : QUILocale.get('quiqqer/system', 'id'),
+                    dataIndex: 'id',
+                    dataType : 'string',
+                    width    : 40
                 }, {
-                    header    : QUILocale.get( lg, 'quiqqer.feed.feedtype' ),
-                    dataIndex : 'feedtype',
-                    dataType  : 'string',
-                    width     : 80
+                    header   : QUILocale.get(lg, 'quiqqer.feed.feedtype'),
+                    dataIndex: 'feedtype',
+                    dataType : 'string',
+                    width    : 80
                 }, {
-                    header    : QUILocale.get( 'quiqqer/system', 'project' ),
-                    dataIndex : 'project',
-                    dataType  : 'string',
-                    width     : 120
+                    header   : QUILocale.get('quiqqer/system', 'project'),
+                    dataIndex: 'project',
+                    dataType : 'string',
+                    width    : 120
                 }, {
-                    header    : QUILocale.get( 'quiqqer/system', 'language' ),
-                    dataIndex : 'lang',
-                    dataType  : 'string',
-                    width     : 80
+                    header   : QUILocale.get('quiqqer/system', 'language'),
+                    dataIndex: 'lang',
+                    dataType : 'string',
+                    width    : 80
                 }, {
-                    header    : QUILocale.get( lg, 'quiqqer.feed.feedlimit' ),
-                    dataIndex : 'feedlimit',
-                    dataType  : 'string',
-                    width     : 80
+                    header   : QUILocale.get(lg, 'quiqqer.feed.feedlimit'),
+                    dataIndex: 'feedlimit',
+                    dataType : 'string',
+                    width    : 80
                 }],
-                pagination            : true,
-                multipleSelection     : true,
-                accordion             : true,
-                openAccordionOnClick  : false,
-                accordionLiveRenderer : function(data)
-                {
+                pagination           : true,
+                multipleSelection    : true,
+                accordion            : true,
+                openAccordionOnClick : false,
+                accordionLiveRenderer: function (data) {
                     var GridObj = data.grid,
                         Parent  = data.parent,
                         row     = data.row,
-                        rowData = GridObj.getDataByRow( row );
+                        rowData = GridObj.getDataByRow(row);
 
-                    Parent.set( 'html', '' );
+                    Parent.set('html', '');
 
-                    var Project = Projects.get( rowData.project, rowData.lang);
+                    var Project = Projects.get(rowData.project, rowData.lang);
 
-                    Project.getHost(function(host)
-                    {
-                        var url = host +'/feed='+ rowData.id +'.xml';
+                    Project.getHost(function (host) {
+
+                        var url = host + '/feed=' + rowData.id + '.xml';
 
                         new Element('div', {
-                            html   : 'Feed URL: '+ url,
-                            styles : {
+                            html  : 'Feed URL: ' + url,
+                            styles: {
                                 padding: 10
                             }
-                        }).inject( Parent );
+                        }).inject(Parent);
                     });
                 }
             });
 
             this.$Grid.addEvents({
 
-                onRefresh : function() {
+                onRefresh: function () {
                     self.refresh();
                 },
 
-                onDblClick : function(event)
-                {
+                onDblClick: function (event) {
                     self.openFeedWindow(
-                        self.$Grid.getDataByRow( event.row ).id
+                        self.$Grid.getDataByRow(event.row).id
                     );
                 },
 
-                onClick : function() {
-                    self.getButtons( 'delete' ).enable();
+                onClick: function () {
+                    self.getButtons('delete').enable();
                 }
             });
 
@@ -182,42 +172,39 @@ define('package/quiqqer/feed/bin/Manager', [
         /**
          * Load the feeds
          */
-        refresh : function()
-        {
-            if ( !this.$Grid ) {
+        refresh: function () {
+            if (!this.$Grid) {
                 return;
             }
 
             var self = this;
 
-            Ajax.get('package_quiqqer_feed_ajax_getList', function(result)
-            {
-                self.$Grid.setData( result );
+            Ajax.get('package_quiqqer_feed_ajax_getList', function (result) {
+                self.$Grid.setData(result);
             }, {
-                'package'  : 'quiqqer/feed',
-                gridParams : JSON.encode( this.$Grid.getPaginationData() )
+                'package' : 'quiqqer/feed',
+                gridParams: JSON.encode(this.$Grid.getPaginationData())
             });
         },
 
         /**
          * panel resize
          */
-        $onResize : function()
-        {
-            if ( !this.$Grid ) {
+        $onResize: function () {
+            if (!this.$Grid) {
                 return;
             }
 
             var Body = this.getContent();
 
-            if ( !Body ) {
+            if (!Body) {
                 return;
             }
 
             var size = Body.getSize();
 
-            this.$Grid.setHeight( size.y - 40 );
-            this.$Grid.setWidth( size.x - 40 );
+            this.$Grid.setHeight(size.y - 40);
+            this.$Grid.setWidth(size.x - 40);
         },
 
         /**
@@ -225,15 +212,13 @@ define('package/quiqqer/feed/bin/Manager', [
          *
          * @param {Number} [feedId] - (optional) ID of the Feed, if no ID a new Feed would be added
          */
-        openFeedWindow : function(feedId)
-        {
+        openFeedWindow: function (feedId) {
             var self = this;
 
             new FeedWindow({
-                feedId : feedId || false,
-                events :
-                {
-                    onClose : function() {
+                feedId: feedId || false,
+                events: {
+                    onClose: function () {
                         self.refresh();
                     }
                 }
@@ -245,34 +230,30 @@ define('package/quiqqer/feed/bin/Manager', [
          *
          * @param {Array} feedIds - ID of the Feed
          */
-        openFeedDeleteWindow : function(feedIds)
-        {
-            if ( typeOf( feedIds ) !== 'array' ) {
+        openFeedDeleteWindow: function (feedIds) {
+            if (typeOf(feedIds) !== 'array') {
                 return;
             }
 
             var self = this;
 
             new QUIConfirm({
-                title : 'Feeds löschen',
-                icon  : 'icon-trash',
-                text  : 'Möchten Sie folgende Feeds wirklich löschen?',
-                information : feedIds.join(', '),
-                autoclose : false,
-                events :
-                {
-                    onSubmit : function(Win)
-                    {
+                title      : 'Feeds löschen',
+                icon       : 'icon-trash',
+                text       : 'Möchten Sie folgende Feeds wirklich löschen?',
+                information: feedIds.join(', '),
+                autoclose  : false,
+                events     : {
+                    onSubmit: function (Win) {
                         Win.Loader.show();
 
-                        Ajax.post('package_quiqqer_feed_ajax_delete', function()
-                        {
+                        Ajax.post('package_quiqqer_feed_ajax_delete', function () {
                             self.refresh();
                             Win.close();
 
                         }, {
-                            'package' : 'quiqqer/feed',
-                            feedIds   : JSON.encode( feedIds )
+                            'package': 'quiqqer/feed',
+                            feedIds  : JSON.encode(feedIds)
                         });
                     }
                 }
