@@ -28,14 +28,14 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * RSS Channel items
      *
-     * @var Array
+     * @var array
      */
     protected $_items = array();
 
     /**
      * constructor
      *
-     * @param Array $params
+     * @param array $params
      */
     public function __construct($params = array())
     {
@@ -61,7 +61,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Return the feed items
      *
-     * @return Array
+     * @return array
      */
     public function getItems()
     {

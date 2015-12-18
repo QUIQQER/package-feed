@@ -25,7 +25,7 @@ class Manager
     /**
      * Add a new feed
      *
-     * @param Array $params - Feed attributes
+     * @param array $params - Feed attributes
      *
      * @return Feed
      */
@@ -87,7 +87,7 @@ class Manager
      *
      * @param array $params
      *
-     * @return Array
+     * @return array
      */
     public function getList($params = array())
     {
