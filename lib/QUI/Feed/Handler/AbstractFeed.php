@@ -38,7 +38,7 @@ abstract class AbstractFeed extends QDOM implements FeedInterface
     /**
      * Return the channels
      *
-     * @return Array
+     * @return array
      */
     public function getChannels()
     {
@@ -48,7 +48,7 @@ abstract class AbstractFeed extends QDOM implements FeedInterface
     /**
      * Return the XML of the feed
      *
-     * @return String
+     * @return string
      */
     public function create()
     {

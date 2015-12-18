@@ -38,7 +38,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
     /**
      * Set the title of the feed item
      *
-     * @param String $title
+     * @param string $title
      */
     public function setTitle($title)
     {
@@ -48,7 +48,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
     /**
      * Set the description of the feed item
      *
-     * @param String $description
+     * @param string $description
      */
     public function setDescription($description)
     {
@@ -58,7 +58,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
     /**
      * Set the unix timestamp
      *
-     * @param Integer $timestamp - Unix timestamp
+     * @param integer $timestamp - Unix timestamp
      */
     public function setDate($timestamp)
     {
@@ -68,7 +68,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
     /**
      * Set the link of the feed item
      *
-     * @param String $link
+     * @param string $link
      */
     public function setLink($link)
     {
@@ -79,7 +79,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      * Set the permalink
      * RSS = GUID
      *
-     * @param String $link
+     * @param string $link
      */
     public function setPermaLink($link)
     {
@@ -89,7 +89,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
     /**
      * Set the language of the feed item
      *
-     * @param String $language
+     * @param string $language
      */
     public function setLanguage($language)
     {

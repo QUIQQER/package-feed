@@ -31,14 +31,14 @@ interface Feed
     /**
      * Return the channel list
      *
-     * @return Array
+     * @return array
      */
     public function getChannels();
 
     /**
      * Return the Feed
      *
-     * @return String
+     * @return string
      */
     public function create();
 

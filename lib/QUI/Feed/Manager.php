@@ -36,7 +36,7 @@ class Manager
             array('feedtype' => 'rss')
         );
 
-        $id = QUI::getDataBase()->getPDO()->lastInsertId();
+        $id   = QUI::getDataBase()->getPDO()->lastInsertId();
         $Feed = new Feed($id);
 
         $Feed->setAttributes($params);
@@ -48,7 +48,7 @@ class Manager
     /**
      * Return the Feed
      *
-     * @param Integer $feedId - ID of the Feed
+     * @param integer $feedId - ID of the Feed
      *
      * @return Feed
      * @throws QUI\Exception
@@ -61,7 +61,7 @@ class Manager
     /**
      * Delete a feed
      *
-     * @param Integer $feedId - ID of the Feed
+     * @param integer $feedId - ID of the Feed
      */
     public function deleteFeed($feedId)
     {
@@ -109,16 +109,16 @@ class Manager
     /**
      * Return the number of the feeds
      *
-     * @return int
+     * @return integer
      */
     public function count()
     {
         $result = QUI::getDataBase()->fetch(array(
             'count' => array(
                 'select' => 'id',
-                'as'     => 'count'
+                'as' => 'count'
             ),
-            'from'  => QUI::getDBTableName(self::TABLE)
+            'from' => QUI::getDBTableName(self::TABLE)
         ));
 
         return (int)$result[0]['count'];

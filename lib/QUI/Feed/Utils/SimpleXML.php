@@ -16,7 +16,7 @@ class SimpleXML extends \SimpleXMLElement
     /**
      * Add an ![CDATA[ ]]> Entry
      *
-     * @param String $cdata - CDATA value
+     * @param string $cdata - CDATA value
      */
     public function addCData($cdata)
     {

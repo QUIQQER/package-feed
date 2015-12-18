@@ -33,35 +33,35 @@ interface Channel
     /**
      * Return the feed items
      *
-     * @return Array
+     * @return array
      */
     public function getItems();
 
     /**
      * Set the title of the channel
      *
-     * @param String $title
+     * @param string $title
      */
     public function setTitle($title);
 
     /**
      * Set the description of the channel
      *
-     * @param String $description
+     * @param string $description
      */
     public function setDescription($description);
 
     /**
      * Set the unix timestamp
      *
-     * @param Integer $timestamp - Unix timestamp
+     * @param integer $timestamp - Unix timestamp
      */
     public function setDate($timestamp);
 
     /**
      * Set the language of the channel
      *
-     * @param String $language
+     * @param string $language
      */
     public function setLanguage($language);
 
@@ -72,14 +72,14 @@ interface Channel
     /**
      * Set the main host
      *
-     * @param String $host - http://my.host.com
+     * @param string $host - http://my.host.com
      */
     public function setHost($host);
 
     /**
      * Return the main host
      *
-     * @return String
+     * @return string
      */
     public function getHost();
 }

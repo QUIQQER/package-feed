@@ -71,7 +71,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Set the title of the channel
      *
-     * @param String $title
+     * @param string $title
      */
     public function setTitle($title)
     {
@@ -81,7 +81,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Set the description of the channel
      *
-     * @param String $description
+     * @param string $description
      */
     public function setDescription($description)
     {
@@ -91,7 +91,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Set the unix timestamp
      *
-     * @param Integer $timestamp - Unix timestamp
+     * @param integer $timestamp - Unix timestamp
      */
     public function setDate($timestamp)
     {
@@ -101,7 +101,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Set the language of the channel
      *
-     * @param String $language
+     * @param string $language
      */
     public function setLanguage($language)
     {
@@ -111,7 +111,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Set the main host
      *
-     * @param String $host - eq http://www.myhost.com
+     * @param string $host - eq http://www.myhost.com
      */
     public function setHost($host)
     {
@@ -121,7 +121,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Return the main host
      *
-     * @return String
+     * @return string
      */
     public function getHost()
     {

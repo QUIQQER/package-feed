@@ -50,8 +50,10 @@ class Feed extends AbstractFeed
             $ChannelXml = $XML->addChild('channel');
 
             $host = $Channel->getHost();
-            $date = date(\DateTime::RFC2822,
-                (int)$Channel->getAttribute('timestamp'));
+            $date = date(
+                \DateTime::RFC2822,
+                (int)$Channel->getAttribute('timestamp')
+            );
 
             $Atomlink = $ChannelXml->addChild(
                 'link',
