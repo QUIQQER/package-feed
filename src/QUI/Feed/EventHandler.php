@@ -11,11 +11,10 @@ use QUI;
 /**
  * Class Events -> System Events
  *
- * @package quiqqer/feed
+ * @package QUI\Feed
  * @author www.pcsg.de (Henning Leutz)
  */
-
-class Events
+class EventHandler
 {
     /**
      * event : on request
@@ -24,54 +23,47 @@ class Events
      * @param String $url
      * @return void
      */
-    static function onRequest($Rewrite, $url)
+    public static function onRequest($Rewrite, $url)
     {
-        if ( stripos( $url, 'feed=' ) === false ) {
+        if (stripos($url, 'feed=') === false) {
             return;
         }
 
-        if ( strpos( $url, '.xml' ) === false ) {
+        if (strpos($url, '.xml') === false) {
             return;
         }
 
-        $params = str_replace( '.xml', '', $url );
-        $params = explode( '=', $params );
+        $params = str_replace('.xml', '', $url);
+        $params = explode('=', $params);
 
-        if ( !isset( $params[ 1 ] ) ) {
+        if (!isset($params[1])) {
             return;
         }
 
-        $feedId    = (int)$params[ 1 ];
-        $cacheName = 'quiqqer/feed/'. $feedId;
+        $feedId    = (int)$params[1];
+        $cacheName = 'quiqqer/feed/' . $feedId;
 
-        try
-        {
-
-            echo QUI\Cache\Manager::get( $cacheName );
+        try {
+            echo QUI\Cache\Manager::get($cacheName);
             exit;
 
-        } catch ( QUI\Exception $Exception )
-        {
-
+        } catch (QUI\Exception $Exception) {
         }
 
-        try
-        {
+        try {
             $Manager = new Manager();
-            $Feed = $Manager->getFeed( $feedId );
+            $Feed    = $Manager->getFeed($feedId);
 
             header('Content-Type: application/rss+xml; charset=UTF-8');
 
             $output = $Feed->output();
 
-            QUI\Cache\Manager::set( $cacheName, $output );
+            QUI\Cache\Manager::set($cacheName, $output);
 
             echo $output;
             exit;
 
-        } catch ( QUI\Exception $Exception )
-        {
-
+        } catch (QUI\Exception $Exception) {
         }
     }
 
@@ -79,7 +71,7 @@ class Events
      * event : site change it
      * @param \QUI\Projects\Site $Site
      */
-    static function onSiteChange($Site)
+    public static function onSiteChange($Site)
     {
         // get feeds by project
         $Project = $Site->getProject();
@@ -90,18 +82,17 @@ class Events
 
         $feedList = $Manager->getList();
 
-        foreach ( $feedList as $feed )
-        {
-            if ( $projectName != $feed['project'] ) {
+        foreach ($feedList as $feed) {
+            if ($projectName != $feed['project']) {
                 continue;
             }
 
-            if ( $projectLang != $feed['lang'] ) {
+            if ($projectLang != $feed['lang']) {
                 continue;
             }
 
             // clear cache
-            QUI\Cache\Manager::clear( 'quiqqer/feed/'.$feed['id'] );
+            QUI\Cache\Manager::clear('quiqqer/feed/' . $feed['id']);
         }
     }
 }

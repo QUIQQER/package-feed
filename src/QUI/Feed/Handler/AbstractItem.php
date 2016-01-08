@@ -23,7 +23,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      *
      * @var null
      */
-    protected $_Image = null;
+    protected $Image = null;
 
     /**
      * constructor
@@ -107,7 +107,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      */
     public function setImage(QUI\Projects\Media\Image $Image)
     {
-        $this->_Image = $Image;
+        $this->Image = $Image;
     }
 
     /**
@@ -117,7 +117,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      */
     public function getImage()
     {
-        return $this->_Image;
+        return $this->Image;
     }
 
     /**
@@ -125,6 +125,6 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      */
     public function removeImage()
     {
-        $this->_Image = null;
+        $this->Image = null;
     }
 }

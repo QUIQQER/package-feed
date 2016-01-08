@@ -7,7 +7,6 @@
 namespace QUI\Feed;
 
 use QUI;
-
 use QUI\Feed\Handler\RSS\Feed as RSS;
 use QUI\Feed\Handler\Atom\Feed as Atom;
 use QUI\Feed\Handler\GoogleSitemap\Feed as GoogleSitemap;
@@ -27,7 +26,7 @@ class Feed extends QUI\QDOM
      *
      * @var integer
      */
-    protected $_feedId;
+    protected $feedId;
 
     /**
      * Constructor
@@ -38,19 +37,19 @@ class Feed extends QUI\QDOM
      */
     public function __construct($feedId)
     {
-        $this->_feedId = (int)$feedId;
+        $this->feedId = (int)$feedId;
 
         $data = QUI::getDataBase()->fetch(array(
             'from' => QUI::getDBTableName(Manager::TABLE),
             'where' => array(
-                'id' => $this->_feedId
+                'id' => $this->feedId
             ),
             'limit' => 1
         ));
 
         if (!isset($data[0])) {
             throw new QUI\Exception(
-                'Feed not found'
+                QUI::getLocale()->get('quiqqer/feed', 'exception.feed.not.found')
             );
         }
 
@@ -64,7 +63,7 @@ class Feed extends QUI\QDOM
      */
     public function getId()
     {
-        return $this->_feedId;
+        return $this->feedId;
     }
 
     /**
@@ -94,7 +93,7 @@ class Feed extends QUI\QDOM
     public function getAttributes()
     {
         $attributes       = parent::getAttributes();
-        $attributes['id'] = $this->_feedId;
+        $attributes['id'] = $this->feedId;
 
         return $attributes;
     }

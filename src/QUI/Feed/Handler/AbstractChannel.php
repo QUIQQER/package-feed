@@ -23,14 +23,14 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @var string
      */
-    protected $_host = '';
+    protected $host = '';
 
     /**
      * RSS Channel items
      *
      * @var array
      */
-    protected $_items = array();
+    protected $items = array();
 
     /**
      * constructor
@@ -41,10 +41,10 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     {
         // defaults
         $this->setAttributes(array(
-            'title'       => '',
+            'title' => '',
             'description' => '',
-            'timestamp'   => '',
-            'language'    => ''
+            'timestamp' => '',
+            'language' => ''
         ));
     }
 
@@ -55,7 +55,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      */
     public function addItem(FeedItem $item)
     {
-        $this->_items[] = $item;
+        $this->items[] = $item;
     }
 
     /**
@@ -65,7 +65,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      */
     public function getItems()
     {
-        return $this->_items;
+        return $this->items;
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      */
     public function setHost($host)
     {
-        $this->_host = $host;
+        $this->host = $host;
     }
 
     /**
@@ -125,6 +125,6 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      */
     public function getHost()
     {
-        return $this->_host;
+        return $this->host;
     }
 }
