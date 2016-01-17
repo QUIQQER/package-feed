@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains \QUI\Feed\Events
+ * This file contains \QUI\Feed\EventHandler
  */
 
 namespace QUI\Feed;
