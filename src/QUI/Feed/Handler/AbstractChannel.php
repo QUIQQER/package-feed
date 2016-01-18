@@ -23,28 +23,28 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @var string
      */
-    protected $_host = '';
+    protected $host = '';
 
     /**
      * RSS Channel items
      *
-     * @var Array
+     * @var array
      */
-    protected $_items = array();
+    protected $items = array();
 
     /**
      * constructor
      *
-     * @param Array $params
+     * @param array $params
      */
     public function __construct($params = array())
     {
         // defaults
         $this->setAttributes(array(
-            'title'       => '',
+            'title' => '',
             'description' => '',
-            'timestamp'   => '',
-            'language'    => ''
+            'timestamp' => '',
+            'language' => ''
         ));
     }
 
@@ -55,23 +55,23 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      */
     public function addItem(FeedItem $item)
     {
-        $this->_items[] = $item;
+        $this->items[] = $item;
     }
 
     /**
      * Return the feed items
      *
-     * @return Array
+     * @return array
      */
     public function getItems()
     {
-        return $this->_items;
+        return $this->items;
     }
 
     /**
      * Set the title of the channel
      *
-     * @param String $title
+     * @param string $title
      */
     public function setTitle($title)
     {
@@ -81,7 +81,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Set the description of the channel
      *
-     * @param String $description
+     * @param string $description
      */
     public function setDescription($description)
     {
@@ -91,7 +91,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Set the unix timestamp
      *
-     * @param Integer $timestamp - Unix timestamp
+     * @param integer $timestamp - Unix timestamp
      */
     public function setDate($timestamp)
     {
@@ -101,7 +101,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Set the language of the channel
      *
-     * @param String $language
+     * @param string $language
      */
     public function setLanguage($language)
     {
@@ -111,20 +111,20 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Set the main host
      *
-     * @param String $host - eq http://www.myhost.com
+     * @param string $host - eq http://www.myhost.com
      */
     public function setHost($host)
     {
-        $this->_host = $host;
+        $this->host = $host;
     }
 
     /**
      * Return the main host
      *
-     * @return String
+     * @return string
      */
     public function getHost()
     {
-        return $this->_host;
+        return $this->host;
     }
 }

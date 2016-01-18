@@ -11,18 +11,16 @@
  *
  * @param string $feedIds - json array, array of feed ids
  */
-function package_quiqqer_feed_ajax_delete($feedIds)
-{
-    $FeedManager = new \QUI\Feed\Manager();
-    $feedIds = json_decode($feedIds, true);
-
-    foreach ($feedIds as $feedId) {
-        $FeedManager->deleteFeed($feedId);
-    }
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'package_quiqqer_feed_ajax_delete',
+    function ($feedIds) {
+        $FeedManager = new QUI\Feed\Manager();
+        $feedIds     = json_decode($feedIds, true);
+
+        foreach ($feedIds as $feedId) {
+            $FeedManager->deleteFeed($feedId);
+        }
+    },
     array('feedIds'),
     'Permission::checkAdminUser'
 );

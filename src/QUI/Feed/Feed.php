@@ -7,7 +7,6 @@
 namespace QUI\Feed;
 
 use QUI;
-
 use QUI\Feed\Handler\RSS\Feed as RSS;
 use QUI\Feed\Handler\Atom\Feed as Atom;
 use QUI\Feed\Handler\GoogleSitemap\Feed as GoogleSitemap;
@@ -25,32 +24,32 @@ class Feed extends QUI\QDOM
     /**
      * ID of the Feed
      *
-     * @var Integer
+     * @var integer
      */
-    protected $_feedId;
+    protected $feedId;
 
     /**
      * Constructor
      *
-     * @param Integer $feedId
+     * @param integer $feedId
      *
      * @throws QUI\Exception
      */
     public function __construct($feedId)
     {
-        $this->_feedId = (int)$feedId;
+        $this->feedId = (int)$feedId;
 
         $data = QUI::getDataBase()->fetch(array(
-            'from'  => QUI::getDBTableName(Manager::TABLE),
+            'from' => QUI::getDBTableName(Manager::TABLE),
             'where' => array(
-                'id' => $this->_feedId
+                'id' => $this->feedId
             ),
             'limit' => 1
         ));
 
         if (!isset($data[0])) {
             throw new QUI\Exception(
-                'Feed not found'
+                QUI::getLocale()->get('quiqqer/feed', 'exception.feed.not.found')
             );
         }
 
@@ -60,17 +59,17 @@ class Feed extends QUI\QDOM
     /**
      * Return the Feed-ID
      *
-     * @return Integer
+     * @return integer
      */
     public function getId()
     {
-        return $this->_feedId;
+        return $this->feedId;
     }
 
     /**
      * Return the feed tyoe
      *
-     * @return String (rss|atom|googleSitemap)
+     * @return string (rss|atom|googleSitemap)
      */
     public function getFeedType()
     {
@@ -89,12 +88,12 @@ class Feed extends QUI\QDOM
     /**
      * Return the feed attributes
      *
-     * @return Array
+     * @return array
      */
     public function getAttributes()
     {
         $attributes       = parent::getAttributes();
-        $attributes['id'] = $this->_feedId;
+        $attributes['id'] = $this->feedId;
 
         return $attributes;
     }
@@ -120,12 +119,12 @@ class Feed extends QUI\QDOM
         }
 
         QUI::getDataBase()->update($table, array(
-            'project'         => $this->getAttribute('project'),
-            'lang'            => $this->getAttribute('lang'),
-            'feedtype'        => $this->getFeedType(),
-            'feedsites'       => $this->getAttribute('feedsites'),
-            'feedlimit'       => $feedlimit ? $feedlimit : '',
-            'feedName'        => $feedName,
+            'project' => $this->getAttribute('project'),
+            'lang' => $this->getAttribute('lang'),
+            'feedtype' => $this->getFeedType(),
+            'feedsites' => $this->getAttribute('feedsites'),
+            'feedlimit' => $feedlimit ? $feedlimit : '',
+            'feedName' => $feedName,
             'feedDescription' => $feedDescription
         ), array(
             'id' => $this->getId()
@@ -138,7 +137,7 @@ class Feed extends QUI\QDOM
     /**
      * Output the feed as XML
      *
-     * @return String
+     * @return string
      */
     public function output()
     {
@@ -180,8 +179,10 @@ class Feed extends QUI\QDOM
         $Channel->setHost($projectHost . URL_DIR);
 
         $Channel->setAttribute('link', $feedUrl);
-        $Channel->setAttribute('description',
-            $this->getAttribute('feedDescription'));
+        $Channel->setAttribute(
+            'description',
+            $this->getAttribute('feedDescription')
+        );
         $Channel->setAttribute('title', $this->getAttribute('feedName'));
         $Channel->setDate(time());
 
@@ -223,9 +224,9 @@ class Feed extends QUI\QDOM
                     $whereParts[] = " id = {$_id} ";
 
                     $wherePrepared[] = array(
-                        'type'  => \PDO::PARAM_INT,
+                        'type' => \PDO::PARAM_INT,
                         'value' => $param,
-                        'name'  => $_id
+                        'name' => $_id
                     );
 
                     $idCount++;
@@ -236,9 +237,9 @@ class Feed extends QUI\QDOM
 
                 $whereParts[]    = " type LIKE {$_id} ";
                 $wherePrepared[] = array(
-                    'type'  => \PDO::PARAM_STR,
+                    'type' => \PDO::PARAM_STR,
                     'value' => $param,
-                    'name'  => $_id
+                    'name' => $_id
                 );
 
                 $strCount++;
@@ -295,12 +296,12 @@ class Feed extends QUI\QDOM
                 }
 
                 $Item = $Channel->createItem(array(
-                    'title'       => $Site->getAttribute('title'),
+                    'title' => $Site->getAttribute('title'),
                     'description' => $Site->getAttribute('short'),
-                    'language'    => $Project->getLang(),
-                    'date'        => strtotime($date),
-                    'link'        => $projectHost . $Site->getUrlRewritten(),
-                    'permalink'   => $projectHost . $Site->getCanonical()
+                    'language' => $Project->getLang(),
+                    'date' => strtotime($date),
+                    'link' => $projectHost . $Site->getUrlRewritten(),
+                    'permalink' => $projectHost . $Site->getCanonical()
                 ));
 
                 // Image
@@ -314,7 +315,6 @@ class Feed extends QUI\QDOM
                 $Item->setImage($Image);
 
             } catch (QUI\Exception $Exception) {
-
             }
         }
 

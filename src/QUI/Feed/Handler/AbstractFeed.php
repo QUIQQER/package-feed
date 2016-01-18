@@ -23,7 +23,7 @@ abstract class AbstractFeed extends QDOM implements FeedInterface
      *
      * @var array
      */
-    protected $_channels = array();
+    protected $channels = array();
 
     /**
      * Add a channel to the feed
@@ -32,23 +32,23 @@ abstract class AbstractFeed extends QDOM implements FeedInterface
      */
     public function addChannel(ChannelInterface $Channel)
     {
-        $this->_channels[] = $Channel;
+        $this->channels[] = $Channel;
     }
 
     /**
      * Return the channels
      *
-     * @return Array
+     * @return array
      */
     public function getChannels()
     {
-        return $this->_channels;
+        return $this->channels;
     }
 
     /**
      * Return the XML of the feed
      *
-     * @return String
+     * @return string
      */
     public function create()
     {

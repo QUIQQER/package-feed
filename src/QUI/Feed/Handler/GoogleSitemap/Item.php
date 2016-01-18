@@ -1,10 +1,10 @@
 <?php
 
 /**
- * This file contains \QUI\Feed\Handler\Atom\Item
+ * This file contains \QUI\Feed\Handler\GoogleSitemap\Item
  */
 
-namespace QUI\Feed\Handler\Atom;
+namespace QUI\Feed\Handler\GoogleSitemap;
 
 use QUI\Feed\Handler\AbstractItem;
 

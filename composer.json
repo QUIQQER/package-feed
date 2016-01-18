@@ -22,8 +22,8 @@
     },
 
     "autoload": {
-        "psr-0" : {
-            "QUI" : "lib/"
+        "psr-4" : {
+            "QUI\\Feed\\" : "src/QUI/Feed/"
         }
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * This file contains \QUI\Feed\Handler\RSS\Item
+ * This file contains \QUI\Feed\Handler\Atom\Item
  */
 
-namespace QUI\Feed\Handler\RSS;
+namespace QUI\Feed\Handler\Atom;
 
 use QUI\Feed\Handler\AbstractItem;
 

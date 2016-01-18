@@ -19,28 +19,28 @@ interface FeedItem
     /**
      * Set the title of the feed item
      *
-     * @param String $title
+     * @param string $title
      */
     public function setTitle($title);
 
     /**
      * Set the description of the feed item
      *
-     * @param String $description
+     * @param string $description
      */
     public function setDescription($description);
 
     /**
      * Set the unix timestamp
      *
-     * @param Integer $timestamp - Unix timestamp
+     * @param integer $timestamp - Unix timestamp
      */
     public function setDate($timestamp);
 
     /**
      * Set the link of the feed item
      *
-     * @param String $link
+     * @param string $link
      */
     public function setLink($link);
 
@@ -48,14 +48,14 @@ interface FeedItem
      * Set the permalink
      * RSS = GUID
      *
-     * @param String $link
+     * @param string $link
      */
     public function setPermaLink($link);
 
     /**
      * Set the language of the feed item
      *
-     * @param String $language
+     * @param string $language
      */
     public function setLanguage($language);
 

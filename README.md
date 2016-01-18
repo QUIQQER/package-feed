@@ -2,7 +2,7 @@
 QUIQQER Feeds
 ========
 
-Packetname:
+Paketname:
 
     quiqqer/feed
 

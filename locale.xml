@@ -34,7 +34,10 @@
     </groups>
 
     <groups name="quiqqer/feed" datatype="php">
-
+        <locale name="exception.feed.not.found">
+            <de><![CDATA[Feed wurde nicht gefunden]]></de>
+            <en><![CDATA[Feed not found]]></en>
+        </locale>
     </groups>
 
 </locales>
