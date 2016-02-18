@@ -2,7 +2,7 @@
 <menu>
     <item parent="/apps/"
           name="feeds"
-          icon="icon-rss"
+          icon="fa fa-rss"
           require="package/quiqqer/feed/bin/Manager"
     >
         Feed Manager
