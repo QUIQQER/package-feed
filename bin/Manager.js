@@ -237,6 +237,7 @@ define('package/quiqqer/feed/bin/Manager', [
 
             var self = this;
 
+            // #locale
             new QUIConfirm({
                 title      : 'Feeds löschen',
                 icon       : 'fa fa-trash',
