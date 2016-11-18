@@ -6,11 +6,11 @@
             <field type="bigint( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY">id</field>
             <field type="varchar(255)">project</field>
             <field type="varchar(2)">lang</field>
-            <field type="text">feedsites</field>
-            <field type="varchar(255)">feedtype</field>
-            <field type="varchar(255)">feedName</field>
-            <field type="varchar(255)">feedDescription</field>
-            <field type="int(100)">feedlimit</field>
+            <field type="text NULL">feedsites</field>
+            <field type="varchar(255) NULL">feedtype</field>
+            <field type="varchar(255) NULL">feedName</field>
+            <field type="varchar(255) NULL">feedDescription</field>
+            <field type="int(100) NULL">feedlimit</field>
         </table>
     </global>
 
