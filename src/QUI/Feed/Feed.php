@@ -294,7 +294,20 @@ class Feed extends QUI\QDOM
                 if ($date == '0000-00-00 00:00:00') {
                     $date = $Site->getAttribute('c_date');
                 }
-
+                
+                
+                // Workaround bug  $Site->getCanonical() come with protocol
+                $link = $Site->getUrlRewritten();
+                $permalink = $Site->getCanonical();
+                
+                if (strpos($link, 'https:') !== false || strpos($link, 'http:') !== false) {
+                    $link =  $projectHost . $Site->getUrlRewritten();
+                }
+                
+                if (strpos($permalink, 'https:') !== false || strpos($permalink, 'http:') !== false) {
+                    $link =  $projectHost . $Site->getCanonical();
+                }
+                
                 $Item = $Channel->createItem(array(
                     'title' => $Site->getAttribute('title'),
                     'description' => $Site->getAttribute('short'),
