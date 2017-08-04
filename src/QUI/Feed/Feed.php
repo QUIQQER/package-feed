@@ -296,18 +296,20 @@ class Feed extends QUI\QDOM
                 }
                 
                 
-                // Workaround bug  $Site->getCanonical() come with protocol
+              // Workaround bug  $Site->getCanonical() come with protocol
                 $link = $Site->getUrlRewritten();
                 $permalink = $Site->getCanonical();
-                
-                if (strpos($link, 'https:') !== false || strpos($link, 'http:') !== false) {
+
+
+
+                if (strpos($link, 'https:') !== false && strpos($link, 'http:') !== false) {
                     $link =  $projectHost . $Site->getUrlRewritten();
                 }
-                
-                if (strpos($permalink, 'https:') !== false || strpos($permalink, 'http:') !== false) {
+                    
+                if (strpos($permalink, 'https:') !== false && strpos($permalink, 'http:') !== false) {
                     $permalink =  $projectHost . $Site->getCanonical();
                 }
-                
+                 
                 $Item = $Channel->createItem(array(
                     'title' => $Site->getAttribute('title'),
                     'description' => $Site->getAttribute('short'),
@@ -316,6 +318,8 @@ class Feed extends QUI\QDOM
                     'link' => $link,
                     'permalink' => $permalink
                 ));
+
+
 
                 // Image
                 $image = $Site->getAttribute('image_site');
