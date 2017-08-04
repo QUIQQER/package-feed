@@ -305,7 +305,7 @@ class Feed extends QUI\QDOM
                 }
                 
                 if (strpos($permalink, 'https:') !== false || strpos($permalink, 'http:') !== false) {
-                    $link =  $projectHost . $Site->getCanonical();
+                    $permalink =  $projectHost . $Site->getCanonical();
                 }
                 
                 $Item = $Channel->createItem(array(
@@ -313,8 +313,8 @@ class Feed extends QUI\QDOM
                     'description' => $Site->getAttribute('short'),
                     'language' => $Project->getLang(),
                     'date' => strtotime($date),
-                    'link' => $projectHost . $Site->getUrlRewritten(),
-                    'permalink' => $projectHost . $Site->getCanonical()
+                    'link' => $link,
+                    'permalink' => $permalink
                 ));
 
                 // Image
