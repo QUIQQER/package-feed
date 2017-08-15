@@ -65,6 +65,7 @@ class Manager
      */
     public function deleteFeed($feedId)
     {
+        
         try {
             $feedId = (int)$feedId;
 

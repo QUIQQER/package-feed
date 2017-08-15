@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiqqer>
+    <bricks>
+        
+        <brick control="\QUI\Feed\Bricks\Controls\FeedList">
+            <title>
+                <locale group="quiqqer/feed" var="brick.feedlist.title"/>
+            </title>
+            <description>
+                <locale group="quiqqer/feed" var="brick.feedlist.desc"/>
+            </description>
+
+
+            <settings>
+                <setting name="layout" type="select">
+                    <locale group="quiqqer/feed" var="feedlist.setting.layout"/>
+                    <option value="list">
+                        <locale group="quiqqer/feed" var="feedlist.setting.layout.list"/>
+                    </option>
+                    <option value="icons">
+                        <locale group="quiqqer/feed" var="feedlist.setting.layout.icons"/>
+                    </option>
+                </setting>
+                <setting name="newwindow" type="checkbox">
+                    <locale group="quiqqer/feed" var="feedlist.setting.newwinwdow"/>
+                </setting>
+                <setting name="limit" type="number">
+                    <locale group="quiqqer/feed" var="feedlist.setting.limit"/>
+                </setting>
+            </settings>
+
+
+        </brick>
+    </bricks>
+</quiqqer>

@@ -120,6 +120,16 @@ define('package/quiqqer/feed/bin/Manager', [
                     dataIndex: 'feedlimit',
                     dataType : 'string',
                     width    : 80
+                }, {
+                    header   : QUILocale.get(lg, 'quiqqer.feed.pageSize'),
+                    dataIndex: 'pageSize',
+                    dataType : 'string',
+                    width    : 80
+                }, {
+                    header   : QUILocale.get(lg, 'quiqqer.feed.displayInHeader'),
+                    dataIndex: 'displayInHeader',
+                    dataType : 'string',
+                    width    : 80
                 }],
                 pagination           : true,
                 multipleSelection    : true,

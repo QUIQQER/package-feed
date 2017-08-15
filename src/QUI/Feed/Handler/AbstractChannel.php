@@ -11,7 +11,7 @@ use QUI\Feed\Interfaces\Channel as InterfaceChannel;
 use QUI\Feed\Interfaces\FeedItem;
 
 /**
- * Class AbstractFeed
+ * Class AbstractChannel
  *
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)

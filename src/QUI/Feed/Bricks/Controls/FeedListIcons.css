@@ -1,0 +1,8 @@
+.qui-feeds-brick-FeedList li{
+    float: left;  
+    margin: 0 3px;
+}
+
+.qui-feeds-brick-list-name{
+    display:none;
+}

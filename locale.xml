@@ -31,12 +31,96 @@
             <de><![CDATA[Feed bearbeiten]]></de>
             <en><![CDATA[Edit the feed]]></en>
         </locale>
+        <locale name="quiqqer.feed.feedSites">
+            <de><![CDATA[Welche Seiten sollen im Feed enthalten sein?]]></de>
+            <en><![CDATA[Which Sites should be included in the feed?]]></en>
+        </locale>
+        <locale name="quiqqer.feed.split">
+            <de><![CDATA[Soll der Feed ab einer bestimmten Größe aufgeteilt werden?]]></de>
+            <en><![CDATA[Should the feed be split with more than x entries?]]></en>
+        </locale>
+        <locale name="quiqqer.feed.pageSize">
+            <de><![CDATA[Seitengröße]]></de>
+            <en><![CDATA[Pagesize]]></en>
+        </locale>
+        <locale name="quiqqer.feed.publish">
+            <de><![CDATA[Soll der Feed auf der Seite publiziert werden?]]></de>
+            <en><![CDATA[Should the feed get published on the website?]]></en>
+        </locale>
+        <locale name="quiqqer.feed.image">
+            <de><![CDATA[Bild]]></de>
+            <en><![CDATA[Image]]></en>
+        </locale>
+        <locale name="quiqqer.feed.button.subscribe">
+            <de><![CDATA[Abonnieren]]></de>
+            <en><![CDATA[Subscribe]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/feed" datatype="php">
         <locale name="exception.feed.not.found">
             <de><![CDATA[Feed wurde nicht gefunden]]></de>
             <en><![CDATA[Feed not found]]></en>
+        </locale>
+    </groups>
+
+    <groups name="quiqqer/feed" datatype="php,js">
+        <locale name="package.titel">
+            <de><![CDATA[QUIQQER Feeds]]></de>
+            <en><![CDATA[QUIQQER Feeds]]></en>
+        </locale>
+        <locale name="package.description">
+            <de><![CDATA[Liefert eine Verwaltung fon Feeds für Ihre Website. (RSS,Atom & Google Sitemap)]]></de>
+            <en><![CDATA[Provides a management for feeds (RSS,Atom & Google Sitemaps)]]></en>
+        </locale>
+        <locale name="admin.types.feed.list">
+            <de><![CDATA[Feedliste]]></de>
+            <en><![CDATA[Feedlist]]></en>
+        </locale>
+
+        <locale name="brick.feedlist.title">
+            <de><![CDATA[Feed Liste]]></de>
+            <en><![CDATA[Feedlist]]></en>
+        </locale>
+        <locale name="brick.feedlist.desc">
+            <de><![CDATA[Eine Liste mit den vorhandenen Feeds]]></de>
+            <en><![CDATA[A list with the configured feeds]]></en>
+        </locale>
+        <locale name="brick.feedbar.title">
+            <de><![CDATA[Feed Leiste]]></de>
+            <en><![CDATA[Feedbar]]></en>
+        </locale>
+        <locale name="brick.feedbar.desc">
+            <de><![CDATA[Leiste mit Icons der vorhandenen Feeds]]></de>
+            <en><![CDATA[A bar with icons of the configured feeds]]></en>
+        </locale>
+        <locale name="feedlist.setting.newwinwdow">
+            <de><![CDATA[Links in neuem Fenster öffnen?]]></de>
+            <en><![CDATA[Open links in new window?]]></en>
+        </locale>
+        <locale name="feedlist.setting.limit">
+            <de><![CDATA[Maximale Einträge]]></de>
+            <en><![CDATA[Limit number of entries to]]></en>
+        </locale>
+        <locale name="feedlist.setting.layout">
+            <de><![CDATA[Layout]]></de>
+            <en><![CDATA[Layout]]></en>
+        </locale>
+        <locale name="feedlist.setting.layout.list">
+            <de><![CDATA[Liste]]></de>
+            <en><![CDATA[List]]></en>
+        </locale>
+        <locale name="feedlist.setting.layout.icons">
+            <de><![CDATA[Icons]]></de>
+            <en><![CDATA[Icons]]></en>
+        </locale>
+        <locale name="cron.feeds.build.name">
+            <de><![CDATA[Feeds cachen]]></de>
+            <en><![CDATA[Cache feeds]]></en>
+        </locale>
+        <locale name="cron.feeds.build.desc">
+            <de><![CDATA[Erzeugt alle Feeds, um sie in den Cache zu speichern]]></de>
+            <en><![CDATA[Generates all feeds and saves them into the cache]]></en>
         </locale>
     </groups>
 

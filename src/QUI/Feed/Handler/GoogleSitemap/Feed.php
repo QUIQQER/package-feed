@@ -17,6 +17,10 @@ use QUI\Feed\Utils\SimpleXML;
  */
 class Feed extends AbstractFeed
 {
+    protected $pageSize = 0;
+    protected $page = 0;
+
+
     /**
      * Creat a channel
      *
@@ -38,49 +42,117 @@ class Feed extends AbstractFeed
      */
     public function getXML()
     {
-        /*
-         @todo more thang 50k sites
-        <?xml version="1.0" encoding="UTF-8"?>
-        <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-            <sitemap>
-                <loc>http://www.pontikis.net/sitemap-main.xml</loc>
-            </sitemap>
-            <sitemap>
-                <loc>http://www.pontikis.net/blog/sitemap.php</loc>
-            </sitemap>
-            <sitemap>
-                <loc>http://www.pontikis.net/labs/sitemap-labs.xml</loc>
-            </sitemap>
-            <sitemap>
-                <loc>http://www.pontikis.net/bbs/sitemap.php</loc>
-            </sitemap>
-        </sitemapindex>
-        */
 
+        $Items = array();
+        /** @var Channel[] $Channels */
+        $Channels = $this->getChannels();
+
+        /** @var Channel $Channel */
+        foreach ($Channels as $Channel) {
+            $ChannelItems = $Channel->getItems();
+
+            $Items = array_merge($ChannelItems, $Items);
+        }
+        
+        
+        if ($this->pageSize == 0) {
+            return $this->createSitemapXML($Items);
+        }
+
+
+        // Pagination - index
+
+        // The link attribute ends on .rss - we need to strip that
+        $baseURL = $Channels[0]->getAttribute("link");
+        if (substr($baseURL, -4) == ".rss") {
+            $baseURL = substr($baseURL, 0, -4);
+        }
+
+        // Caclcualte the pages
+        $itemCount = count($Items);
+        $pageCount = ceil($itemCount / $this->pageSize);
+
+        // Return the sitemap index for page 0
+        if ($this->page == 0) {
+            return $this->createSitemapIndexXML($pageCount, $baseURL);
+        }
+
+        # Check if the site can exist
+        if ($this->page < 0 || $this->page > $pageCount) {
+            return $this->createSitemapXML(array());
+        }
+
+        // Pagination - page
+        $startIndex = ($this->page - 1) * $this->pageSize;
+       
+        $pageItems = array_slice($Items, $startIndex, $this->pageSize);
+
+        return $this->createSitemapXML($pageItems);
+
+    }
+
+
+    /**
+     * @param Item[] $items
+     *
+     * @return SimpleXML
+     */
+    protected function createSitemapXML($items)
+    {
         $XML = new SimpleXML(
             '<?xml version="1.0" encoding="UTF-8"?>
             <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'
         );
 
-        $channels = $this->getChannels();
+        foreach ($items as $Item) {
+            /* @var $Item Item */
+            $ItemXml = $XML->addChild('url');
 
-        foreach ($channels as $Channel) {
-            /* @var $Channel Channel */
-            $items = $Channel->getItems();
+            $ItemXml->addChild('loc', $Item->getAttribute('link'));
 
-            foreach ($items as $Item) {
-                /* @var $Item Item */
-                $ItemXml = $XML->addChild('url');
-
-                $ItemXml->addChild('loc', $Item->getAttribute('link'));
-
-                $ItemXml->addChild(
-                    'lastmod',
-                    date(\DateTime::ATOM, (int)$Item->getAttribute('date'))
-                );
-            }
+            $ItemXml->addChild(
+                'lastmod',
+                date(\DateTime::ATOM, (int)$Item->getAttribute('date'))
+            );
         }
 
         return $XML;
+    }
+
+    /**
+     * @param $pages
+     * @param $baseURL
+     *
+     * @return SimpleXML
+     */
+    protected function createSitemapIndexXML($pages, $baseURL)
+    {
+        $XML = new SimpleXML(
+            '<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'
+        );
+        
+        for ($i = 1; $i <= $pages; $i++) {
+            $sitemapURL = $baseURL . "-" . $i . ".xml";
+            $SitemapXML = $XML->addChild("sitemap");
+            $SitemapXML->addChild("loc", $sitemapURL);
+        }
+
+        return $XML;
+    }
+
+    /**
+     * @param $pageSize
+     */
+    public function setPageSize($pageSize)
+    {
+        $this->pageSize = $pageSize;
+    }
+
+    /**
+     * @param $page
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
     }
 }

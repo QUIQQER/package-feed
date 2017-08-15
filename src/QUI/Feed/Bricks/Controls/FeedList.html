@@ -1,0 +1,18 @@
+<ul>
+    {foreach $feeds as $feed}
+        <li>
+            <a href="{$feed['url']}"
+                    {if $layout=="icons"}
+                        title="{$feed['name']}"
+                    {else}
+                        title="{$feed['desc']}"
+                    {/if}
+
+                    {if $newwindow}target="_blank"{/if}
+            >
+                <span class="fa fa-rss"></span>
+                <span class="qui-feeds-brick-list-name">{$feed['name']}</span>
+            </a>
+        </li>
+    {/foreach}
+</ul>

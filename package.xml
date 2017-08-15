@@ -1,0 +1,42 @@
+<quiqqer>
+    <package>
+        <title>
+            <locale group="quiqqer/feed" var="package.title"/>
+        </title>
+
+        <description>
+            <locale group="quiqqer/feed" var="package.description"/>
+        </description>
+
+        <!-- Hauptbild -->
+        <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/quiqqer_logo.png"/>
+
+        <!-- Weitere Vorschaubilder -->
+        <!--<preview>-->
+        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/1.png"/>-->
+        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/2.png"/>-->
+        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/3.png"/>-->
+        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/4.png"/>-->
+        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/5.png"/>-->
+        <!--</preview>-->
+
+        <support>
+            <email>support@pcsg.de</email>
+            <issues>https://dev.quiqqer.com/quiqqer/package-feed/issues</issues>
+            <forum>https://community.quiqqer.com</forum>
+            <irc>irc://irc.freenode.org/composer</irc>
+            <source>https://dev.quiqqer.com/quiqqer/package-feed/tree/master</source>
+            <docs>https://doc.quiqqer.com/</docs>
+        </support>
+
+        <copyright>
+            <name>PCSG - Computer &amp; Internet Service OHG</name>
+            <license>GPL-3.0+</license>
+        </copyright>
+
+        <extra>
+            <displayInStore>1</displayInStore>
+        </extra>
+      
+    </package>
+</quiqqer>

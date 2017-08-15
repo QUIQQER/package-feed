@@ -11,7 +11,7 @@ use QUI\QDOM;
 use QUI\Feed\Interfaces\FeedItem as InterfaceItem;
 
 /**
- * Class AbstractFeed
+ * Class AbstractItem
  *
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)

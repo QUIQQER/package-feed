@@ -34,7 +34,7 @@ define('package/quiqqer/feed/bin/FeedWindow', [
 
             // defaults
             this.setAttributes({
-                maxHeight: 580,
+                maxHeight: 650,
                 maxWidth : 470,
                 feedId   : false,
                 icon     : 'fa fa-rss',
