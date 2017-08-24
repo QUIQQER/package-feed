@@ -65,7 +65,7 @@
     </groups>
 
     <groups name="quiqqer/feed" datatype="php,js">
-        <locale name="package.titel">
+        <locale name="package.title">
             <de><![CDATA[QUIQQER Feeds]]></de>
             <en><![CDATA[QUIQQER Feeds]]></en>
         </locale>
