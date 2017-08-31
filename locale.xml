@@ -70,8 +70,32 @@
             <en><![CDATA[QUIQQER Feeds]]></en>
         </locale>
         <locale name="package.description">
-            <de><![CDATA[Liefert eine Verwaltung fon Feeds für Ihre Website. (RSS,Atom & Google Sitemap)]]></de>
-            <en><![CDATA[Provides a management for feeds (RSS,Atom & Google Sitemaps)]]></en>
+            <de><![CDATA[Liefert eine Verwaltung fon Feeds für Ihre Website. (RSS,Atom & Google Sitemap)
+
+Unterstütze Features:
+* Feed Verwaltung: Anlegen, Löschen und Bearbeiten
+* RSS Feed
+* Atom Feed
+* Google Sitemap
+* Anlegen mehrerer Feeds mit Bild, Name und Beschreibung
+* Auswahl der enthaltenden Seiten anhand mehrer Filter
+* Anzeigen der erstellten Feeds auf ihrer Website
+* Integrieren ausgewählter Feeds in das <header>-Tag ihrer website
+
+Legen Sie im Handumdrehen einen RSS Feed für ihren Content an oder erstellen Sie zur leichten Indexierung ihrer Website eine Sitemap für Google und co.
+Dieses Plugin ermöglicht es kinderleicht Feeds zu konfigurieren, damit ihre Besucher immer auf dem Laufenden sind.
+]]></de>
+            <en><![CDATA[Provides a management for feeds (RSS,Atom & Google Sitemaps)
+Supported Features:
+* Feed management: Create, edit and delete
+* RSS Feed
+* Atom Feed
+* Google Sitemap
+* Create multiple feeds with name, description and image
+* Select pages included within feeds by multiple filters
+* Display your feeds on your website
+* Integrate your feeds in the <header>-tag of your website
+]]></en>
         </locale>
         <locale name="admin.types.feed.list">
             <de><![CDATA[Feedliste]]></de>
