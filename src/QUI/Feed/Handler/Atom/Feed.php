@@ -130,7 +130,7 @@ class Feed extends AbstractFeed
                 $EnclosureDom = $ItemXml->addChild('enclosure');
                 $EnclosureDom->addAttribute(
                     'url',
-                    $host.trim($Image->getUrl(true), '/')
+                    $host.trim($Image->getUrl(false), '/')
                 );
 
                 $EnclosureDom->addAttribute(
