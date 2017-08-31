@@ -1,0 +1,12 @@
+.qui-feeds-brick-list-name {
+    margin-left : 5px;
+}
+
+.qui-feeds-brick-list {
+    list-style : none;
+}
+
+.qui-feeds-brick-list a:hover {
+    font-weight     : 500;
+    text-decoration : none;
+}

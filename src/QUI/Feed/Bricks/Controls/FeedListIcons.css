@@ -6,3 +6,7 @@
 .qui-feeds-brick-list-name{
     display:none;
 }
+
+.brick-feedlist-icons-container a:hover {
+    text-decoration : none;
+}

@@ -31,7 +31,6 @@ class FeedList extends QUI\Control
         $Engine = QUI::getTemplateManager()->getEngine();
 
 
-        QUI\System\Log::writeRecursive("Layout: " . $this->getAttribute("layout"));
         if ($this->getAttribute("layout") == "icons") {
             $this->addCSSFile(
                 dirname(__FILE__) . '/FeedListIcons.css'
@@ -45,7 +44,13 @@ class FeedList extends QUI\Control
             'layout'    => $this->getAttribute("layout")
         ));
 
-        return $Engine->fetch(dirname(__FILE__) . '/FeedList.html');
+
+        $template = dirname(__FILE__) . '/FeedList.html';
+        if ($this->getAttribute("layout") == "icons") {
+            $template = dirname(__FILE__) . '/FeedListIcons.html';
+        }
+
+        return $Engine->fetch($template);
     }
 
     /**
@@ -99,7 +104,6 @@ class FeedList extends QUI\Control
                 "desc"   => $description,
                 "url"    => $url
             );
-
         }
 
 
