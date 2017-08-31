@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiqqer>
+
+        <settings>
+            <config>
+                <section name="images">
+                    <conf name="maxsize">
+                        <type><![CDATA[int]]></type>
+                        <defaultvalue>1000</defaultvalue>
+                    </conf>
+                </section>
+            </config>
+
+            <window>
+                <title>
+                    <locale group="quiqqer/feed" var="settings.feed.title"/>
+                </title>
+                <params>
+                    <icon>fa fa-rss</icon>
+                </params>
+
+                <categories>
+                    <category name="images">
+                        <text>
+                            <locale group="quiqqer/feed" var="settings.images.title"/>
+                        </text>
+                        <icon>
+                            fa fa-image
+                        </icon>
+
+                        <settings title="images" name="images">
+                            <title>
+                                <locale group="quiqqer/feed" var="settings.images.title"/>
+                            </title>
+
+                            <input conf="images.maxsize" type="number">
+                                <text>
+                                    <locale group="quiqqer/feed" var="settings.images.maxsize.title"/>
+                                </text>
+                                <desc>
+                                    <locale group="quiqqer/feed" var="settings.images.maxsize.desc"/>
+                                </desc>
+                            </input>
+                        </settings>
+                    </category>
+                </categories>
+
+            </window>
+        </settings>
+    
+</quiqqer>

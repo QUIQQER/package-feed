@@ -123,6 +123,10 @@ class Feed extends AbstractFeed
                     continue;
                 }
 
+                $maxSize = \QUI::getPackage("quiqqer/feed")->getConfig()->get("images", "maxsize");
+                $Image->setAttribute("maxheight", $maxSize);
+                $Image->setAttribute("maxwidth", $maxSize);
+                
                 $EnclosureDom = $ItemXml->addChild('enclosure');
                 $EnclosureDom->addAttribute(
                     'url',

@@ -74,10 +74,10 @@ class Feed extends AbstractFeed
             );
 
             $ChannelXml->addChild('description')
-                       ->addCData($Channel->getAttribute('description'));
+                ->addCData($Channel->getAttribute('description'));
 
             $ChannelXml->addChild('title')
-                       ->addCData($Channel->getAttribute('title'));
+                ->addCData($Channel->getAttribute('title'));
 
 
             // channel feed items
@@ -96,10 +96,10 @@ class Feed extends AbstractFeed
                 $ItemXml->addChild('guid', $Item->getAttribute('permalink'));
 
                 $ItemXml->addChild('title')
-                        ->addCData($Item->getAttribute('title'));
+                    ->addCData($Item->getAttribute('title'));
 
                 $ItemXml->addChild('description')
-                        ->addCData($Item->getAttribute('description'));
+                    ->addCData($Item->getAttribute('description'));
 
                 /* @var $Image \QUI\Projects\Media\Image */
                 $Image = $Item->getImage();
@@ -112,10 +112,14 @@ class Feed extends AbstractFeed
                     continue;
                 }
 
+                $maxSize = \QUI::getPackage("quiqqer/feed")->getConfig()->get("images", "maxsize");
+                $Image->setAttribute("maxheight", $maxSize);
+                $Image->setAttribute("maxwidth", $maxSize);
+
                 $EnclosureDom = $ItemXml->addChild('enclosure');
                 $EnclosureDom->addAttribute(
                     'url',
-                    $host.trim($Image->getUrl(true), '/')
+                    $host . trim($Image->getUrl(false), '/')
                 );
 
                 $EnclosureDom->addAttribute(

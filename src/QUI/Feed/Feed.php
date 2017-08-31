@@ -225,7 +225,6 @@ class Feed extends QUI\QDOM
 
                 // Image
                 $image = $Site->getAttribute('image_site');
-
                 if (!$image) {
                     continue;
                 }

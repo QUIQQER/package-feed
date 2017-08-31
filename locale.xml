@@ -146,6 +146,23 @@ Supported Features:
             <de><![CDATA[Erzeugt alle Feeds, um sie in den Cache zu speichern]]></de>
             <en><![CDATA[Generates all feeds and saves them into the cache]]></en>
         </locale>
+
+        <locale name="settings.images.title">
+            <de><![CDATA[Bilder]]></de>
+            <en><![CDATA[Images]]></en>
+        </locale>
+        <locale name="settings.images.maxsize.title">
+            <de><![CDATA[Max. Größe]]></de>
+            <en><![CDATA[Max. size]]></en>
+        </locale>
+        <locale name="settings.images.maxsize.desc">
+            <de><![CDATA[Die maximale Ausdehnung von Bildern im Feed.]]></de>
+            <en><![CDATA[The maximum dimensions of images within the feed.]]></en>
+        </locale>
+        <locale name="settings.feed.title">
+            <de><![CDATA[Feed]]></de>
+            <en><![CDATA[Feed]]></en>
+        </locale>
     </groups>
 
 </locales>
