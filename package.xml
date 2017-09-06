@@ -23,11 +23,9 @@
         <support>
             <email>support@pcsg.de</email>
             <forum>https://community.quiqqer.com</forum>
-            <irc>irc://irc.freenode.org/composer</irc>
             <source>https://dev.quiqqer.com/quiqqer/package-feed</source>
             <issues>https://dev.quiqqer.com/quiqqer/package-feed/issues</issues>
             <wiki>https://dev.quiqqer.com/quiqqer/package-feed/wikis/home</wiki>>
-            <docs>https://doc.quiqqer.com/</docs>
         </support>
 
         <copyright>
