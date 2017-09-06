@@ -9,7 +9,7 @@
         </description>
 
         <!-- Hauptbild -->
-        <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/quiqqer_logo.png"/>
+        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/quiqqer_logo.png"/>-->
 
         <!-- Weitere Vorschaubilder -->
         <!--<preview>-->
@@ -22,15 +22,16 @@
 
         <support>
             <email>support@pcsg.de</email>
-            <issues>https://dev.quiqqer.com/quiqqer/package-feed/issues</issues>
             <forum>https://community.quiqqer.com</forum>
             <irc>irc://irc.freenode.org/composer</irc>
-            <source>https://dev.quiqqer.com/quiqqer/package-feed/tree/master</source>
+            <source>https://dev.quiqqer.com/quiqqer/package-feed</source>
+            <issues>https://dev.quiqqer.com/quiqqer/package-feed/issues</issues>
+            <wiki>https://dev.quiqqer.com/quiqqer/package-feed/wikis/home</wiki>>
             <docs>https://doc.quiqqer.com/</docs>
         </support>
 
         <copyright>
-            <name>PCSG - Computer &amp; Internet Service OHG</name>
+            <name><![CDATA[PCSG - Computer &amp; Internet Service OHG]]></name>
             <license>GPL-3.0+</license>
         </copyright>
 

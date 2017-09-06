@@ -1,7 +1,7 @@
 {
   "name": "quiqqer/feed",
   "type": "quiqqer-module",
-  "description": "QUIQQER Feed Plugin",
+  "description": "Create different feeds for your project and / or website. The Feed Modul allows you to manage different types of feeds and multiple feeds, such as RSS, Atom, or Google Sitemap",
   "version": "dev-dev",
   "authors": [
     {
