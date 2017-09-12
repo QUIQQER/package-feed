@@ -163,6 +163,56 @@ Supported Features:
             <de><![CDATA[Feed]]></de>
             <en><![CDATA[Feed]]></en>
         </locale>
+        <locale name="settings.feeds.title">
+            <de><![CDATA[Feeds]]></de>
+            <en><![CDATA[Feeds]]></en>
+        </locale>
+        <locale name="settings.feeds.common.title">
+            <de><![CDATA[Allgemein]]></de>
+            <en><![CDATA[Common]]></en>
+        </locale>
+        <locale name="settings.feeds.common.user.title">
+            <de><![CDATA[Author: Benutzer]]></de>
+            <en><![CDATA[Author: User]]></en>
+        </locale>
+        <locale name="settings.feeds.common.user.desc">
+            <de>
+                <![CDATA[Bestimmt ob der Benutzer, der die Seite erstellt als Auzhor verwendet werden soll oder der Standard Author]]></de>
+            <en><![CDATA[Defines if the creating user or the default author should be displayd as author.]]></en>
+        </locale>
+        <locale name="settings.feeds.common.user.option.custom">
+            <de><![CDATA[Benutzerdefinierter Author]]></de>
+            <en><![CDATA[Custom author]]></en>
+        </locale>
+        <locale name="settings.feeds.common.user.option.create">
+            <de><![CDATA[Erstellender user]]></de>
+            <en><![CDATA[Creating user]]></en>
+        </locale>
+        <locale name="settings.feeds.common.author.title">
+            <de><![CDATA[Standard Author]]></de>
+            <en><![CDATA[Default author]]></en>
+        </locale>
+        <locale name="settings.feeds.common.author.desc">
+            <de>
+                <![CDATA[Dieser Wert wird als Author verwendet, falls kein Author anhand des Benutzers ermittelt werden konnte.]]></de>
+            <en><![CDATA[This value will be used as author if no author could be detected by user.]]></en>
+        </locale>
+
+        <locale name="settings.feeds.rss.title">
+            <de><![CDATA[RSS Einstellungen]]></de>
+            <en><![CDATA[RSS Settings]]></en>
+        </locale>
+
+        <locale name="settings.feeds.rss.http.title">
+            <de><![CDATA[HTTP erzwingen]]></de>
+            <en><![CDATA[Force http]]></en>
+        </locale>
+        <locale name="settings.feeds.rss.http.desc">
+            <de>
+                <![CDATA[Erzwingt alle Links das http:// Protokoll zu verwenden. Gemäß Spezifikation sind https:// Links nicht vorgesehen und Validatoren können bei Ihrer Verwendung Warnungen ausgeben. Die meisten Reader können jedoch Problemlos mit https:// Links umgehen.]]></de>
+            <en>
+                <![CDATA[Forces all links to use the http protokoll. According to the rss specification https links are not valid. Therefore some validators may throw an error while most readers can handle https links without problems.]]></en>
+        </locale>
     </groups>
 
 </locales>

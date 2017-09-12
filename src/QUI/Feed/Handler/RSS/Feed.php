@@ -61,11 +61,11 @@ class Feed extends AbstractFeed
                 'http://www.w3.org/2005/Atom'
             );
 
-            $Atomlink->addAttribute('href', $Channel->getAttribute('link'));
+            $Atomlink->addAttribute('href', $this->fixLinkProtocoll($Channel->getAttribute('link')));
             $Atomlink->addAttribute('rel', "self");
             $Atomlink->addAttribute('type', "application/rss+xml");
 
-            $ChannelXml->addChild('link', $Channel->getAttribute('link'));
+            $ChannelXml->addChild('link', $this->fixLinkProtocoll($Channel->getAttribute('link')));
             $ChannelXml->addChild('lastBuildDate', $date);
 
             $ChannelXml->addChild(
@@ -91,9 +91,9 @@ class Feed extends AbstractFeed
                 );
 
                 $ItemXml = $ChannelXml->addChild('item');
-                $ItemXml->addChild('link', $Item->getAttribute('link'));
+                $ItemXml->addChild('link', $this->fixLinkProtocoll($Item->getAttribute('link')));
                 $ItemXml->addChild('pubDate', $date);
-                $ItemXml->addChild('guid', $Item->getAttribute('permalink'));
+                $ItemXml->addChild('guid', $this->fixLinkProtocoll($Item->getAttribute('permalink')));
 
                 $ItemXml->addChild('title')
                     ->addCData($Item->getAttribute('title'));
@@ -119,7 +119,7 @@ class Feed extends AbstractFeed
                 $EnclosureDom = $ItemXml->addChild('enclosure');
                 $EnclosureDom->addAttribute(
                     'url',
-                    $host . trim($Image->getUrl(false), '/')
+                    $this->fixLinkProtocoll($host . trim($Image->getUrl(false), '/'))
                 );
 
                 $EnclosureDom->addAttribute(
@@ -135,5 +135,23 @@ class Feed extends AbstractFeed
         }
 
         return $XML;
+    }
+
+    /**
+     * Removes the https protocoll if neccessary
+     *
+     * @param $url
+     *
+     * @return mixed
+     */
+    protected function fixLinkProtocoll($url)
+    {
+        $forceHttp = \QUI::getPackage("quiqqer/feed")->getConfig()->get("rss", "http");
+
+        if (!$forceHttp) {
+            return $url;
+        }
+
+        return str_replace("https://", "http://", $url);
     }
 }

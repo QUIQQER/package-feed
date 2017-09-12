@@ -213,6 +213,7 @@ class Feed extends QUI\QDOM
                     $permalink = $projectHost . $Site->getCanonical();
                 }
 
+                /** @var QUI\Feed\Handler\AbstractItem $Item */
                 $Item = $Channel->createItem(array(
                     'title'       => $Site->getAttribute('title'),
                     'description' => $Site->getAttribute('short'),
@@ -223,6 +224,24 @@ class Feed extends QUI\QDOM
                 ));
 
 
+                
+                
+                try {
+                    //Check if the create user should be picked
+                    if (QUI::getPackage("quiqqer/feed")->getConfig()->get("common", "user") != "c_user") {
+                        throw new QUI\Exception("Invalid user field choice!");
+                    }
+                    
+                    $User = QUI::getUsers()->get($Site->getAttribute("c_user"));
+                    $Item->setAttribute("author", $User->getName());
+                } catch (\Exception $Exception) {
+                    $Item->setAttribute(
+                        "author",
+                        QUI::getPackage("quiqqer/feed")->getConfig()->get("common", "author")
+                    );
+                }
+
+
                 // Image
                 $image = $Site->getAttribute('image_site');
                 if (!$image) {
@@ -231,7 +250,6 @@ class Feed extends QUI\QDOM
 
                 $Image = QUI\Projects\Media\Utils::getImageByUrl($image);
                 $Item->setImage($Image);
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -290,7 +308,7 @@ class Feed extends QUI\QDOM
 
         $childPageIDs = array();
         foreach ($feedSites as $needle) {
-            // 
+            //
             if (is_numeric($needle)) {
                 $_id = ':id' . $idCount;
 
@@ -310,7 +328,7 @@ class Feed extends QUI\QDOM
 
             if (preg_match("~p[0-9]+~i", $needle)) {
                 $parentSiteID = (int)substr($needle, 1);
-                $childPageIDs          = array_merge($childPageIDs, $Project->get($parentSiteID)->getChildrenIdsRecursive());
+                $childPageIDs = array_merge($childPageIDs, $Project->get($parentSiteID)->getChildrenIdsRecursive());
                 continue;
             }
 
@@ -364,7 +382,7 @@ class Feed extends QUI\QDOM
                 WHERE active = 1 AND ({$where})
                 ORDER BY release_from DESC, c_date DESC
             ";
-        
+
 
         if ($feedLimit > 0) {
             $query .= "LIMIT :limit";
@@ -411,6 +429,4 @@ class Feed extends QUI\QDOM
 
         return ceil($totalItems / $pageSize);
     }
-
-
 }
