@@ -70,6 +70,10 @@
             <en><![CDATA[QUIQQER Feeds]]></en>
         </locale>
         <locale name="package.description">
+            <de><![CDATA[Legen Sie verschieden Feeds für Ihr Projekt und oder Webseite an. Das Feed Modul ermöglicht es Ihnen verschiedene Feed Arten und mehrere Feeds zu verwalten, wie zum Beispiel RSS, Atom oder eine Google Sitemap.]]></de>
+            <en><![CDATA[Create different feeds for your project and / or website. The Feed Modul allows you to manage different types of feeds and multiple feeds, such as RSS, Atom, or Google Sitemap]]></en>
+        </locale>
+        <locale name="package.description.long">
             <de><![CDATA[Liefert eine Verwaltung fon Feeds für Ihre Website. (RSS,Atom & Google Sitemap)
 
 Unterstütze Features:
