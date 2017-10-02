@@ -1,0 +1,11 @@
+<div class="brick-feedlist-icons-container">
+    {foreach $feeds as $feed}
+        <a href="{$feed['url']}"
+           title="{$feed['name']}"
+           {if $newwindow}target="_blank"{/if}
+        >
+            <span class="fa fa-rss"></span>
+        </a>
+    {/foreach}
+</div>
+

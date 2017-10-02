@@ -1,0 +1,32 @@
+<div class="qui-feed-feedList-default-entry-image grid-40 grid-container">
+    <a href="{{url}}">
+        {{^img}}
+        <img class="quiqqer-empty-image"
+             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABc0lEQVR4XqWTMUsDQRCFJyjYSFKkSS9XCGKTCEFQNglip1VSpFG0sLGxSSeeaCEp7K2sbOJPkER7EwvBKmid5porBCMyzpvlhjNoYwJf3sybmb3NhMswM03zmVU52ICEwolQER7+6HfCvXCq/Vd3RLjB134lFJg7FywKHPw08CZ6Qvha/NhZ0wLfnKlKDuwQxL/12AHvzbITmK+PgTYgV98DL6lbDbO6xLhetN+XrdVIP/k8xZ2OhtlGgyiKNI67XUr2lL0d+BtEW0uJOoH58hDgqcByqQGXntGv0WYATWInMJ/v/UA8gOH0jP8bP8djiGJxLkc0Gvm4UDB/sk9PeVstJOoEf+2j7TTqSQ24ZMaWOFzJ2xKDVouo10NOw35fNSiVVKlapWG7bUsMHiN/g5fleSf4J++uK8jV95gvPVazJT4vzvnhZlmRHNjCEAtWRy9yO+ApmAkF5nqRRYGTmNLAm+gJbQeDhcy/XqbiK9PUr/M3T3GnVEK0IY4AAAAASUVORK5CYII=">
+        {{/img}}
+        {{#img}}
+        <img src="{{img}}">
+        {{/img}}
+    </a>
+</div>
+<div class="qui-feed-feedList-default-entry-content grid-60 grid-container ">
+    <header>
+        <h1>
+            <a href="{{url}}"
+               class="qui-feed-feedList-default-entry-content-headerLink"
+            >
+                <span class="fa fa-rss"></span>
+                {{name}}
+            </a>
+
+        </h1>
+    </header>
+    <div class="qui-feed-feedList-default-entry-content-short">
+        {{desc}}
+    </div>
+    <div class="qui-feed-feedList-default-entry-content-footer">
+        <a href="{{url}}" class="button qui-feed-feedList-default-entry-content-footer-link">
+            {{locales.subscribe}}
+        </a>
+    </div>
+</div>

@@ -34,10 +34,10 @@ define('package/quiqqer/feed/bin/FeedWindow', [
 
             // defaults
             this.setAttributes({
-                maxHeight: 580,
+                maxHeight: 650,
                 maxWidth : 470,
                 feedId   : false,
-                icon     : 'icon-rss',
+                icon     : 'fa fa-rss',
                 autoclose: false,
                 title    : Locale.get('quiqqer/feed', 'window.title.feed.edit'),
                 texticon : false

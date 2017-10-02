@@ -31,12 +31,191 @@
             <de><![CDATA[Feed bearbeiten]]></de>
             <en><![CDATA[Edit the feed]]></en>
         </locale>
+        <locale name="quiqqer.feed.feedSites">
+            <de><![CDATA[Welche Seiten sollen im Feed enthalten sein?]]></de>
+            <en><![CDATA[Which Sites should be included in the feed?]]></en>
+        </locale>
+        <locale name="quiqqer.feed.split">
+            <de><![CDATA[Soll der Feed ab einer bestimmten Größe aufgeteilt werden?]]></de>
+            <en><![CDATA[Should the feed be split with more than x entries?]]></en>
+        </locale>
+        <locale name="quiqqer.feed.pageSize">
+            <de><![CDATA[Seitengröße]]></de>
+            <en><![CDATA[Pagesize]]></en>
+        </locale>
+        <locale name="quiqqer.feed.publish">
+            <de><![CDATA[Soll der Feed auf der Seite publiziert werden?]]></de>
+            <en><![CDATA[Should the feed get published on the website?]]></en>
+        </locale>
+        <locale name="quiqqer.feed.image">
+            <de><![CDATA[Bild]]></de>
+            <en><![CDATA[Image]]></en>
+        </locale>
+        <locale name="quiqqer.feed.button.subscribe">
+            <de><![CDATA[Abonnieren]]></de>
+            <en><![CDATA[Subscribe]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/feed" datatype="php">
         <locale name="exception.feed.not.found">
             <de><![CDATA[Feed wurde nicht gefunden]]></de>
             <en><![CDATA[Feed not found]]></en>
+        </locale>
+    </groups>
+
+    <groups name="quiqqer/feed" datatype="php,js">
+        <locale name="package.title">
+            <de><![CDATA[QUIQQER Feeds]]></de>
+            <en><![CDATA[QUIQQER Feeds]]></en>
+        </locale>
+        <locale name="package.description">
+            <de><![CDATA[Legen Sie verschieden Feeds für Ihr Projekt und oder Webseite an. Das Feed Modul ermöglicht es Ihnen verschiedene Feed Arten und mehrere Feeds zu verwalten, wie zum Beispiel RSS, Atom oder eine Google Sitemap.]]></de>
+            <en><![CDATA[Create different feeds for your project and / or website. The Feed Modul allows you to manage different types of feeds and multiple feeds, such as RSS, Atom, or Google Sitemap]]></en>
+        </locale>
+        <locale name="package.description.long">
+            <de><![CDATA[Liefert eine Verwaltung fon Feeds für Ihre Website. (RSS,Atom & Google Sitemap)
+
+Unterstütze Features:
+* Feed Verwaltung: Anlegen, Löschen und Bearbeiten
+* RSS Feed
+* Atom Feed
+* Google Sitemap
+* Anlegen mehrerer Feeds mit Bild, Name und Beschreibung
+* Auswahl der enthaltenden Seiten anhand mehrer Filter
+* Anzeigen der erstellten Feeds auf ihrer Website
+* Integrieren ausgewählter Feeds in das <header>-Tag ihrer website
+
+Legen Sie im Handumdrehen einen RSS Feed für ihren Content an oder erstellen Sie zur leichten Indexierung ihrer Website eine Sitemap für Google und co.
+Dieses Plugin ermöglicht es kinderleicht Feeds zu konfigurieren, damit ihre Besucher immer auf dem Laufenden sind.
+]]></de>
+            <en><![CDATA[Provides a management for feeds (RSS,Atom & Google Sitemaps)
+Supported Features:
+* Feed management: Create, edit and delete
+* RSS Feed
+* Atom Feed
+* Google Sitemap
+* Create multiple feeds with name, description and image
+* Select pages included within feeds by multiple filters
+* Display your feeds on your website
+* Integrate your feeds in the <header>-tag of your website
+]]></en>
+        </locale>
+        <locale name="admin.types.feed.list">
+            <de><![CDATA[Feedliste]]></de>
+            <en><![CDATA[Feedlist]]></en>
+        </locale>
+
+        <locale name="brick.feedlist.title">
+            <de><![CDATA[Feed Liste]]></de>
+            <en><![CDATA[Feedlist]]></en>
+        </locale>
+        <locale name="brick.feedlist.desc">
+            <de><![CDATA[Eine Liste mit den vorhandenen Feeds]]></de>
+            <en><![CDATA[A list with the configured feeds]]></en>
+        </locale>
+        <locale name="brick.feedbar.title">
+            <de><![CDATA[Feed Leiste]]></de>
+            <en><![CDATA[Feedbar]]></en>
+        </locale>
+        <locale name="brick.feedbar.desc">
+            <de><![CDATA[Leiste mit Icons der vorhandenen Feeds]]></de>
+            <en><![CDATA[A bar with icons of the configured feeds]]></en>
+        </locale>
+        <locale name="feedlist.setting.newwinwdow">
+            <de><![CDATA[Links in neuem Fenster öffnen?]]></de>
+            <en><![CDATA[Open links in new window?]]></en>
+        </locale>
+        <locale name="feedlist.setting.limit">
+            <de><![CDATA[Maximale Einträge]]></de>
+            <en><![CDATA[Limit number of entries to]]></en>
+        </locale>
+        <locale name="feedlist.setting.layout">
+            <de><![CDATA[Layout]]></de>
+            <en><![CDATA[Layout]]></en>
+        </locale>
+        <locale name="feedlist.setting.layout.list">
+            <de><![CDATA[Liste]]></de>
+            <en><![CDATA[List]]></en>
+        </locale>
+        <locale name="feedlist.setting.layout.icons">
+            <de><![CDATA[Icons]]></de>
+            <en><![CDATA[Icons]]></en>
+        </locale>
+        <locale name="cron.feeds.build.name">
+            <de><![CDATA[Feeds cachen]]></de>
+            <en><![CDATA[Cache feeds]]></en>
+        </locale>
+        <locale name="cron.feeds.build.desc">
+            <de><![CDATA[Erzeugt alle Feeds, um sie in den Cache zu speichern]]></de>
+            <en><![CDATA[Generates all feeds and saves them into the cache]]></en>
+        </locale>
+
+        <locale name="settings.images.title">
+            <de><![CDATA[Bilder]]></de>
+            <en><![CDATA[Images]]></en>
+        </locale>
+        <locale name="settings.images.maxsize.title">
+            <de><![CDATA[Max. Größe]]></de>
+            <en><![CDATA[Max. size]]></en>
+        </locale>
+        <locale name="settings.images.maxsize.desc">
+            <de><![CDATA[Die maximale Ausdehnung von Bildern im Feed.]]></de>
+            <en><![CDATA[The maximum dimensions of images within the feed.]]></en>
+        </locale>
+        <locale name="settings.feed.title">
+            <de><![CDATA[Feed]]></de>
+            <en><![CDATA[Feed]]></en>
+        </locale>
+        <locale name="settings.feeds.title">
+            <de><![CDATA[Feeds]]></de>
+            <en><![CDATA[Feeds]]></en>
+        </locale>
+        <locale name="settings.feeds.common.title">
+            <de><![CDATA[Allgemein]]></de>
+            <en><![CDATA[Common]]></en>
+        </locale>
+        <locale name="settings.feeds.common.user.title">
+            <de><![CDATA[Author: Benutzer]]></de>
+            <en><![CDATA[Author: User]]></en>
+        </locale>
+        <locale name="settings.feeds.common.user.desc">
+            <de>
+                <![CDATA[Bestimmt ob der Benutzer, der die Seite erstellt als Auzhor verwendet werden soll oder der Standard Author]]></de>
+            <en><![CDATA[Defines if the creating user or the default author should be displayd as author.]]></en>
+        </locale>
+        <locale name="settings.feeds.common.user.option.custom">
+            <de><![CDATA[Benutzerdefinierter Author]]></de>
+            <en><![CDATA[Custom author]]></en>
+        </locale>
+        <locale name="settings.feeds.common.user.option.create">
+            <de><![CDATA[Erstellender user]]></de>
+            <en><![CDATA[Creating user]]></en>
+        </locale>
+        <locale name="settings.feeds.common.author.title">
+            <de><![CDATA[Standard Author]]></de>
+            <en><![CDATA[Default author]]></en>
+        </locale>
+        <locale name="settings.feeds.common.author.desc">
+            <de>
+                <![CDATA[Dieser Wert wird als Author verwendet, falls kein Author anhand des Benutzers ermittelt werden konnte.]]></de>
+            <en><![CDATA[This value will be used as author if no author could be detected by user.]]></en>
+        </locale>
+
+        <locale name="settings.feeds.rss.title">
+            <de><![CDATA[RSS Einstellungen]]></de>
+            <en><![CDATA[RSS Settings]]></en>
+        </locale>
+
+        <locale name="settings.feeds.rss.http.title">
+            <de><![CDATA[HTTP erzwingen]]></de>
+            <en><![CDATA[Force http]]></en>
+        </locale>
+        <locale name="settings.feeds.rss.http.desc">
+            <de>
+                <![CDATA[Erzwingt alle Links das http:// Protokoll zu verwenden. Gemäß Spezifikation sind https:// Links nicht vorgesehen und Validatoren können bei Ihrer Verwendung Warnungen ausgeben. Die meisten Reader können jedoch Problemlos mit https:// Links umgehen.]]></de>
+            <en>
+                <![CDATA[Forces all links to use the http protokoll. According to the rss specification https links are not valid. Therefore some validators may throw an error while most readers can handle https links without problems.]]></en>
         </locale>
     </groups>
 

@@ -1,0 +1,73 @@
+<fieldset>
+    <label>
+        {{locales.feedType}}
+    </label>
+    <select name="feedtype">
+        <option value="rss">RSS</option>
+        <option value="atom">Atom</option>
+        <option value="googleSitemap">Google Sitemap</option>
+    </select>
+</fieldset>
+<fieldset>
+    <label>
+        {{locales.feedName}}
+    </label>
+    <input type="text" name="feedName"/>
+</fieldset>
+
+<fieldset>
+    <label>
+        {{locales.feedDescription}}
+    </label>
+    <input type="text" name="feedDescription"/>
+</fieldset>
+<fieldset>
+    <label>
+        {{locales.project}}
+    </label>
+    <div class="qui-control-feed-project">
+        <input type="text" name="project" class="project"/>
+    </div>
+</fieldset>
+<fieldset class="qui-control-feed-image-container">
+    <label>
+        {{locales.feedImage}}
+    </label>
+    <input type="text" name="feedImage"/>
+    <button role="button" class="qui-control-feed-btn-image qui-button">
+        <span class="fa fa-image"></span>
+    </button>
+</fieldset>
+<fieldset>
+    <label>
+        {{locales.feedlimit}}
+    </label>
+    <input type="number" name="feedlimit"/>
+</fieldset>
+<div class="qui-feed-feedwindow-split">
+    <input type="checkbox" name="split">
+    <label class="qui-feed-feedwindow-split-label">
+        {{locales.split}}
+    </label>
+</div>
+<fieldset style="display:none;" class="qui-feed-feetwindow-pagesize">
+    <label>
+        {{locales.pagesize}}
+    </label>
+    <input type="number" name="pagesize"/>
+</fieldset>
+<div class="qui-feed-feedwindow-publish">
+    <input type="checkbox" name="publish">
+    <label class="qui-feed-feedwindow-publish-label">
+        {{locales.publish}}
+    </label>
+</div>
+<fieldset class="qui-control-feed-feedsites">
+    <label>
+        {{locales.feedSites}}
+    </label>
+    <input name="feedsites"
+           data-qui="controls/projects/project/site/Select"
+           data-project="" data-lang=""
+    />
+</fieldset>

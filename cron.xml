@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crons>
+    <cron exec="\QUI\Feed\Cron::buildFeeds">
+        <title>
+            <locale group="quiqqer/feed" var="cron.feeds.build.name"/>
+        </title>
+        <description>
+            <locale group="quiqqer/feed" var="cron.feeds.build.desc"/>
+        </description>
+    </cron>
+</crons>

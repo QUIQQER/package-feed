@@ -62,7 +62,7 @@ define('package/quiqqer/feed/bin/Manager', [
             this.addButton({
                 name     : 'add',
                 text     : 'Neuen Feed anlegen',
-                textimage: 'icon-plus',
+                textimage: 'fa fa-plus',
                 events   : {
                     onClick: function () {
                         self.openFeedWindow();
@@ -77,7 +77,7 @@ define('package/quiqqer/feed/bin/Manager', [
             this.addButton({
                 name     : 'delete',
                 text     : 'Markierten Feed löschen',
-                textimage: 'icon-trash',
+                textimage: 'fa fa-trash',
                 disabled : true,
                 events   : {
                     onClick: function () {
@@ -118,6 +118,16 @@ define('package/quiqqer/feed/bin/Manager', [
                 }, {
                     header   : QUILocale.get(lg, 'quiqqer.feed.feedlimit'),
                     dataIndex: 'feedlimit',
+                    dataType : 'string',
+                    width    : 80
+                }, {
+                    header   : QUILocale.get(lg, 'quiqqer.feed.pageSize'),
+                    dataIndex: 'pageSize',
+                    dataType : 'string',
+                    width    : 80
+                }, {
+                    header   : QUILocale.get(lg, 'quiqqer.feed.displayInHeader'),
+                    dataIndex: 'displayInHeader',
                     dataType : 'string',
                     width    : 80
                 }],
@@ -237,9 +247,10 @@ define('package/quiqqer/feed/bin/Manager', [
 
             var self = this;
 
+            // #locale
             new QUIConfirm({
                 title      : 'Feeds löschen',
-                icon       : 'icon-trash',
+                icon       : 'fa fa-trash',
                 text       : 'Möchten Sie folgende Feeds wirklich löschen?',
                 information: feedIds.join(', '),
                 autoclose  : false,

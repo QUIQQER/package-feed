@@ -1,30 +1,27 @@
 {
-    "name" : "quiqqer/feed",
-    "type" : "quiqqer-module",
-    "description" : "QUIQQER Feed Plugin",
-    "version" : "dev-master",
-
-    "authors" : [{
-        "name": "Henning Leutz",
-        "email": "leutz@pcsg.de",
-        "homepage": "http://www.pcsg.de",
-        "role": "Developer"
-    }],
-
-    "support" : {
-        "email": "support@pcsg.de",
-        "url": "http://www.pcsg.de"
-    },
-
-    "require": {
-        "php" : ">=5.3",
-        "quiqqer/quiqqer" : "*@dev"
-    },
-
-    "autoload": {
-        "psr-4" : {
-            "QUI\\Feed\\" : "src/QUI/Feed/"
-        }
+  "name": "quiqqer/feed",
+  "type": "quiqqer-module",
+  "description": "Create different feeds for your project and / or website. The Feed Modul allows you to manage different types of feeds and multiple feeds, such as RSS, Atom, or Google Sitemap",
+  "version": "dev-master",
+  "authors": [
+    {
+      "name": "Henning Leutz",
+      "email": "leutz@pcsg.de",
+      "homepage": "http://www.pcsg.de",
+      "role": "Developer"
     }
+  ],
+  "support": {
+    "email": "support@pcsg.de",
+    "url": "http://www.pcsg.de"
+  },
+  "require": {
+    "php": ">=5.3",
+    "quiqqer/quiqqer": "*@dev"
+  },
+  "autoload": {
+    "psr-0": {
+      "QUI": "src/"
+    }
+  }
 }
-

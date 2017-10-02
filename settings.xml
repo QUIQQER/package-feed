@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiqqer>
+
+    <settings>
+        <config>
+            <section name="common">
+                <conf name="user">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue><![CDATA[c_user]]></defaultvalue>
+                </conf>
+                <conf name="author">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
+            <section name="rss">
+                <conf name="http">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue><![CDATA[0]]></defaultvalue>
+                </conf>
+            </section>
+            <section name="images">
+                <conf name="maxsize">
+                    <type><![CDATA[int]]></type>
+                    <defaultvalue>1000</defaultvalue>
+                </conf>
+            </section>
+        </config>
+
+        <window>
+            <title>
+                <locale group="quiqqer/feed" var="settings.feed.title"/>
+            </title>
+            <params>
+                <icon>fa fa-rss</icon>
+            </params>
+
+            <categories>
+                <category name="feeds">
+                    <text>
+                        <locale group="quiqqer/feed" var="settings.feeds.title"/>
+                    </text>
+                    <icon>
+                        fa fa-rss
+                    </icon>
+                    <settings>
+                        <title>
+                            <locale group="quiqqer/feed" var="settings.feeds.common.title"/>
+                        </title>
+                        <select conf="common.user">
+                            <text>
+                                <locale group="quiqqer/feed" var="settings.feeds.common.user.title"/>
+                            </text>
+                            <desc>
+                                <locale group="quiqqer/feed" var="settings.feeds.common.user.desc"/>
+                            </desc>
+                           
+                            <option value="c_user">
+                                <locale group="quiqqer/feed" var="settings.feeds.common.user.option.create"/>
+                            </option>
+                            <option value="custom">
+                                <locale group="quiqqer/feed" var="settings.feeds.common.user.option.custom"/>
+                            </option>
+                        </select>
+                        <input type="text" conf="common.author">
+                            <text>
+                                <locale group="quiqqer/feed" var="settings.feeds.common.author.title"/>
+                            </text>
+                            <desc>
+                                <locale group="quiqqer/feed" var="settings.feeds.common.author.desc"/>
+                            </desc>
+                        </input>
+                    </settings>
+                    <settings>
+                        <title>
+                            <locale group="quiqqer/feed" var="settings.feeds.rss.title"/>
+                        </title>
+                        <input type="checkbox" conf="rss.http">
+                            <text>
+                                <locale group="quiqqer/feed" var="settings.feeds.rss.http.title"/>
+                            </text>
+                            <desc>
+                                <locale group="quiqqer/feed" var="settings.feeds.rss.http.desc"/>
+                            </desc>
+                        </input>
+                    </settings>
+                </category>
+
+                
+                <category name="images">
+                    <text>
+                        <locale group="quiqqer/feed" var="settings.images.title"/>
+                    </text>
+                    <icon>
+                        fa fa-image
+                    </icon>
+
+                    <settings title="images" name="images">
+                        <title>
+                            <locale group="quiqqer/feed" var="settings.images.title"/>
+                        </title>
+
+                        <input conf="images.maxsize" type="number">
+                            <text>
+                                <locale group="quiqqer/feed" var="settings.images.maxsize.title"/>
+                            </text>
+                            <desc>
+                                <locale group="quiqqer/feed" var="settings.images.maxsize.desc"/>
+                            </desc>
+                        </input>
+                    </settings>
+                </category>
+            </categories>
+
+        </window>
+    </settings>
+
+</quiqqer>

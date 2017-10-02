@@ -1,36 +1,67 @@
 
 .qui-control-feed select,
-.qui-control-feed input{
-    width: 50%;
+.qui-control-feed input {
+    width : 50%;
 }
 
 .qui-control-feed fieldset {
-    border: none;
-    clear: both;
-    margin: 0;
+    border : none;
+    clear  : both;
+    margin : 0;
 }
 
 .qui-control-feed label {
-    float: left;
-    padding-top: 8px;
-    width: 50%;
+    float       : left;
+    padding-top : 8px;
+    width       : 50%;
 }
 
 .qui-control-feed-feedsites label {
-    padding: 10px 0;
-    width: 100%;
+    padding : 10px 0;
+    width   : 100%;
 }
 
 .qui-control-feed-feedsites textarea {
-    clear: both;
-    width: 100%;
+    clear : both;
+    width : 100%;
 }
 
 .qui-control-feed-project {
-    float: left;
-    width: 50%
+    float : left;
+    width : 50%
 }
 
 .qui-control-feed-project input {
-    width: 100%;
+    width : 100%;
+}
+
+.qui-feed-feedwindow-split {
+    margin-top : 10px;
+    width      : 100%;
+}
+
+.qui-feed-feedwindow-split > input {
+    width : auto;
+}
+
+.qui-feed-feedwindow-split > label {
+    float : none;
+    width : auto;
+}
+
+.qui-feed-feedwindow-publish > input {
+    width : auto;
+}
+
+.qui-feed-feedwindow-publish > label {
+    float : none;
+    width : auto;
+}
+
+.qui-control-feed-image-container input {
+    width : calc(50% - 35px);
+}
+
+.qui-control-feed-btn-image {
+    float : right;
 }

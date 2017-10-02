@@ -5,4 +5,5 @@
     <event on="onSiteDeactivate" fire="\QUI\Feed\EventHandler::onSiteChange" />
     <event on="onSiteSave" fire="\QUI\Feed\EventHandler::onSiteChange" />
     <event on="onSiteDestroy" fire="\QUI\Feed\EventHandler::onSiteChange" />
+    <event on="onTemplateGetHeader" fire="\QUI\Feed\EventHandler::onTemplateGetHeader" />
 </events>
