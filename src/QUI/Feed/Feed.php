@@ -267,7 +267,7 @@ class Feed extends QUI\QDOM
     {
         $feedSites = $this->getAttribute('feedsites');
         $feedLimit = (int)$this->getAttribute('feedlimit');
-        if (!$feedLimit) {
+        if (!$feedLimit && $feedLimit !== 0) {
             $feedLimit = 10;
         }
 

@@ -3,6 +3,7 @@
   "type": "quiqqer-module",
   "description": "Create different feeds for your project and / or website. The Feed Modul allows you to manage different types of feeds and multiple feeds, such as RSS, Atom, or Google Sitemap",
   "version": "dev-master",
+  "licence": "GPL-3.0+",
   "authors": [
     {
       "name": "Henning Leutz",
