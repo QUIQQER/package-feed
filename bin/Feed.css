@@ -65,3 +65,12 @@
 .qui-control-feed-btn-image {
     float : right;
 }
+
+.feed-checkbox-container > input{
+    width: auto;
+}
+
+.feed-checkbox-container > label {
+    float : none;
+    width : auto;
+}

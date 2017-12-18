@@ -76,7 +76,6 @@ class EventHandler
         }
 
         try {
-
             header('Content-Type: application/rss+xml; charset=UTF-8');
             $output = $Feed->output($pageNo);
 
@@ -84,7 +83,6 @@ class EventHandler
 
             echo $output;
             exit;
-
         } catch (QUI\Exception $Exception) {
         }
     }
@@ -127,9 +125,7 @@ class EventHandler
                 } catch (\Exception $Exception) {
                     $continue = false;
                 }
-
             } while ($continue);
-
         }
     }
 
@@ -171,6 +167,16 @@ class EventHandler
                 continue;
             }
 
+            
+            // Check if the feed should be included on this page
+            $publishSitesString = $Feed->getAttribute("publish_sites");
+            $feedPublishSiteIDs = $Feed->parseSiteSelect($publishSitesString);
+            
+            if (!empty($publishSitesString) && !in_array(QUI::getRewrite()->getSite()->getId(), $feedPublishSiteIDs)) {
+                continue;
+            }
+            
+            
 
             $projectHost = $FeedProject->getVHost(true, true);
             $url         = $projectHost . URL_DIR . 'feed=' . $Feed->getId() . '.xml';
@@ -196,5 +202,4 @@ class EventHandler
             $Template->extendHeader($rssTag);
         }
     }
-
 }

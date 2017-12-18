@@ -86,8 +86,7 @@ define('package/quiqqer/feed/bin/frontend/controls/FeedList', [
                         }
 
                         var row = result[index];
-
-                        console.log(row);
+                        
                         var ListElement = new Element("article", {
                             'class': "qui-feed-feedList-default-entry",
                             html   : Mustache.render(entryTemplate, {
