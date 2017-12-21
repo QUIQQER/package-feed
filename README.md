@@ -2,7 +2,7 @@
 QUIQQER Feeds
 ========
 
-Paketname:
+Packagename:
 
     quiqqer/feed
 
@@ -10,19 +10,37 @@ Paketname:
 Features
 --------
 
-- Feed verwaltung
-- ATOM
-- RSS
-- GoogleSitemap
+- Feed management
+  - Create
+  - Edit
+  - Delete
+- RSS Feeds
+- Atom feeds
+- Google Sitemaps
+- Share your feeds in your websites header
+- Display your feeds with the modules brick
 
+#### Bricks
+- Feedlist
+  - Displays the available feeds as icons or as list
+
+#### Sitetypes
+- Feedlist
+  - Displays the feeds as detailed list
+
+#### Crons
+- Build feeds: This cron will rebuild the feeds and their content.
 
 Installation
 ------------
 
-Der Paketname ist: quiqqer/feed
+You can install this module via composer:
+```
+composer require "quiqqer/feed" "dev-master"
+```
 
 
-Mitwirken
+Contribute
 ----------
 
 - Source Code: https://dev.quiqqer.com/quiqqer/package-feed/tree/master
@@ -32,13 +50,13 @@ Mitwirken
 Support
 -------
 
-Falls Sie ein Fehler gefunden haben oder Verbesserungen wünschen,
-Dann können Sie gerne an support@pcsg.de eine E-Mail schreiben.
+You can contact us by mail support@pcsg.de,
+if you have encountered an error or want to express a wish or feature request.
+We will try to fulfill your wishes and will redirect them to the according developers.
 
 
 License
 -------
+GPL-3.0+
 
 
-Entwickler
---------

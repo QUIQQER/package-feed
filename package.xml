@@ -12,13 +12,11 @@
         <image src="URL_OPT_DIR/quiqqer/package-feed/bin/images/Logo.jpg"/>
 
         <!-- Weitere Vorschaubilder -->
-        <!--<preview>-->
-        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/1.png"/>-->
-        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/2.png"/>-->
-        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/3.png"/>-->
-        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/4.png"/>-->
-        <!--<image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/5.png"/>-->
-        <!--</preview>-->
+        <preview>
+        <image src="URL_OPT_DIR/quiqqer/feed/bin/images/preview/manager.png"/>
+        <image src="URL_OPT_DIR/quiqqer/feed/bin/images/preview/create.png"/>
+        <image src="URL_OPT_DIR/quiqqer/feed/bin/images/preview/edit.png"/>
+        </preview>
 
         <support>
             <email><![CDATA[support@pcsg.de]]></email>
