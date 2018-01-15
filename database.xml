@@ -13,6 +13,7 @@
             <field type="int(100) NULL">feedlimit</field>
             <field type="int(100) DEFAULT 0">pageSize</field>
             <field type="int(1) DEFAULT 0">publish</field>
+            <field type="VARCHAR(1023) DEFAULT 0">publish_sites</field>
             <field type="VARCHAR(255) NULL">feedImage</field>
         </table>
     </global>

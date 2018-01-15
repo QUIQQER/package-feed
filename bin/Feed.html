@@ -1,3 +1,4 @@
+<!-- Feed type-->
 <fieldset>
     <label>
         {{locales.feedType}}
@@ -8,6 +9,8 @@
         <option value="googleSitemap">Google Sitemap</option>
     </select>
 </fieldset>
+
+<!-- Feed name-->
 <fieldset>
     <label>
         {{locales.feedName}}
@@ -15,12 +18,15 @@
     <input type="text" name="feedName"/>
 </fieldset>
 
+<!-- Feed description -->
 <fieldset>
     <label>
         {{locales.feedDescription}}
     </label>
     <input type="text" name="feedDescription"/>
 </fieldset>
+
+<!-- Feed Project-->
 <fieldset>
     <label>
         {{locales.project}}
@@ -29,6 +35,8 @@
         <input type="text" name="project" class="project"/>
     </div>
 </fieldset>
+
+<!-- Feed image-->
 <fieldset class="qui-control-feed-image-container">
     <label>
         {{locales.feedImage}}
@@ -38,30 +46,48 @@
         <span class="fa fa-image"></span>
     </button>
 </fieldset>
+
+<!-- Feed limit -->
 <fieldset>
     <label>
         {{locales.feedlimit}}
     </label>
     <input type="number" name="feedlimit"/>
 </fieldset>
+
+<!-- Feed split -->
 <div class="qui-feed-feedwindow-split">
     <input type="checkbox" name="split">
     <label class="qui-feed-feedwindow-split-label">
         {{locales.split}}
     </label>
 </div>
+
+<!-- Feed split -> page size -->
 <fieldset style="display:none;" class="qui-feed-feetwindow-pagesize">
     <label>
         {{locales.pagesize}}
     </label>
     <input type="number" name="pagesize"/>
 </fieldset>
+
+<!-- Feed publish -->
 <div class="qui-feed-feedwindow-publish">
     <input type="checkbox" name="publish">
     <label class="qui-feed-feedwindow-publish-label">
         {{locales.publish}}
     </label>
 </div>
+
+<!-- Feed publish -> pages -->
+<fieldset class="qui-feed-publish-sites-container" style="display: none">
+    <label for="publish-sites">
+        {{locales.publishSites}}
+    </label>
+    <input id="publish-sites" name="publish-sites" class="qui-feed-publish-sites" data-qui="controls/projects/project/site/Select" data-qui-options-placeholder="{{locales.publishSitesPlaceholder}}" />
+</fieldset>
+
+<!-- Feed content -->
 <fieldset class="qui-control-feed-feedsites">
     <label>
         {{locales.feedSites}}
@@ -69,5 +95,6 @@
     <input name="feedsites"
            data-qui="controls/projects/project/site/Select"
            data-project="" data-lang=""
+           data-qui-options-placeholder="{{locales.feedSitesPlaceholder}}"
     />
 </fieldset>

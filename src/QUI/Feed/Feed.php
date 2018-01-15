@@ -40,7 +40,7 @@ class Feed extends QUI\QDOM
         $this->feedId = (int)$feedId;
 
         $data = QUI::getDataBase()->fetch(array(
-            'from'  => QUI::getDBTableName(Manager::TABLE),
+            'from' => QUI::getDBTableName(Manager::TABLE),
             'where' => array(
                 'id' => $this->feedId
             ),
@@ -92,7 +92,7 @@ class Feed extends QUI\QDOM
      */
     public function getAttributes()
     {
-        $attributes       = parent::getAttributes();
+        $attributes = parent::getAttributes();
         $attributes['id'] = $this->feedId;
 
         return $attributes;
@@ -105,8 +105,8 @@ class Feed extends QUI\QDOM
     {
         $table = QUI::getDBTableName(Manager::TABLE);
 
-        $feedlimit       = (int)$this->getAttribute('feedlimit');
-        $feedName        = '';
+        $feedlimit = (int)$this->getAttribute('feedlimit');
+        $feedName = '';
         $feedDescription = '';
 
         if ($this->getAttribute('feedName')) {
@@ -119,22 +119,23 @@ class Feed extends QUI\QDOM
         }
 
         QUI::getDataBase()->update($table, array(
-            'project'         => $this->getAttribute('project'),
-            'lang'            => $this->getAttribute('lang'),
-            'feedtype'        => $this->getFeedType(),
-            'feedsites'       => $this->getAttribute('feedsites'),
-            'feedlimit'       => $feedlimit ? $feedlimit : 0,
-            'feedName'        => $feedName,
+            'project' => $this->getAttribute('project'),
+            'lang' => $this->getAttribute('lang'),
+            'feedtype' => $this->getFeedType(),
+            'feedsites' => $this->getAttribute('feedsites'),
+            'feedlimit' => $feedlimit ? $feedlimit : 0,
+            'feedName' => $feedName,
             'feedDescription' => $feedDescription,
-            'pageSize'        => $this->getAttribute("pageSize"),
-            'publish'         => $this->getAttribute("publish"),
-            'feedImage'       => $this->getAttribute("feedImage")
+            'pageSize' => $this->getAttribute("pageSize"),
+            'publish' => $this->getAttribute("publish"),
+            'publish_sites' => $this->getAttribute("publish_sites"),
+            'feedImage' => $this->getAttribute("feedImage")
         ), array(
             'id' => $this->getId()
         ));
 
         // clear cache
-        QUI\Cache\Manager::clear('quiqqer/feed/' . $this->getId());
+        QUI\Cache\Manager::clear('quiqqer/feed/'.$this->getId());
     }
 
     /**
@@ -148,15 +149,13 @@ class Feed extends QUI\QDOM
     {
         $feedType = $this->getFeedType();
 
-
         $Project = QUI::getProject(
             $this->getAttribute('project'),
             $this->getAttribute('lang')
         );
 
         $projectHost = $Project->getVHost(true, true);
-        $feedUrl     = $projectHost . URL_DIR . 'feed=' . $this->getId() . '.xml';
-
+        $feedUrl = $projectHost.URL_DIR.'feed='.$this->getId().'.xml';
 
         switch ($feedType) {
             case 'atom':
@@ -177,7 +176,7 @@ class Feed extends QUI\QDOM
         $Channel = $Feed->createChannel();
 
         $Channel->setLanguage($Project->getLang());
-        $Channel->setHost($projectHost . URL_DIR);
+        $Channel->setHost($projectHost.URL_DIR);
 
         $Channel->setAttribute('link', $feedUrl);
         $Channel->setAttribute(
@@ -199,39 +198,34 @@ class Feed extends QUI\QDOM
                     $date = $Site->getAttribute('c_date');
                 }
 
-
                 // Workaround bug  $Site->getCanonical() come with protocol
-                $link      = $Site->getUrlRewritten();
+                $link = $Site->getUrlRewritten();
                 $permalink = $Site->getCanonical();
 
-
                 if (strpos($link, 'https:') === false && strpos($link, 'http:') === false) {
-                    $link = $projectHost . $Site->getUrlRewritten();
+                    $link = $projectHost.$Site->getUrlRewritten();
                 }
 
                 if (strpos($permalink, 'https:') === false && strpos($permalink, 'http:') === false) {
-                    $permalink = $projectHost . $Site->getCanonical();
+                    $permalink = $projectHost.$Site->getCanonical();
                 }
 
                 /** @var QUI\Feed\Handler\AbstractItem $Item */
                 $Item = $Channel->createItem(array(
-                    'title'       => $Site->getAttribute('title'),
+                    'title' => $Site->getAttribute('title'),
                     'description' => $Site->getAttribute('short'),
-                    'language'    => $Project->getLang(),
-                    'date'        => strtotime($date),
-                    'link'        => $link,
-                    'permalink'   => $permalink
+                    'language' => $Project->getLang(),
+                    'date' => strtotime($date),
+                    'link' => $link,
+                    'permalink' => $permalink
                 ));
 
-
-                
-                
                 try {
                     //Check if the create user should be picked
                     if (QUI::getPackage("quiqqer/feed")->getConfig()->get("common", "user") != "c_user") {
                         throw new QUI\Exception("Invalid user field choice!");
                     }
-                    
+
                     $User = QUI::getUsers()->get($Site->getAttribute("c_user"));
                     $Item->setAttribute("author", $User->getName());
                 } catch (\Exception $Exception) {
@@ -240,7 +234,6 @@ class Feed extends QUI\QDOM
                         QUI::getPackage("quiqqer/feed")->getConfig()->get("common", "author")
                     );
                 }
-
 
                 // Image
                 $image = $Site->getAttribute('image_site');
@@ -256,7 +249,6 @@ class Feed extends QUI\QDOM
 
         return $Feed->create();
     }
-
 
     /**
      * Gets the site ids which should be used for the feed
@@ -296,28 +288,28 @@ class Feed extends QUI\QDOM
         }
 
         // Get the IDs of the selected sites
-        $PDO       = QUI::getPDO();
-        $table     = $Project->getAttribute('db_table');
+        $PDO = QUI::getPDO();
+        $table = $Project->getAttribute('db_table');
         $feedSites = explode(';', $feedSites);
 
-        $idCount  = 0;
+        $idCount = 0;
         $strCount = 0;
 
-        $whereParts    = array();
+        $whereParts = array();
         $wherePrepared = array();
 
         $childPageIDs = array();
         foreach ($feedSites as $needle) {
             //
             if (is_numeric($needle)) {
-                $_id = ':id' . $idCount;
+                $_id = ':id'.$idCount;
 
                 $whereParts[] = " id = {$_id} ";
 
                 $wherePrepared[] = array(
-                    'type'  => \PDO::PARAM_INT,
+                    'type' => \PDO::PARAM_INT,
                     'value' => $needle,
-                    'name'  => $_id
+                    'name' => $_id
                 );
 
                 $idCount++;
@@ -332,20 +324,18 @@ class Feed extends QUI\QDOM
                 continue;
             }
 
-
             // Search for type
-            $_id = ':str' . $strCount;
+            $_id = ':str'.$strCount;
 
-            $whereParts[]    = " type LIKE {$_id} ";
+            $whereParts[] = " type LIKE {$_id} ";
             $wherePrepared[] = array(
-                'type'  => \PDO::PARAM_STR,
+                'type' => \PDO::PARAM_STR,
                 'value' => $needle,
-                'name'  => $_id
+                'name' => $_id
             );
 
             $strCount++;
         }
-
 
         // Create the part of the query for the site ids of child sites.
         // `id` IN ( id1, id2, id3, id4 )
@@ -355,7 +345,7 @@ class Feed extends QUI\QDOM
             $idString = "";
 
             for ($i = 0; $i < count($childPageIDs); $i++) {
-                $idString .= ":pageid" . $i . ",";
+                $idString .= ":pageid".$i.",";
             }
             $idString = rtrim($idString, ",");
 
@@ -364,16 +354,15 @@ class Feed extends QUI\QDOM
             $i = 0;
             foreach ($childPageIDs as $id) {
                 $wherePrepared[] = array(
-                    'type'  => \PDO::PARAM_INT,
+                    'type' => \PDO::PARAM_INT,
                     'value' => $id,
-                    'name'  => ":pageid" . $i
+                    'name' => ":pageid".$i
                 );
                 $i++;
             }
         }
 
         $where = implode(' OR ', $whereParts);
-
 
         // query
         $query = "
@@ -382,7 +371,6 @@ class Feed extends QUI\QDOM
                 WHERE active = 1 AND ({$where})
                 ORDER BY release_from DESC, c_date DESC
             ";
-
 
         if ($feedLimit > 0) {
             $query .= "LIMIT :limit";
@@ -414,6 +402,145 @@ class Feed extends QUI\QDOM
     }
 
     /**
+     * Parses the value of the site select control and returns all selected Site IDs
+     * @param $siteSelectValue
+     *
+     * @return array
+     * @throws QUI\Exception
+     */
+    public function parseSiteSelect($siteSelectValue)
+    {
+        $ids = array();
+        $Project = QUI::getProject(
+            $this->getAttribute('project'),
+            $this->getAttribute('lang')
+        );
+
+        // All sites, if no sites were selected.
+        if (empty($siteSelectValue)) {
+            $queryParams = array(
+                'order' => 'release_from DESC, c_date DESC'
+            );
+
+            
+            $ids = $Project->getSitesIds($queryParams);
+
+            $ids = array_map(function ($entry) {
+                return (int)$entry['id'];
+            }, $ids);
+
+            return $ids;
+        }
+
+        // Get the IDs of the selected sites
+        $PDO = QUI::getPDO();
+        $table = $Project->getAttribute('db_table');
+        $sites = explode(';', $siteSelectValue);
+
+        $idCount = 0;
+        $strCount = 0;
+
+        $whereParts = array();
+        $wherePrepared = array();
+
+        $childPageIDs = array();
+        foreach ($sites as $needle) {
+            //
+            if (is_numeric($needle)) {
+                $_id = ':id'.$idCount;
+
+                $whereParts[] = " id = {$_id} ";
+
+                $wherePrepared[] = array(
+                    'type' => \PDO::PARAM_INT,
+                    'value' => $needle,
+                    'name' => $_id
+                );
+
+                $idCount++;
+                continue;
+            }
+
+            // Search for children of this site
+            if (preg_match("~p[0-9]+~i", $needle)) {
+                $parentSiteID = (int)substr($needle, 1);
+                $childPageIDs = array_merge($childPageIDs, $Project->get($parentSiteID)->getChildrenIdsRecursive());
+                continue;
+            }
+
+            // Search for type
+            $_id = ':str'.$strCount;
+
+            $whereParts[] = " type LIKE {$_id} ";
+            $wherePrepared[] = array(
+                'type' => \PDO::PARAM_STR,
+                'value' => $needle,
+                'name' => $_id
+            );
+
+            $strCount++;
+        }
+
+        // Create the part of the query for the site ids of child sites.
+        // `id` IN ( id1, id2, id3, id4 )
+        if (!empty($childPageIDs)) {
+            $childPageIDs = array_unique($childPageIDs);
+
+            $idString = "";
+
+            for ($i = 0; $i < count($childPageIDs); $i++) {
+                $idString .= ":pageid".$i.",";
+            }
+            $idString = rtrim($idString, ",");
+
+            $whereParts[] = " id IN ({$idString}) ";
+
+            $i = 0;
+            foreach ($childPageIDs as $id) {
+                $wherePrepared[] = array(
+                    'type' => \PDO::PARAM_INT,
+                    'value' => $id,
+                    'name' => ":pageid".$i
+                );
+                $i++;
+            }
+        }
+
+        $where = implode(' OR ', $whereParts);
+
+        // query
+        $query = "
+                SELECT id
+                FROM {$table}
+                WHERE active = 1 AND ({$where})
+                ORDER BY release_from DESC, c_date DESC
+            ";
+
+     
+
+        // search
+        $Statement = $PDO->prepare($query);
+
+        foreach ($wherePrepared as $prepared) {
+            $Statement->bindValue(
+                $prepared['name'],
+                $prepared['value'],
+                $prepared['type']
+            );
+        }
+
+        
+        $Statement->execute();
+        $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach ($result as $row) {
+            $ids[] = $row['id'];
+        }
+
+        return $ids;
+    }
+
+    /**
      * Returns the number of pages of this feed.
      *
      * @return int - Returns the number of pages or 0 if nor pages are used
@@ -424,7 +551,7 @@ class Feed extends QUI\QDOM
             return 0;
         }
 
-        $pageSize   = $this->getAttribute("pageSize");
+        $pageSize = $this->getAttribute("pageSize");
         $totalItems = count($this->getSiteIDs());
 
         return ceil($totalItems / $pageSize);

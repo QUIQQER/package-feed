@@ -47,6 +47,10 @@
             <de><![CDATA[Soll der Feed auf der Seite publiziert werden?]]></de>
             <en><![CDATA[Should the feed get published on the website?]]></en>
         </locale>
+        <locale name="quiqqer.feed.publish.all">
+            <de><![CDATA[Auf ALLEN Seiten in den Header integrieren]]></de>
+            <en><![CDATA[Integrate the feed in the header of ALL pages]]></en>
+        </locale>
         <locale name="quiqqer.feed.image">
             <de><![CDATA[Bild]]></de>
             <en><![CDATA[Image]]></en>
@@ -54,6 +58,16 @@
         <locale name="quiqqer.feed.button.subscribe">
             <de><![CDATA[Abonnieren]]></de>
             <en><![CDATA[Subscribe]]></en>
+        </locale>
+        <locale name="quiqqer.feed.publish.sites.placeholder">
+            <de>
+                <![CDATA[Wählen Sie die Seiten, auf welchen der Feed eingebunden werden soll. Wenn keine Seiten ausgewählt wurden, wird der Feed auf allen Seiten veröffentlicht.]]></de>
+            <en>
+                <![CDATA[Choose the pages, which will integrate the feed in their header tag. If no sites are selected, the feed will be integrated on every page.]]></en>
+        </locale>
+        <locale name="quiqqer.feed.sites.placeholder">
+            <de><![CDATA[Bitte wählen Sie die Seiten, welche im Feed aufgeführt werden sollen.]]></de>
+            <en><![CDATA[Please select the pages which should be included in the feed.]]></en>
         </locale>
     </groups>
 
@@ -70,8 +84,10 @@
             <en><![CDATA[QUIQQER Feeds]]></en>
         </locale>
         <locale name="package.description">
-            <de><![CDATA[Legen Sie verschieden Feeds für Ihr Projekt und oder Webseite an. Das Feed Modul ermöglicht es Ihnen verschiedene Feed Arten und mehrere Feeds zu verwalten, wie zum Beispiel RSS, Atom oder eine Google Sitemap.]]></de>
-            <en><![CDATA[Create different feeds for your project and / or website. The Feed Modul allows you to manage different types of feeds and multiple feeds, such as RSS, Atom, or Google Sitemap]]></en>
+            <de>
+                <![CDATA[Legen Sie verschiedene Feeds für Ihr Projekt und oder Webseite an. Das Feed Modul ermöglicht es Ihnen verschiedene Feed Arten und mehrere Feeds zu verwalten, wie zum Beispiel RSS, Atom oder eine Google Sitemap.]]></de>
+            <en>
+                <![CDATA[Create different feeds for your project and / or website. The Feed Modul allows you to manage different types of feeds and multiple feeds, such as RSS, Atom, or Google Sitemap]]></en>
         </locale>
         <locale name="package.description.long">
             <de><![CDATA[Liefert eine Verwaltung fon Feeds für Ihre Website. (RSS,Atom & Google Sitemap)
