@@ -109,12 +109,13 @@ class Feed extends AbstractFeed
         foreach ($items as $Item) {
             /* @var $Item Item */
             $ItemXml = $XML->addChild('url');
+            $date    = strtotime($Item->getAttribute('e_date'));
 
             $ItemXml->addChild('loc', $Item->getAttribute('link'));
 
             $ItemXml->addChild(
                 'lastmod',
-                date(\DateTime::ATOM, (int)$Item->getAttribute('e_date'))
+                date(\DateTime::ATOM, (int)$date)
             );
         }
 
