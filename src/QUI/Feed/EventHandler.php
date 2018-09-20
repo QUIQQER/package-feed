@@ -117,18 +117,6 @@ class EventHandler
 
             // clear cache
             QUI\Cache\Manager::clear('quiqqer/feed/'.$feed['id']);
-            // If the sitemap is a sitemapindex, try to delte its indexed sitemaps
-            $i = 0;
-
-            do {
-                try {
-                    QUI\Cache\Manager::clear('quiqqer/feed/'.$feed['id'].'-'.$i);
-                    $i++;
-                    $continue = true;
-                } catch (\Exception $Exception) {
-                    $continue = false;
-                }
-            } while ($continue);
         }
     }
 
