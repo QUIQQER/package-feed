@@ -21,7 +21,7 @@ class EventHandler
      * event : on request
      *
      * @param \QUI\Rewrite $Rewrite
-     * @param String       $url
+     * @param String $url
      *
      * @return void
      */
@@ -47,6 +47,7 @@ class EventHandler
         $feedDetails    = explode("-", $feedIdentifier);
         $feedId         = (int)$feedDetails[0];
         $pageNo         = 0;
+
         if (isset($feedDetails[1])) {
             $pageNo = (int)$feedDetails[1];
         }
@@ -67,7 +68,8 @@ class EventHandler
         }
 
 
-        $cacheName = 'quiqqer/feed/' . $feedId . "-" . $pageNo;
+        $cacheName = 'quiqqer/feed/'.$feedId."/".$pageNo;
+
         try {
             header('Content-Type: application/rss+xml; charset=UTF-8');
             echo QUI\Cache\Manager::get($cacheName);
@@ -83,7 +85,7 @@ class EventHandler
 
             echo $output;
             exit;
-        } catch (QUI\Exception $Exception) {
+        } catch (\Exception $Exception) {
         }
     }
 
@@ -114,21 +116,9 @@ class EventHandler
             }
 
             // clear cache
-            QUI\Cache\Manager::clear('quiqqer/feed/' . $feed['id']);
-            // If the sitemap is a sitemapindex, try to delte its indexed sitemaps
-            $i = 0;
-            do {
-                try {
-                    QUI\Cache\Manager::get('quiqqer/feed/' . $feed['id'] . '-' . $i);
-                    $i++;
-                    $continue = true;
-                } catch (\Exception $Exception) {
-                    $continue = false;
-                }
-            } while ($continue);
+            QUI\Cache\Manager::clear('quiqqer/feed/'.$feed['id']);
         }
     }
-
 
     /**
      * @param QUI\Template $Template
@@ -144,7 +134,7 @@ class EventHandler
             try {
                 $Feed = new Feed($feedID);
             } catch (\Exception $Exception) {
-                QUI\System\Log::addWarning("Attempt to add non existing feed '" . $feedID . "' to header");
+                QUI\System\Log::addWarning("Attempt to add non existing feed '".$feedID."' to header");
                 continue;
             }
 
@@ -167,19 +157,18 @@ class EventHandler
                 continue;
             }
 
-            
+
             // Check if the feed should be included on this page
             $publishSitesString = $Feed->getAttribute("publish_sites");
             $feedPublishSiteIDs = $Feed->parseSiteSelect($publishSitesString);
-            
+
             if (!empty($publishSitesString) && !in_array(QUI::getRewrite()->getSite()->getId(), $feedPublishSiteIDs)) {
                 continue;
             }
-            
-            
+
 
             $projectHost = $FeedProject->getVHost(true, true);
-            $url         = $projectHost . URL_DIR . 'feed=' . $Feed->getId() . '.xml';
+            $url         = $projectHost.URL_DIR.'feed='.$Feed->getId().'.xml';
 
             $mimeType = "";
             $feedType = $Feed->getFeedType();
@@ -198,7 +187,7 @@ class EventHandler
             }
 
 
-            $rssTag = '<link rel="alternate" type="' . $mimeType . '" href="' . $url . '" />' . PHP_EOL;
+            $rssTag = '<link rel="alternate" type="'.$mimeType.'" href="'.$url.'" />'.PHP_EOL;
             $Template->extendHeader($rssTag);
         }
     }
