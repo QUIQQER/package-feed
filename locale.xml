@@ -69,6 +69,10 @@
             <de><![CDATA[Bitte wählen Sie die Seiten, welche im Feed aufgeführt werden sollen.]]></de>
             <en><![CDATA[Please select the pages which should be included in the feed.]]></en>
         </locale>
+        <locale name="quiqqer.feed.displayInHeader">
+            <de><![CDATA[Feed im Header einfügen]]></de>
+            <en><![CDATA[Insert feed in the header]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/feed" datatype="php">
