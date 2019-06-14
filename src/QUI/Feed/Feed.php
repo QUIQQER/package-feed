@@ -100,6 +100,8 @@ class Feed extends QUI\QDOM
 
     /**
      * Save the feed
+     *
+     * @throws QUI\Exception
      */
     public function save()
     {
@@ -140,9 +142,11 @@ class Feed extends QUI\QDOM
     /**
      * Output the feed as XML
      *
-     * @var $page - (optional) The pagenumber, if supported
+     * @param $page - (optional) The pagenumber, if supported
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function output($page = 0)
     {
@@ -183,7 +187,7 @@ class Feed extends QUI\QDOM
             $this->getAttribute('feedDescription')
         );
         $Channel->setAttribute('title', $this->getAttribute('feedName'));
-        $Channel->setDate(time());
+        $Channel->setDate(\time());
 
         $ids = $this->getSiteIDs();
 
@@ -201,24 +205,20 @@ class Feed extends QUI\QDOM
                 $link      = $Site->getUrlRewritten();
                 $permalink = $Site->getCanonical();
 
-                if (strpos($link, 'https:') === false && strpos($link, 'http:') === false) {
+                if (\strpos($link, 'https:') === false && \strpos($link, 'http:') === false) {
                     $link = $projectHost.$Site->getUrlRewritten();
                 }
 
-                if (strpos($permalink, 'https:') === false && strpos($permalink, 'http:') === false) {
+                if (\strpos($permalink, 'https:') === false && \strpos($permalink, 'http:') === false) {
                     $permalink = $projectHost.$Site->getCanonical();
                 }
 
                 /** @var QUI\Feed\Handler\AbstractItem $Item */
                 $Item = $Channel->createItem([
-                    'id'          => $Site->getId(),
-                    'language'    => $Project->getLang(),
-                    'project'     => $Project->getName(),
                     'title'       => $Site->getAttribute('title'),
                     'description' => $Site->getAttribute('short'),
-                    'date'        => strtotime($date),
-                    'e_date'      => $Site->getAttribute('e_date'),
-                    'c_date'      => $Site->getAttribute('c_date'),
+                    'language'    => $Project->getLang(),
+                    'date'        => \strtotime($date),
                     'link'        => $link,
                     'permalink'   => $permalink
                 ]);
@@ -257,11 +257,13 @@ class Feed extends QUI\QDOM
      * Gets the site ids which should be used for the feed
      *
      * @return array
+     * @throws QUI\Exception
      */
     public function getSiteIDs()
     {
         $feedSites = $this->getAttribute('feedsites');
         $feedLimit = (int)$this->getAttribute('feedlimit');
+
         if (!$feedLimit && $feedLimit !== 0) {
             $feedLimit = 10;
         }
@@ -274,7 +276,13 @@ class Feed extends QUI\QDOM
         // All sites, if no sites were selected.
         if (empty($feedSites)) {
             $queryParams = [
-                'order' => 'release_from DESC, c_date DESC'
+                'order' => 'release_from DESC, c_date DESC',
+                'where' => [
+                    'type' => [
+                        'type'  => 'NOT LIKE',
+                        'value' => 'quiqqer/sitetypes:types/forwarding'
+                    ]
+                ]
             ];
 
             if ($feedLimit > 0) {
@@ -283,7 +291,7 @@ class Feed extends QUI\QDOM
 
             $ids = $Project->getSitesIds($queryParams);
 
-            $ids = array_map(function ($entry) {
+            $ids = \array_map(function ($entry) {
                 return (int)$entry['id'];
             }, $ids);
 
@@ -293,18 +301,18 @@ class Feed extends QUI\QDOM
         // Get the IDs of the selected sites
         $PDO       = QUI::getPDO();
         $table     = $Project->getAttribute('db_table');
-        $feedSites = explode(';', $feedSites);
+        $feedSites = \explode(';', $feedSites);
 
         $idCount  = 0;
         $strCount = 0;
 
         $whereParts    = [];
         $wherePrepared = [];
+        $childPageIDs  = [];
 
-        $childPageIDs = [];
         foreach ($feedSites as $needle) {
             //
-            if (is_numeric($needle)) {
+            if (\is_numeric($needle)) {
                 $_id = ':id'.$idCount;
 
                 $whereParts[] = " id = {$_id} ";
@@ -321,9 +329,9 @@ class Feed extends QUI\QDOM
 
             // Search for children of this site
 
-            if (preg_match("~p[0-9]+~i", $needle)) {
-                $parentSiteID = (int)substr($needle, 1);
-                $childPageIDs = array_merge($childPageIDs, $Project->get($parentSiteID)->getChildrenIdsRecursive());
+            if (\preg_match("~p[0-9]+~i", $needle)) {
+                $parentSiteID = (int)\substr($needle, 1);
+                $childPageIDs = \array_merge($childPageIDs, $Project->get($parentSiteID)->getChildrenIdsRecursive());
                 continue;
             }
 
@@ -343,18 +351,19 @@ class Feed extends QUI\QDOM
         // Create the part of the query for the site ids of child sites.
         // `id` IN ( id1, id2, id3, id4 )
         if (!empty($childPageIDs)) {
-            $childPageIDs = array_unique($childPageIDs);
+            $childPageIDs = \array_unique($childPageIDs);
 
             $idString = "";
 
-            for ($i = 0; $i < count($childPageIDs); $i++) {
+            for ($i = 0; $i < \count($childPageIDs); $i++) {
                 $idString .= ":pageid".$i.",";
             }
-            $idString = rtrim($idString, ",");
 
+            $idString     = \rtrim($idString, ",");
             $whereParts[] = " id IN ({$idString}) ";
 
             $i = 0;
+
             foreach ($childPageIDs as $id) {
                 $wherePrepared[] = [
                     'type'  => \PDO::PARAM_INT,
@@ -365,15 +374,21 @@ class Feed extends QUI\QDOM
             }
         }
 
-        $where = implode(' OR ', $whereParts);
+        $where = \implode(' OR ', $whereParts);
 
         // query
         $query = "
                 SELECT id
                 FROM {$table}
-                WHERE active = 1 AND ({$where})
+                WHERE active = 1 AND ({$where}) AND type <> :forwarding
                 ORDER BY release_from DESC, c_date DESC
             ";
+
+        $wherePrepared[] = [
+            'type'  => \PDO::PARAM_STR,
+            'value' => 'quiqqer/sitetypes:types/forwarding',
+            'name'  => ":forwarding"
+        ];
 
         if ($feedLimit > 0) {
             $query .= "LIMIT :limit";
@@ -396,6 +411,8 @@ class Feed extends QUI\QDOM
 
         $Statement->execute();
         $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        $ids = [];
 
         foreach ($result as $row) {
             $ids[] = $row['id'];
@@ -428,7 +445,7 @@ class Feed extends QUI\QDOM
 
             $ids = $Project->getSitesIds($queryParams);
 
-            $ids = array_map(function ($entry) {
+            $ids = \array_map(function ($entry) {
                 return (int)$entry['id'];
             }, $ids);
 
@@ -438,7 +455,7 @@ class Feed extends QUI\QDOM
         // Get the IDs of the selected sites
         $PDO   = QUI::getPDO();
         $table = $Project->getAttribute('db_table');
-        $sites = explode(';', $siteSelectValue);
+        $sites = \explode(';', $siteSelectValue);
 
         $idCount  = 0;
         $strCount = 0;
@@ -449,7 +466,7 @@ class Feed extends QUI\QDOM
         $childPageIDs = [];
         foreach ($sites as $needle) {
             //
-            if (is_numeric($needle)) {
+            if (\is_numeric($needle)) {
                 $_id = ':id'.$idCount;
 
                 $whereParts[] = " id = {$_id} ";
@@ -465,9 +482,9 @@ class Feed extends QUI\QDOM
             }
 
             // Search for children of this site
-            if (preg_match("~p[0-9]+~i", $needle)) {
-                $parentSiteID = (int)substr($needle, 1);
-                $childPageIDs = array_merge($childPageIDs, $Project->get($parentSiteID)->getChildrenIdsRecursive());
+            if (\preg_match("~p[0-9]+~i", $needle)) {
+                $parentSiteID = (int)\substr($needle, 1);
+                $childPageIDs = \array_merge($childPageIDs, $Project->get($parentSiteID)->getChildrenIdsRecursive());
                 continue;
             }
 
@@ -487,14 +504,15 @@ class Feed extends QUI\QDOM
         // Create the part of the query for the site ids of child sites.
         // `id` IN ( id1, id2, id3, id4 )
         if (!empty($childPageIDs)) {
-            $childPageIDs = array_unique($childPageIDs);
+            $childPageIDs = \array_unique($childPageIDs);
 
             $idString = "";
 
-            for ($i = 0; $i < count($childPageIDs); $i++) {
+            for ($i = 0; $i < \count($childPageIDs); $i++) {
                 $idString .= ":pageid".$i.",";
             }
-            $idString = rtrim($idString, ",");
+
+            $idString = \rtrim($idString, ",");
 
             $whereParts[] = " id IN ({$idString}) ";
 
@@ -509,7 +527,7 @@ class Feed extends QUI\QDOM
             }
         }
 
-        $where = implode(' OR ', $whereParts);
+        $where = \implode(' OR ', $whereParts);
 
         // query
         $query = "
@@ -546,6 +564,8 @@ class Feed extends QUI\QDOM
      * Returns the number of pages of this feed.
      *
      * @return int - Returns the number of pages or 0 if nor pages are used
+     *
+     * @throws QUI\Exception
      */
     public function getPageCount()
     {
@@ -554,8 +574,8 @@ class Feed extends QUI\QDOM
         }
 
         $pageSize   = $this->getAttribute("pageSize");
-        $totalItems = count($this->getSiteIDs());
+        $totalItems = \count($this->getSiteIDs());
 
-        return ceil($totalItems / $pageSize);
+        return \ceil($totalItems / $pageSize);
     }
 }
