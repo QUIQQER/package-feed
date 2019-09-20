@@ -215,12 +215,13 @@ class Feed extends QUI\QDOM
 
                 /** @var QUI\Feed\Handler\AbstractItem $Item */
                 $Item = $Channel->createItem([
-                    'title'       => $Site->getAttribute('title'),
-                    'description' => $Site->getAttribute('short'),
-                    'language'    => $Project->getLang(),
-                    'date'        => \strtotime($date),
-                    'link'        => $link,
-                    'permalink'   => $permalink
+                    'title'        => $Site->getAttribute('title'),
+                    'description'  => $Site->getAttribute('short'),
+                    'language'     => $Project->getLang(),
+                    'date'         => \strtotime($date),
+                    'link'         => $link,
+                    'permalink'    => $permalink,
+                    'seoDirective' => $Site->getAttribute('quiqqer.meta.site.robots')
                 ]);
 
                 try {
