@@ -7,6 +7,7 @@
 namespace QUI\Feed\Handler\GoogleSitemap;
 
 use QUI\Feed\Handler\AbstractFeed;
+use QUI\Feed\Handler\AbstractItem;
 use QUI\Feed\Utils\SimpleXML;
 use QUI\System\Log;
 
@@ -59,6 +60,18 @@ class Feed extends AbstractFeed
 
             $Items = array_merge($ChannelItems, $Items);
         }
+
+        // Filter items
+        $Items = \array_filter($Items, function ($Item) {
+            /** @var AbstractItem $Item */
+            $seoDirective = $Item->getAttribute('seoDirective');
+
+            if (!empty($seoDirective) && \mb_strpos($seoDirective, 'noindex') !== false) {
+                return false;
+            }
+
+            return true;
+        });
 
         if ($this->pageSize == 0) {
             return $this->createSitemapXML($Items);
