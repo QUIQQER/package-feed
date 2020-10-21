@@ -22,7 +22,7 @@ define('package/quiqqer/feed/bin/FeedWindow', [
     return new Class({
 
         Extends: QUIConfirm,
-        Type   : 'package/quiqqer/feed/bin/Manager',
+        Type   : 'package/quiqqer/feed/bin/FeedWindow',
 
         Binds: [
             '$onOpen',
@@ -34,8 +34,8 @@ define('package/quiqqer/feed/bin/FeedWindow', [
 
             // defaults
             this.setAttributes({
-                maxHeight: 650,
-                maxWidth : 470,
+                maxHeight: 700,
+                maxWidth : 600,
                 feedId   : false,
                 icon     : 'fa fa-rss',
                 autoclose: false,

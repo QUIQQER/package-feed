@@ -90,11 +90,22 @@
 <!-- Feed content -->
 <fieldset class="qui-control-feed-feedsites">
     <label>
-        {{locales.feedSites}}
+        <b>{{locales.feedSites}}</b>
     </label>
     <input name="feedsites"
            data-qui="controls/projects/project/site/Select"
            data-project="" data-lang=""
            data-qui-options-placeholder="{{locales.feedSitesPlaceholder}}"
+    />
+</fieldset>
+
+<fieldset class="qui-control-feed-feedsites">
+    <label>
+        <b>{{locales.feedSitesExcludePlaceholder}}</b>
+    </label>
+    <input name="feedsites_exclude"
+           data-qui="controls/projects/project/site/Select"
+           data-project="" data-lang=""
+           data-qui-options-placeholder="{{locales.feedSitesExcludePlaceholder}}"
     />
 </fieldset>

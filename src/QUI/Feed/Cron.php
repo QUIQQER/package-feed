@@ -30,7 +30,7 @@ class Cron
             try {
                 $Feed = new QUI\Feed\Feed($feedID);
             } catch (QUI\Exception $Exception) {
-                QUI\System\Log::addError($Exception->getMessage());
+                QUI\System\Log::writeException($Exception);
                 continue;
             }
 
@@ -42,7 +42,7 @@ class Cron
                 try {
                     QUI\Cache\Manager::set($cacheName, $output);
                 } catch (\Exception $Exception) {
-                    QUI\System\Log::addError($Exception->getMessage());
+                    QUI\System\Log::writeException($Exception);
                 }
             }
         }
