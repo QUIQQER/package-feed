@@ -120,17 +120,18 @@ class Feed extends QUI\QDOM
         }
 
         QUI::getDataBase()->update($table, [
-            'project'         => $this->getAttribute('project'),
-            'lang'            => $this->getAttribute('lang'),
-            'feedtype'        => $this->getFeedType(),
-            'feedsites'       => $this->getAttribute('feedsites'),
-            'feedlimit'       => $feedlimit ? $feedlimit : 0,
-            'feedName'        => $feedName,
-            'feedDescription' => $feedDescription,
-            'pageSize'        => $this->getAttribute("pageSize"),
-            'publish'         => $this->getAttribute("publish"),
-            'publish_sites'   => $this->getAttribute("publish_sites"),
-            'feedImage'       => $this->getAttribute("feedImage")
+            'project'           => $this->getAttribute('project'),
+            'lang'              => $this->getAttribute('lang'),
+            'feedtype'          => $this->getFeedType(),
+            'feedsites'         => $this->getAttribute('feedsites'),
+            'feedsites_exclude' => $this->getAttribute('feedsites_exclude'),
+            'feedlimit'         => $feedlimit ? $feedlimit : 0,
+            'feedName'          => $feedName,
+            'feedDescription'   => $feedDescription,
+            'pageSize'          => $this->getAttribute("pageSize"),
+            'publish'           => $this->getAttribute("publish"),
+            'publish_sites'     => $this->getAttribute("publish_sites"),
+            'feedImage'         => $this->getAttribute("feedImage")
         ], [
             'id' => $this->getId()
         ]);
@@ -262,7 +263,27 @@ class Feed extends QUI\QDOM
      */
     public function getSiteIDs()
     {
-        $feedSites = $this->getAttribute('feedsites');
+        $feedSites        = $this->getAttribute('feedsites');
+        $feedSitesExclude = $this->getAttribute('feedsites_exclude');
+
+        if (empty($feedSites)) {
+            $feedSites = [];
+        } else {
+            $feedSites = \explode(';', $feedSites);
+            $feedSites = \array_filter($feedSites, function ($siteId) {
+                return !empty($siteId);
+            });
+        }
+
+        if (empty($feedSitesExclude)) {
+            $feedSitesExclude = [];
+        } else {
+            $feedSitesExclude = \explode(';', $feedSitesExclude);
+            $feedSitesExclude = \array_filter($feedSitesExclude, function ($siteId) {
+                return !empty($siteId);
+            });
+        }
+
         $feedLimit = (int)$this->getAttribute('feedlimit');
 
         if (!$feedLimit && $feedLimit !== 0) {
@@ -292,18 +313,38 @@ class Feed extends QUI\QDOM
 
             $ids = $Project->getSitesIds($queryParams);
 
-            $ids = \array_map(function ($entry) {
+            $siteIds = \array_map(function ($entry) {
                 return (int)$entry['id'];
             }, $ids);
-
-            return $ids;
+        } else {
+            $siteIds = $this->getSiteIdsBySiteIdControlValues($feedSites);
         }
 
-        // Get the IDs of the selected sites
-        $PDO       = QUI::getPDO();
-        $table     = $Project->getAttribute('db_table');
-        $feedSites = \explode(';', $feedSites);
+        if (empty($feedSitesExclude)) {
+            return $siteIds;
+        }
 
+        $siteIdsExclude = $this->getSiteIdsBySiteIdControlValues($feedSitesExclude);
+
+        return \array_diff($siteIds, $siteIdsExclude);
+    }
+
+    /**
+     * Get all Site IDs based on the values of the controls/projects/project/site/Select control
+     *
+     * @param array $values
+     * @return int[]
+     * @throws QUI\Exception
+     */
+    protected function getSiteIdsBySiteIdControlValues(array $values)
+    {
+        $Project = QUI::getProject(
+            $this->getAttribute('project'),
+            $this->getAttribute('lang')
+        );
+
+        $PDO      = QUI::getPDO();
+        $table    = $Project->getAttribute('db_table');
         $idCount  = 0;
         $strCount = 0;
 
@@ -311,7 +352,13 @@ class Feed extends QUI\QDOM
         $wherePrepared = [];
         $childPageIDs  = [];
 
-        foreach ($feedSites as $needle) {
+        $feedLimit = (int)$this->getAttribute('feedlimit');
+
+        if (!$feedLimit && $feedLimit !== 0) {
+            $feedLimit = 10;
+        }
+
+        foreach ($values as $needle) {
             //
             if (\is_numeric($needle)) {
                 $_id = ':id'.$idCount;
