@@ -284,6 +284,9 @@ class Feed extends QUI\QDOM
             });
         }
 
+        // Some site types are always excluded!
+        $feedSitesExclude[] = 'quiqqer/sitetypes:types/forwarding';
+
         $feedLimit = (int)$this->getAttribute('feedlimit');
 
         if (!$feedLimit && $feedLimit !== 0) {
@@ -298,13 +301,7 @@ class Feed extends QUI\QDOM
         // All sites, if no sites were selected.
         if (empty($feedSites)) {
             $queryParams = [
-                'order' => 'release_from DESC, c_date DESC',
-                'where' => [
-                    'type' => [
-                        'type'  => 'NOT LIKE',
-                        'value' => 'quiqqer/sitetypes:types/forwarding'
-                    ]
-                ]
+                'order' => 'release_from DESC, c_date DESC'
             ];
 
             if ($feedLimit > 0) {
@@ -428,15 +425,9 @@ class Feed extends QUI\QDOM
         $query = "
                 SELECT id
                 FROM {$table}
-                WHERE active = 1 AND ({$where}) AND type <> :forwarding
+                WHERE active = 1 AND ({$where})
                 ORDER BY release_from DESC, c_date DESC
             ";
-
-        $wherePrepared[] = [
-            'type'  => \PDO::PARAM_STR,
-            'value' => 'quiqqer/sitetypes:types/forwarding',
-            'name'  => ":forwarding"
-        ];
 
         if ($feedLimit > 0) {
             $query .= "LIMIT :limit";
