@@ -1,9 +1,3 @@
-
-.qui-control-feed select,
-.qui-control-feed input {
-    width : 50%;
-}
-
 .qui-control-feed fieldset {
     border : none;
     clear  : both;
@@ -56,10 +50,6 @@
 .qui-feed-feedwindow-publish > label {
     float : none;
     width : auto;
-}
-
-.qui-control-feed-image-container input {
-    width : calc(50% - 35px);
 }
 
 .qui-control-feed-btn-image {

@@ -1,0 +1,17 @@
+<quiqqer>
+    <feeds>
+        <feed class="QUI\Feed\Handler\RSS\Feed">
+
+            <settings>
+                <input type="text"
+                       name="test1"
+                >
+                    <text>
+                        Das Ist Textfeld Test1
+                    </text>
+                </input>
+            </settings>
+
+        </feed>
+    </feeds>
+</quiqqer>

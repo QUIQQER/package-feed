@@ -1,90 +1,122 @@
-<!-- Feed type-->
-<fieldset>
-    <label>
-        {{locales.feedType}}
-    </label>
-    <select name="feedtype">
-        <option value="rss">RSS</option>
-        <option value="atom">Atom</option>
-        <option value="googleSitemap">Google Sitemap</option>
-    </select>
-</fieldset>
-
-<!-- Feed name-->
-<fieldset>
-    <label>
-        {{locales.feedName}}
-    </label>
-    <input type="text" name="feedName"/>
-</fieldset>
-
-<!-- Feed description -->
-<fieldset>
-    <label>
-        {{locales.feedDescription}}
-    </label>
-    <input type="text" name="feedDescription"/>
-</fieldset>
-
-<!-- Feed Project-->
-<fieldset>
-    <label>
-        {{locales.project}}
-    </label>
-    <div class="qui-control-feed-project">
-        <input type="text" name="project" class="project"/>
-    </div>
-</fieldset>
-
-<!-- Feed image-->
-<fieldset class="qui-control-feed-image-container">
-    <label>
-        {{locales.feedImage}}
-    </label>
-    <input type="text" name="feedImage"/>
-    <button role="button" class="qui-control-feed-btn-image qui-button">
-        <span class="fa fa-image"></span>
-    </button>
-</fieldset>
-
-<!-- Feed limit -->
-<fieldset>
-    <label>
-        {{locales.feedlimit}}
-    </label>
-    <input type="number" name="feedlimit"/>
-</fieldset>
-
-<!-- Feed split -->
-<div class="qui-feed-feedwindow-split">
-    <input type="checkbox" name="split">
-    <label class="qui-feed-feedwindow-split-label">
-        {{locales.split}}
-    </label>
-</div>
-
-<!-- Feed split -> page size -->
-<fieldset style="display:none;" class="qui-feed-feetwindow-pagesize">
-    <label>
-        {{locales.pagesize}}
-    </label>
-    <input type="number" name="pagesize"/>
-</fieldset>
-
-<!-- Feed publish -->
-<div class="qui-feed-feedwindow-publish">
-    <input type="checkbox" name="publish">
-    <label class="qui-feed-feedwindow-publish-label">
-        {{locales.publish}}
-    </label>
-</div>
+<table class="data-table data-table-flexbox">
+    <tbody>
+    <tr>
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.feedType}}
+                    </span>
+                <select name="feedtype" class="field-container-field">
+                    <option value="rss">RSS</option>
+                    <option value="atom">Atom</option>
+                    <option value="googleSitemap">Google Sitemap</option>
+                </select>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.feedName}}
+                    </span>
+                <input type="text" name="feedName" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.feedDescription}}
+                    </span>
+                <input type="text" name="feedDescription" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.project}}
+                    </span>
+                <div class="qui-control-feed-project field-container-field">
+                    <input type="text" name="project" class="project"/>
+                </div>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.feedImage}}
+                    </span>
+                <input type="text"
+                       name="feedImage"
+                       class="field-container-field"
+                       data-qui="controls/projects/project/media/Select"
+                       data-qui-options-multiple="0"
+                       data-qui-options-max="1"
+                />
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.feedlimit}}
+                    </span>
+                <input type="number" name="feedlimit" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
+    <tr class="qui-feed-feedwindow-split">
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.split}}
+                    </span>
+                <span class="field-container-field">
+                    <input type="checkbox" name="split"/>
+                </span>
+            </label>
+        </td>
+    </tr>
+    <tr style="display: none;" class="qui-feed-feetwindow-pagesize">
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.pagesize}}
+                    </span>
+                <input class="field-container-field" type="number" name="pagesize"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.publish}}
+                    </span>
+                <span class="field-container-field">
+                    <input type="checkbox" name="publish"/>
+                </span>
+            </label>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 <!-- Feed publish -> pages -->
 <fieldset class="qui-feed-publish-sites-container" style="display: none">
     <label for="publish-sites">
         {{locales.publishSites}}
     </label>
-    <input id="publish-sites" name="publish-sites" class="qui-feed-publish-sites" data-qui="controls/projects/project/site/Select" data-qui-options-placeholder="{{locales.publishSitesPlaceholder}}" />
+    <input id="publish-sites" name="publish-sites" class="qui-feed-publish-sites"
+           data-qui="controls/projects/project/site/Select"
+           data-qui-options-placeholder="{{locales.publishSitesPlaceholder}}"/>
 </fieldset>
 
 <!-- Feed content -->

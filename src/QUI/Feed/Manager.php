@@ -33,7 +33,7 @@ class Manager
     {
         QUI::getDataBase()->insert(
             QUI::getDBTableName(self::TABLE),
-            array('feedtype' => 'rss')
+            ['feedtype' => 'rss']
         );
 
         $id   = QUI::getDataBase()->getPDO()->lastInsertId();
@@ -65,7 +65,7 @@ class Manager
      */
     public function deleteFeed($feedId)
     {
-        
+
         try {
             $feedId = (int)$feedId;
 
@@ -73,9 +73,9 @@ class Manager
 
             QUI::getDataBase()->delete(
                 QUI::getDBTableName(Manager::TABLE),
-                array(
+                [
                     'id' => $feedId
-                )
+                ]
             );
 
         } catch (QUI\Exception $Exception) {
@@ -90,21 +90,31 @@ class Manager
      *
      * @return array
      */
-    public function getList($params = array())
+    public function getList($params = [])
     {
         if (empty($params)) {
-            return QUI::getDataBase()->fetch(array(
+            return QUI::getDataBase()->fetch([
                 'from' => QUI::getDBTableName(self::TABLE)
-            ));
+            ]);
         }
 
         $Grid = new Grid();
 
-        $params = array_merge($Grid->parseDBParams($params), array(
+        $params = array_merge($Grid->parseDBParams($params), [
             'from' => QUI::getDBTableName(self::TABLE)
-        ));
+        ]);
 
         return QUI::getDataBase()->fetch($params);
+    }
+
+    /**
+     * Get list of all available feed types
+     *
+     * @return void
+     */
+    public function getTypes()
+    {
+
     }
 
     /**
@@ -114,13 +124,13 @@ class Manager
      */
     public function count()
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'count' => array(
+        $result = QUI::getDataBase()->fetch([
+            'count' => [
                 'select' => 'id',
-                'as' => 'count'
-            ),
-            'from' => QUI::getDBTableName(self::TABLE)
-        ));
+                'as'     => 'count'
+            ],
+            'from'  => QUI::getDBTableName(self::TABLE)
+        ]);
 
         return (int)$result[0]['count'];
     }

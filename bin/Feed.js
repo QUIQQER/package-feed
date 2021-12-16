@@ -114,18 +114,19 @@ define('package/quiqqer/feed/bin/Feed', [
 
             var self = this;
             // Split Feed event
-            self.$Elm.getElement('.qui-feed-feedwindow-split-label').addEvent('click', function () {
-                self.$SplitCheckbox.checked = !self.$SplitCheckbox.checked;
-                self.$toogglePageSizeVisibility();
-            });
+            //self.$Elm.getElement('.qui-feed-feedwindow-split-label').addEvent('click', function () {
+            //    self.$SplitCheckbox.checked = !self.$SplitCheckbox.checked;
+            //    self.$toogglePageSizeVisibility();
+            //});
             this.$SplitCheckbox.addEvent('change', self.$toogglePageSizeVisibility);
 
             // Publish sites event
-            self.$PublishCheckbox.addEvent('change', self.$togglePublishSitesVisibility);
-            this.$Elm.getElement('.qui-feed-feedwindow-publish-label').addEvent('click', function () {
-                self.$PublishCheckbox.checked = !self.$PublishCheckbox.checked;
-                self.$togglePublishSitesVisibility();
-            });
+            this.$PublishCheckbox.addEvent('change', self.$togglePublishSitesVisibility);
+
+            //this.$Elm.getElement('.qui-feed-feedwindow-publish-label').addEvent('click', function () {
+            //    self.$PublishCheckbox.checked = !self.$PublishCheckbox.checked;
+            //    self.$togglePublishSitesVisibility();
+            //});
 
             // Project select event
             this.$Project.addEvent('change', function () {
@@ -174,32 +175,32 @@ define('package/quiqqer/feed/bin/Feed', [
             this.$Feedtype.addEvent('change', self.$detectSplitOption);
             self.$detectSplitOption();
 
-            // Image button event
-            this.$ImageButton.addEvent('click', function () {
-                require(['controls/projects/project/media/Popup'],
-                    function (MediaWindow) {
-
-                        var projectName = false;
-
-                        var projectData = JSON.decode(self.$Project.value);
-                        if (projectData &&
-                            typeof projectData[0] !== 'undefined' &&
-                            'project' in projectData[0]) {
-                            projectName = projectData[0].project;
-                        }
-
-                        var Window = new MediaWindow({
-                            project: projectName,
-                            events : {
-                                onSubmit: function (Popup, imageData) {
-                                    self.$Image.value = imageData.url;
-                                }
-                            }
-                        });
-                        Window.open();
-
-                    });
-            });
+            //// Image button event
+            //this.$ImageButton.addEvent('click', function () {
+            //    require(['controls/projects/project/media/Popup'],
+            //        function (MediaWindow) {
+            //
+            //            var projectName = false;
+            //
+            //            var projectData = JSON.decode(self.$Project.value);
+            //            if (projectData &&
+            //                typeof projectData[0] !== 'undefined' &&
+            //                'project' in projectData[0]) {
+            //                projectName = projectData[0].project;
+            //            }
+            //
+            //            var Window = new MediaWindow({
+            //                project: projectName,
+            //                events : {
+            //                    onSubmit: function (Popup, imageData) {
+            //                        self.$Image.value = imageData.url;
+            //                    }
+            //                }
+            //            });
+            //            Window.open();
+            //
+            //        });
+            //});
 
             ControlUtils.parse(this.$Elm);
             QUI.parse(this.$Elm, function () {
