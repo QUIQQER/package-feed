@@ -81,7 +81,6 @@ class Manager
                     'id' => $feedId
                 ]
             );
-
         } catch (QUI\Exception $Exception) {
             // feed not exist
         }
