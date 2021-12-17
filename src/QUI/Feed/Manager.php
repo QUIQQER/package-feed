@@ -8,6 +8,10 @@ namespace QUI\Feed;
 
 use QUI;
 use QUI\Utils\Grid;
+use QUI\Cache\LongTermCache;
+use QUI\Utils\Text\XML;
+use QUI\Utils\DOM as DOMUtils;
+use QUI\Utils\XML\Settings as XMLSettings;
 
 /**
  * Class Feed Manager
@@ -110,11 +114,112 @@ class Manager
     /**
      * Get list of all available feed types
      *
-     * @return void
+     * @return array
      */
-    public function getTypes()
+    public function getTypes(): array
     {
+        $types             = [];
+        $XMLSettingsParser = XMLSettings::getInstance();
 
+        foreach ($this->getFeedXmlFiles() as $xmlFile) {
+            $Document = new \DOMDocument();
+            $Document->load($xmlFile);
+
+            $feeds = $Document->getElementsByTagName('feed');
+
+            foreach ($feeds as $Feed) {
+                $feedClass = $Feed->getAttribute('class');
+
+                if (empty($feedClass)) {
+                    QUI\System\Log::addError(
+                        'quiqqer/feed - Feed from feeds.xml file "'.$xmlFile.'"'
+                        .' is missing the "class" attribute. Feed is ignored!'
+                    );
+
+                    continue;
+                }
+
+                if (!\class_exists($feedClass) || !\is_a($feedClass, QUI\Feed\Interfaces\Feed::class, true)) {
+                    QUI\System\Log::addError(
+                        'quiqqer/feed - Feed class "'.$feedClass.'" from feeds.xml file "'.$xmlFile.'"'
+                        .' does not exist or does not implement "QUI\Feed\Interfaces\Feed". Feed is ignored!'
+                    );
+
+                    continue;
+                }
+
+                $type = [
+                    'id' => $this->parseFeedClassToHash($feedClass)
+                ];
+
+
+                // Title (required!)
+                $title = $Feed->getElementsByTagName('title');
+
+                if (!$title->length) {
+                    QUI\System\Log::addError(
+                        'quiqqer/feed - Feed class "'.$feedClass.'" from feeds.xml file "'.$xmlFile.'"'
+                        .' does not have a "title" attribute in the <feed> tag. Feed is ignored!'
+                    );
+
+                    continue;
+                }
+
+                $type['title'] = DOMUtils::getTextFromNode($title->item(0));
+
+                // Description
+                $desc = $Feed->getElementsByTagName('description');
+
+                if ($desc->length) {
+                    $type['description'] = DOMUtils::getTextFromNode($desc->item(0));
+                } else {
+                    $type['description'] = false;
+                }
+
+                // Settings
+                $settings = $Feed->getElementsByTagName('settings');
+
+                foreach ($settings as $settingNode) {
+                    $type['settingsHtml'] = $XMLSettingsParser->parseSettings($settingNode);
+                }
+
+                $types[] = $type;
+            }
+        }
+
+        return $types;
+    }
+
+    /**
+     * Get list of all feed.xml files of installed QUIQQER packages.
+     *
+     * @return string[]
+     */
+    protected function getFeedXmlFiles()
+    {
+        $packages = QUI::getPackageManager()->getInstalled();
+        $list     = [];
+
+        /* @var $Package \QUI\Package\Package */
+        foreach ($packages as $package) {
+            try {
+                $Package = QUI::getPackage($package['name']);
+            } catch (QUI\Exception $Exception) {
+                continue;
+            }
+
+            if (!$Package->isQuiqqerPackage()) {
+                continue;
+            }
+
+            $feedXmlFile = $Package->getDir().'/feeds.xml';
+
+            if (\file_exists($feedXmlFile)) {
+                $list[] = $feedXmlFile;
+            }
+        }
+
+        return $list;
     }
 
     /**
@@ -133,5 +238,14 @@ class Manager
         ]);
 
         return (int)$result[0]['count'];
+    }
+
+    /**
+     * @param string $feedClass
+     * @return string
+     */
+    protected function parseFeedClassToHash(string $feedClass): string
+    {
+        return \hash('sha256', $feedClass);
     }
 }

@@ -4,12 +4,6 @@
     margin : 0;
 }
 
-.qui-control-feed label {
-    float       : left;
-    padding-top : 8px;
-    width       : 50%;
-}
-
 .qui-control-feed-feedsites label {
     padding : 10px 0;
     width   : 100%;
@@ -63,4 +57,8 @@
 .feed-checkbox-container > label {
     float : none;
     width : auto;
+}
+
+.qui-control-feed__hidden {
+    display: none;
 }

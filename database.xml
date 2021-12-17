@@ -5,17 +5,18 @@
         <table name="feeds">
             <field type="bigint(10) NOT NULL AUTO_INCREMENT PRIMARY KEY">id</field>
             <field type="varchar(255) DEFAULT ''">project</field>
-            <field type="varchar(2) DEFAULT''">lang</field>
-            <field type="text NULL">feedsites</field>
-            <field type="text NULL">feedsites_exclude</field>
-            <field type="varchar(255) NULL">feedtype</field>
-            <field type="varchar(255) NULL">feedName</field>
-            <field type="varchar(255) NULL">feedDescription</field>
-            <field type="int(100) NULL">feedlimit</field>
+            <field type="varchar(2) DEFAULT ''">lang</field>
+            <field type="text NULL DEFAULT NULL">feedsites</field>
+            <field type="text NULL DEFAULT NULL">feedsites_exclude</field>
+            <field type="varchar(255) NULL DEFAULT NULL">feedtype</field>
+            <field type="varchar(255) NULL DEFAULT NULL">feedName</field>
+            <field type="varchar(255) NULL DEFAULT NULL">feedDescription</field>
+            <field type="int(100) NULL DEFAULT NULL">feedlimit</field>
             <field type="int(100) DEFAULT 0">pageSize</field>
             <field type="int(1) DEFAULT 0">publish</field>
             <field type="VARCHAR(1023) DEFAULT 0">publish_sites</field>
-            <field type="VARCHAR(255) NULL">feedImage</field>
+            <field type="VARCHAR(255) NULL DEFAULT NULL">feedImage</field>
+            <field type="TEXT NULL DEFAULT NULL">feed_settings</field>
         </table>
     </global>
 </database>

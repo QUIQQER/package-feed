@@ -1,14 +1,41 @@
 <quiqqer>
     <feeds>
         <feed class="QUI\Feed\Handler\RSS\Feed">
+            <title>
+                Seiten (RSS)
+            </title>
+            <description>
+                Dies ist ein toller RSS-Feed für CMS-Seiten
+            </description>
 
             <settings>
+                <title>
+                    Settings Abschnitt 1
+                </title>
+
                 <input type="text"
                        name="test1"
                 >
                     <text>
                         Das Ist Textfeld Test1
                     </text>
+                </input>
+            </settings>
+
+            <settings>
+                <title>
+                    Settings Abschnitt 2
+                </title>
+
+                <input type="text"
+                       name="test2"
+                >
+                    <text>
+                        Das Ist Textfeld Test2
+                    </text>
+                    <description>
+                        Test2 Description
+                    </description>
                 </input>
             </settings>
 
