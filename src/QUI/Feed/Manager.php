@@ -1,23 +1,17 @@
 <?php
 
-/**
- * This file contains \QUI\Feed\Manager
- */
-
 namespace QUI\Feed;
 
 use QUI;
 use QUI\Utils\Grid;
-use QUI\Cache\LongTermCache;
-use QUI\Utils\Text\XML;
 use QUI\Utils\DOM as DOMUtils;
-use QUI\Utils\XML\Settings as XMLSettings;
 
 /**
  * Class Feed Manager
  *
  * @package quiqqer/feed
- * @author  www.pcsg.de (Henning Leutz
+ * @author  www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Patrick Müller)
  */
 class Manager
 {
@@ -29,21 +23,34 @@ class Manager
     /**
      * Add a new feed
      *
+     * @param string $typeId - Feed type id
      * @param array $params - Feed attributes
      *
      * @return Feed
+     *
+     * @throws QUI\Exception
      */
-    public function addFeed($params)
+    public function addFeed(string $typeId, $params)
     {
+        if (!$this->existsType($typeId)) {
+            throw new QUI\Exception([
+                'quiqqer/feed',
+                'exception.Manager.type_does_not_exist',
+                [
+                    'typeId' => $typeId
+                ]
+            ]);
+        }
+
         QUI::getDataBase()->insert(
             QUI::getDBTableName(self::TABLE),
-            ['feedtype' => 'rss']
+            ['type_id' => $typeId]
         );
 
         $id   = QUI::getDataBase()->getPDO()->lastInsertId();
         $Feed = new Feed($id);
 
-        $Feed->setAttributes($params);
+        $Feed->setAttributes($this->filterFeedParams($typeId, $params));
         $Feed->save();
 
         return $Feed;
@@ -111,14 +118,38 @@ class Manager
     }
 
     /**
+     * Get data of a specific feed type.
+     *
+     * @param string $typeId
+     * @return array
+     *
+     * @throws QUI\Exception
+     */
+    public function getType(string $typeId): array
+    {
+        foreach ($this->getTypes() as $type) {
+            if ($typeId === $type['id']) {
+                return $type;
+            }
+        }
+
+        throw new QUI\Exception([
+            'quiqqer/feed',
+            'exception.Manager.type_does_not_exist',
+            [
+                'typeId' => $typeId
+            ]
+        ]);
+    }
+
+    /**
      * Get list of all available feed types
      *
      * @return array
      */
     public function getTypes(): array
     {
-        $types             = [];
-        $XMLSettingsParser = XMLSettings::getInstance();
+        $types = [];
 
         foreach ($this->getFeedXmlFiles() as $xmlFile) {
             $Document = new \DOMDocument();
@@ -176,17 +207,46 @@ class Manager
                 }
 
                 // Settings
-                $settings = $Feed->getElementsByTagName('settings');
+                $settings     = $Feed->getElementsByTagName('category');
+                $settingsHtml = '';
 
                 foreach ($settings as $settingNode) {
-                    $type['settingsHtml'] = $XMLSettingsParser->parseSettings($settingNode);
+                    $settingsHtml .= DOMUtils::parseCategoryToHTML($settingNode);
+                    $settingsHtml = \str_replace(
+                        'class="description"',
+                        'class="field-container-item-desc"',
+                        $settingsHtml
+                    );
                 }
+
+                $type['settingsHtml'] = $settingsHtml;
+
+                // Parse available attributes from settings HTML
+                \preg_match_all('#name=[\'|"](\w*)[\'|"]#', $settingsHtml, $matches);
+                $type['attributes'] = !empty($matches[1]) ? $matches[1] : [];
 
                 $types[] = $type;
             }
         }
 
         return $types;
+    }
+
+    /**
+     * Check if a specific feed type exists.
+     *
+     * @param string $typeId
+     * @return bool
+     */
+    public function existsType(string $typeId): bool
+    {
+        try {
+            $this->getType($typeId);
+            return true;
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+            return false;
+        }
     }
 
     /**
@@ -237,6 +297,52 @@ class Manager
         ]);
 
         return (int)$result[0]['count'];
+    }
+
+    /**
+     * Filter all feed parameters (from frontend/QUIQQER backend)
+     *
+     * @param string $typeId
+     * @param array $params
+     * @return array
+     */
+    public function filterFeedParams(string $typeId, array $params): array
+    {
+        $feedAttributes = [
+            'feedDescription',
+            'feedImage',
+            'feedName',
+            'feedlimit',
+            'feedtype',
+            'pagesize',
+            'project',
+            'publish',
+            'publish-sites',
+            'split'
+        ];
+
+        foreach ($this->getTypes() as $type) {
+            if ($type['id'] === $typeId) {
+                $feedAttributes = \array_merge(
+                    $type['attributes'],
+                    $feedAttributes
+                );
+
+                break;
+            }
+        }
+
+        $sanitizedAttributes = [];
+
+        foreach ($feedAttributes as $attribute) {
+            if (\array_key_exists($attribute, $params)) {
+                $sanitizedAttributes[$attribute] = $params[$attribute];
+            } else {
+                $sanitizedAttributes[$attribute] = null;
+            }
+        }
+
+        return $sanitizedAttributes;
     }
 
     /**

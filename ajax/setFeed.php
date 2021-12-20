@@ -1,36 +1,39 @@
 <?php
 
 /**
- * This file contains package_quiqqer_feed_ajax_setFeed
- */
-
-/**
  * Set a feed
- *
- * @author www.pcsg.de (Henning Leutz)
  *
  * @param string|boolean $feedId - ID of the Feed
  * @param string $params - JSON params
  *
  * @return array
+ * @throws QUI\Exception
+ * @author www.pcsg.de (Henning Leutz)
+ *
  */
 QUI::$Ajax->registerFunction(
     'package_quiqqer_feed_ajax_setFeed',
     function ($feedId, $params) {
         $FeedManager = new QUI\Feed\Manager();
-        $params      = json_decode($params, true);
+        $params      = \json_decode($params, true);
 
         if ($feedId) {
             $Feed = $FeedManager->getFeed($feedId);
             $Feed->setAttributes($params);
             $Feed->save();
-
         } else {
-            $Feed = $FeedManager->addFeed($params);
+            if (empty($params['feedtype'])) {
+                throw new QUI\Exception([
+                    'quiqqer/feed',
+                    'exception.ajax.setFeed.missing_type'
+                ]);
+            }
+
+            $Feed = $FeedManager->addFeed($params['feedtype'], $params);
         }
 
         return $Feed->getAttributes();
     },
-    array('feedId', 'params'),
+    ['feedId', 'params'],
     'Permission::checkAdminUser'
 );

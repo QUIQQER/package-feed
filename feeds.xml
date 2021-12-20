@@ -2,42 +2,40 @@
     <feeds>
         <feed class="QUI\Feed\Handler\RSS\Feed">
             <title>
-                Seiten (RSS)
+                <locale group="quiqqer/feed" var="feed.RSS.title"/>
             </title>
             <description>
-                Dies ist ein toller RSS-Feed für CMS-Seiten
+                <locale group="quiqqer/feed" var="feed.RSS.description"/>
             </description>
 
-            <settings>
-                <title>
-                    Settings Abschnitt 1
-                </title>
+            <categories>
+                <category>
+                    <settings>
+                        <title>
+                            <locale group="quiqqer/feed" var="feed.RSS.settings.title"/>
+                        </title>
 
-                <input type="text"
-                       name="test1"
-                >
-                    <text>
-                        Das Ist Textfeld Test1
-                    </text>
-                </input>
-            </settings>
+                        <input type="hidden"
+                               conf="feedsites"
+                               data-qui="controls/projects/project/site/Select"
+                        >
+                            <text>
+                                <locale group="quiqqer/feed" var="feed.RSS.settings.feedsites.title"/>
+                            </text>
+                        </input>
 
-            <settings>
-                <title>
-                    Settings Abschnitt 2
-                </title>
+                        <input type="hidden"
+                               conf="feedsites_exclude"
+                               data-qui="controls/projects/project/site/Select"
+                        >
+                            <text>
+                                <locale group="quiqqer/feed" var="feed.RSS.settings.feedsites_exclude.title"/>
+                            </text>
+                        </input>
+                    </settings>
+                </category>
 
-                <input type="text"
-                       name="test2"
-                >
-                    <text>
-                        Das Ist Textfeld Test2
-                    </text>
-                    <description>
-                        Test2 Description
-                    </description>
-                </input>
-            </settings>
+            </categories>
 
         </feed>
     </feeds>

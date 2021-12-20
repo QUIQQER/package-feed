@@ -29,15 +29,22 @@ class Feed extends QUI\QDOM
     protected $feedId;
 
     /**
+     * ID of the Feed type (hashed classname)
+     *
+     * @var string
+     */
+    protected $typeId = '';
+
+    /**
      * Constructor
      *
      * @param integer $feedId
      *
      * @throws QUI\Exception
      */
-    public function __construct($feedId)
+    public function __construct(int $feedId)
     {
-        $this->feedId = (int)$feedId;
+        $this->feedId = $feedId;
 
         $data = QUI::getDataBase()->fetch([
             'from'  => QUI::getDBTableName(Manager::TABLE),
@@ -53,7 +60,20 @@ class Feed extends QUI\QDOM
             );
         }
 
-        $this->setAttributes($data[0]);
+        $data = $data[0];
+
+        if (!empty($data['feed_settings'])) {
+            $feedSettings = \json_decode($data['feed_settings'], true);
+            $this->setAttributes($feedSettings);
+
+            unset($data['feed_settings']);
+        }
+
+        if (!empty($data['type_id'])) {
+            $this->typeId = $data['type_id'];
+        }
+
+        $this->setAttributes($data);
     }
 
     /**
@@ -64,6 +84,14 @@ class Feed extends QUI\QDOM
     public function getId()
     {
         return $this->feedId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeId(): string
+    {
+        return $this->typeId;
     }
 
     /**
@@ -119,19 +147,28 @@ class Feed extends QUI\QDOM
             $feedDescription = Orthos::clear($this->getAttribute('feedDescription'));
         }
 
+        $Manager      = new Manager();
+        $typeData     = $Manager->getType($this->getAttribute('type_id'));
+        $feedSettings = [];
+
+        foreach ($typeData['attributes'] as $attribute) {
+            $feedSettings[$attribute] = $this->getAttribute($attribute);
+        }
+
         QUI::getDataBase()->update($table, [
-            'project'           => $this->getAttribute('project'),
-            'lang'              => $this->getAttribute('lang'),
-            'feedtype'          => $this->getFeedType(),
-            'feedsites'         => $this->getAttribute('feedsites'),
-            'feedsites_exclude' => $this->getAttribute('feedsites_exclude'),
-            'feedlimit'         => $feedlimit ? $feedlimit : 0,
-            'feedName'          => $feedName,
-            'feedDescription'   => $feedDescription,
-            'pageSize'          => $this->getAttribute("pageSize"),
-            'publish'           => $this->getAttribute("publish"),
-            'publish_sites'     => $this->getAttribute("publish_sites"),
-            'feedImage'         => $this->getAttribute("feedImage")
+            'project'         => $this->getAttribute('project'),
+            'lang'            => $this->getAttribute('lang'),
+            'feedtype'        => $this->getFeedType(),
+//            'feedsites'         => $this->getAttribute('feedsites'),
+//            'feedsites_exclude' => $this->getAttribute('feedsites_exclude'),
+            'feedlimit'       => $feedlimit ?: 0,
+            'feedName'        => $feedName,
+            'feedDescription' => $feedDescription,
+            'pageSize'        => $this->getAttribute("pageSize"),
+            'publish'         => $this->getAttribute("publish") ? 1 : 0,
+            'publish_sites'   => $this->getAttribute("publish_sites"),
+            'feedImage'       => $this->getAttribute("feedImage"),
+            'feed_settings'   => \json_encode($feedSettings)
         ], [
             'id' => $this->getId()
         ]);

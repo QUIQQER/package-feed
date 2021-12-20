@@ -44,7 +44,7 @@
             <en><![CDATA[Pagesize]]></en>
         </locale>
         <locale name="quiqqer.feed.publish">
-            <de><![CDATA[Soll der Feed auf der Seite publiziert werden?]]></de>
+            <de><![CDATA[Soll der Feed auf der Website publiziert werden?]]></de>
             <en><![CDATA[Should the feed get published on the website?]]></en>
         </locale>
         <locale name="quiqqer.feed.publish.all">
@@ -77,12 +77,49 @@
             <de><![CDATA[Feed im Header einfügen]]></de>
             <en><![CDATA[Insert feed in the header]]></en>
         </locale>
+        <locale name="quiqqer.feed.publishSitesLabel">
+            <de><![CDATA[Seiten, auf denen der Feed publiziert werden soll]]></de>
+            <en><![CDATA[Sites on which the feed should be published]]></en>
+        </locale>
+        <locale name="quiqqer.feed.headerGeneralSettings">
+            <de><![CDATA[Allgemeine Feed-Einstellungen]]></de>
+            <en><![CDATA[General feed settings]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/feed" datatype="php">
         <locale name="exception.feed.not.found">
             <de><![CDATA[Feed wurde nicht gefunden]]></de>
             <en><![CDATA[Feed not found]]></en>
+        </locale>
+        <locale name="exception.ajax.setFeed.missing_type">
+            <de><![CDATA[Es wurde kein Feed-Typ angegeben.]]></de>
+            <en><![CDATA[No feed type has been specified.]]></en>
+        </locale>
+        <locale name="exception.Manager.type_does_not_exist">
+            <de><![CDATA[Ein Feed-Typ mit der ID "[typeId]" konnte nicht gefunden werden. Bitte stellen Sie sicher, dass das passende Feed-Paket installiert ist.]]></de>
+            <en><![CDATA[A feed type with ID "[typeId]" could not be found. Please make sure that the matching feed package is installed.]]></en>
+        </locale>
+        
+        <locale name="feed.RSS.title">
+            <de><![CDATA[CMS-Seiten (RSS)]]></de>
+            <en><![CDATA[CMS Sites (RSS)]]></en>
+        </locale>
+        <locale name="feed.RSS.description">
+            <de><![CDATA[Veröffentlichung von QUIQQER CMS-Seiten als RSS-Feed.]]></de>
+            <en><![CDATA[Publication of QUIQQER CMS sites as RSS feed.]]></en>
+        </locale>
+        <locale name="feed.RSS.settings.title">
+            <de><![CDATA[Feed-Seiten einschränken]]></de>
+            <en><![CDATA[Restrict feed sites]]></en>
+        </locale>
+        <locale name="feed.RSS.settings.feedsites.title">
+            <de><![CDATA[Welche Seiten sollen im Feed enthalten sein?]]></de>
+            <en><![CDATA[Which sites should be part of the feed?]]></en>
+        </locale>
+        <locale name="feed.RSS.settings.feedsites_exclude.title" html="true">
+            <de><![CDATA[Welche Seiten sollen <b>nicht</b> im Feed enthalten sein?]]></de>
+            <en><![CDATA[Which sites should <b>nicht</b> be part of the feed?]]></en>
         </locale>
     </groups>
 

@@ -1,4 +1,9 @@
 <table class="data-table data-table-flexbox">
+    <thead>
+        <tr>
+            <th>{{locales.headerGeneralSettings}}</th>
+        </tr>
+    </thead>
     <tbody>
     <tr>
         <td>
@@ -56,6 +61,7 @@
                        data-qui="controls/projects/project/media/Select"
                        data-qui-options-multiple="0"
                        data-qui-options-max="1"
+                       data-qui-options-use_urls="1"
                 />
             </label>
         </td>
@@ -104,41 +110,25 @@
             </label>
         </td>
     </tr>
+    <tr class="qui-feed-publish-sites-container qui-control-feed__hidden">
+        <td>
+            <label class="field-container">
+                    <span class="field-container-item">
+                        {{locales.publishSitesLabel}}
+                    </span>
+                <span class="field-container-field">
+                    <input type="checkbox"
+                           name="publish-sites"
+                           class="field-container-field"
+                           data-qui="controls/projects/project/site/Select"
+                           data-qui-options-placeholder="{{locales.publishSitesPlaceholder}}"
+                    />
+                </span>
+            </label>
+        </td>
+    </tr>
     </tbody>
 </table>
-
-<!-- Feed publish -> pages -->
-<fieldset class="qui-feed-publish-sites-container" style="display: none">
-    <label for="publish-sites">
-        {{locales.publishSites}}
-    </label>
-    <input id="publish-sites" name="publish-sites" class="qui-feed-publish-sites"
-           data-qui="controls/projects/project/site/Select"
-           data-qui-options-placeholder="{{locales.publishSitesPlaceholder}}"/>
-</fieldset>
-
-<!-- Feed content -->
-<fieldset class="qui-control-feed-feedsites">
-    <label>
-        <b>{{locales.feedSites}}</b>
-    </label>
-    <input name="feedsites"
-           data-qui="controls/projects/project/site/Select"
-           data-project="" data-lang=""
-           data-qui-options-placeholder="{{locales.feedSitesPlaceholder}}"
-    />
-</fieldset>
-
-<fieldset class="qui-control-feed-feedsites">
-    <label>
-        <b>{{locales.feedSitesExcludePlaceholder}}</b>
-    </label>
-    <input name="feedsites_exclude"
-           data-qui="controls/projects/project/site/Select"
-           data-project="" data-lang=""
-           data-qui-options-placeholder="{{locales.feedSitesExcludePlaceholder}}"
-    />
-</fieldset>
 
 <div class="qui-control-feed-type-settings">
 

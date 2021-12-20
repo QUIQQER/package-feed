@@ -35,7 +35,7 @@ define('package/quiqqer/feed/bin/FeedWindow', [
             // defaults
             this.setAttributes({
                 maxHeight: 700,
-                maxWidth : 600,
+                maxWidth : 850,
                 feedId   : false,
                 icon     : 'fa fa-rss',
                 autoclose: false,
@@ -77,8 +77,10 @@ define('package/quiqqer/feed/bin/FeedWindow', [
         $onSubmit: function (Win) {
             Win.Loader.show();
 
-            this.$Feed.save(function () {
+            this.$Feed.save().then(() => {
                 Win.close();
+            }).catch(() => {
+                Win.Loader.hide();
             });
         }
     });
