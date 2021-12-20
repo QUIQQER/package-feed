@@ -3,18 +3,10 @@
  *
  * @module packages/quiqqer/feed/bin/Manager
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require controls/grid/Grid
- * @require package/quiqqer/feed/bin/FeedWindow
- * @require Locale
- * @require Ajax
- * @require Projects
+ * @author www.pcsg.de (Patrick Müller)
  */
 define('package/quiqqer/feed/bin/Manager', [
 
-    'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/windows/Confirm',
     'controls/grid/Grid',
@@ -23,7 +15,7 @@ define('package/quiqqer/feed/bin/Manager', [
     'Ajax',
     'Projects'
 
-], function (QUI, QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax, Projects) {
+], function (QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax, Projects) {
     "use strict";
 
     var lg = 'quiqqer/feed';

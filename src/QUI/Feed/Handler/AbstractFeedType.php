@@ -6,8 +6,9 @@
 
 namespace QUI\Feed\Handler;
 
+use QUI\Feed\Feed;
 use QUI\QDOM;
-use QUI\Feed\Interfaces\Feed as FeedInterface;
+use QUI\Feed\Interfaces\FeedTypeInterface as FeedInterface;
 use QUI\Feed\Interfaces\Channel as ChannelInterface;
 
 /**
@@ -16,14 +17,27 @@ use QUI\Feed\Interfaces\Channel as ChannelInterface;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-abstract class AbstractFeed extends QDOM implements FeedInterface
+abstract class AbstractFeedType extends QDOM implements FeedInterface
 {
+    /**
+     * @var Feed
+     */
+    protected Feed $Feed;
+
+    /**
+     * @param Feed $Feed
+     */
+    public function __construct(Feed $Feed)
+    {
+        $this->Feed = $Feed;
+    }
+
     /**
      * Channel list
      *
      * @var array
      */
-    protected $channels = array();
+    protected $channels = [];
 
     /**
      * Add a channel to the feed
@@ -54,9 +68,9 @@ abstract class AbstractFeed extends QDOM implements FeedInterface
     {
         $XML = $this->getXML();
 
-        $Dom = new \DOMDocument('1.0', 'UTF-8');
+        $Dom                     = new \DOMDocument('1.0', 'UTF-8');
         $Dom->preserveWhiteSpace = false;
-        $Dom->formatOutput = true;
+        $Dom->formatOutput       = true;
         $Dom->loadXML($XML->asXML());
 
         return $Dom->saveXML();

@@ -6,7 +6,7 @@
 
 namespace QUI\Feed\Handler\RSS;
 
-use QUI\Feed\Handler\AbstractFeed;
+use QUI\Feed\Handler\AbstractFeedType;
 use QUI\Feed\Utils\SimpleXML;
 
 /**
@@ -15,7 +15,7 @@ use QUI\Feed\Utils\SimpleXML;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-class Feed extends AbstractFeed
+class Feed extends AbstractFeedType
 {
     /**
      * Creat a channel

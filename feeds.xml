@@ -1,12 +1,15 @@
 <quiqqer>
-    <feeds>
-        <feed class="QUI\Feed\Handler\RSS\Feed">
+    <feedTypes>
+        <feedType class="QUI\Feed\Handler\RSS\Feed">
             <title>
                 <locale group="quiqqer/feed" var="feed.RSS.title"/>
             </title>
             <description>
                 <locale group="quiqqer/feed" var="feed.RSS.description"/>
             </description>
+
+            <mimeType><![CDATA[application/rss+xml]]></mimeType>
+            <publishable>1</publishable>
 
             <categories>
                 <category>
@@ -37,6 +40,6 @@
 
             </categories>
 
-        </feed>
-    </feeds>
+        </feedType>
+    </feedTypes>
 </quiqqer>

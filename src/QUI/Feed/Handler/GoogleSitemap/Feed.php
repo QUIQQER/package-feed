@@ -6,7 +6,7 @@
 
 namespace QUI\Feed\Handler\GoogleSitemap;
 
-use QUI\Feed\Handler\AbstractFeed;
+use QUI\Feed\Handler\AbstractFeedType;
 use QUI\Feed\Handler\AbstractItem;
 use QUI\Feed\Utils\SimpleXML;
 use QUI\System\Log;
@@ -17,7 +17,7 @@ use QUI\System\Log;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-class Feed extends AbstractFeed
+class Feed extends AbstractFeedType
 {
     /**
      * @var int

@@ -149,16 +149,18 @@ class Manager
      */
     public function getTypes(): array
     {
+        // @todo cache
+
         $types = [];
 
         foreach ($this->getFeedXmlFiles() as $xmlFile) {
             $Document = new \DOMDocument();
             $Document->load($xmlFile);
 
-            $feeds = $Document->getElementsByTagName('feed');
+            $feedTypes = $Document->getElementsByTagName('feedType');
 
-            foreach ($feeds as $Feed) {
-                $feedClass = $Feed->getAttribute('class');
+            foreach ($feedTypes as $FeedTypeNode) {
+                $feedClass = $FeedTypeNode->getAttribute('class');
 
                 if (empty($feedClass)) {
                     QUI\System\Log::addError(
@@ -169,7 +171,8 @@ class Manager
                     continue;
                 }
 
-                if (!\class_exists($feedClass) || !\is_a($feedClass, QUI\Feed\Interfaces\Feed::class, true)) {
+                if (!\class_exists($feedClass) || !\is_a($feedClass, QUI\Feed\Interfaces\FeedTypeInterface::class,
+                        true)) {
                     QUI\System\Log::addError(
                         'quiqqer/feed - Feed class "'.$feedClass.'" from feeds.xml file "'.$xmlFile.'"'
                         .' does not exist or does not implement "QUI\Feed\Interfaces\Feed". Feed is ignored!'
@@ -179,12 +182,12 @@ class Manager
                 }
 
                 $type = [
-                    'id' => $this->parseFeedClassToHash($feedClass)
+                    'id'    => $this->parseFeedClassToHash($feedClass),
+                    'class' => $feedClass
                 ];
 
-
                 // Title (required!)
-                $title = $Feed->getElementsByTagName('title');
+                $title = $FeedTypeNode->getElementsByTagName('title');
 
                 if (!$title->length) {
                     QUI\System\Log::addError(
@@ -198,7 +201,7 @@ class Manager
                 $type['title'] = DOMUtils::getTextFromNode($title->item(0));
 
                 // Description
-                $desc = $Feed->getElementsByTagName('description');
+                $desc = $FeedTypeNode->getElementsByTagName('description');
 
                 if ($desc->length) {
                     $type['description'] = DOMUtils::getTextFromNode($desc->item(0));
@@ -207,7 +210,7 @@ class Manager
                 }
 
                 // Settings
-                $settings     = $Feed->getElementsByTagName('category');
+                $settings     = $FeedTypeNode->getElementsByTagName('category');
                 $settingsHtml = '';
 
                 foreach ($settings as $settingNode) {
@@ -224,6 +227,27 @@ class Manager
                 // Parse available attributes from settings HTML
                 \preg_match_all('#name=[\'|"](\w*)[\'|"]#', $settingsHtml, $matches);
                 $type['attributes'] = !empty($matches[1]) ? $matches[1] : [];
+
+                // Special attributes
+                $publishable         = $FeedTypeNode->getElementsByTagName('publishable');
+                $type['publishable'] = false;
+
+                if ($publishable->length) {
+                    $type['publishable'] = !empty($publishable->item(0)->nodeValue);
+                }
+
+                // Mime type
+                $mimeType         = $FeedTypeNode->getElementsByTagName('mimeType');
+                $type['mimeType'] = 'application/xml'; // fallback
+
+                if ($mimeType->length) {
+                    $type['mimeType'] = $mimeType->item(0)->nodeValue;
+                } else {
+                    QUI\System\Log::addWarning(
+                        'quiqqer/feed - Feed type "'.$feedClass.'" does not have a <mimeType> set.'
+                        .' Using default "application/xml" mime type.'
+                    );
+                }
 
                 $types[] = $type;
             }
@@ -308,37 +332,46 @@ class Manager
      */
     public function filterFeedParams(string $typeId, array $params): array
     {
-        $feedAttributes = [
-            'feedDescription',
-            'feedImage',
-            'feedName',
-            'feedlimit',
-            'feedtype',
-            'pagesize',
-            'project',
-            'publish',
-            'publish-sites',
-            'split'
-        ];
+        $typeData = $this->getType($typeId);
 
-        foreach ($this->getTypes() as $type) {
-            if ($type['id'] === $typeId) {
-                $feedAttributes = \array_merge(
-                    $type['attributes'],
-                    $feedAttributes
-                );
-
-                break;
-            }
-        }
+        $feedAttributes = \array_merge(
+            [
+                'feedDescription',
+                'feedImage',
+                'feedName',
+                'feedlimit',
+                'feedtype',
+                'pagesize',
+                'project',
+                'publish',
+                'publish-sites',
+                'split'
+            ],
+            $typeData['attributes']
+        );
 
         $sanitizedAttributes = [];
 
         foreach ($feedAttributes as $attribute) {
-            if (\array_key_exists($attribute, $params)) {
-                $sanitizedAttributes[$attribute] = $params[$attribute];
-            } else {
+            if (!\array_key_exists($attribute, $params)) {
                 $sanitizedAttributes[$attribute] = null;
+                continue;
+            }
+
+            switch ($attribute) {
+                case 'project':
+                    $projects = \json_decode($params['project'], true);
+
+                    if (!empty($projects)) {
+                        $project = $projects[0];
+
+                        $sanitizedAttributes['project'] = $project['project'];
+                        $sanitizedAttributes['lang']    = $project['lang'];
+                    }
+                    break;
+
+                default:
+                    $sanitizedAttributes[$attribute] = $params[$attribute];
             }
         }
 

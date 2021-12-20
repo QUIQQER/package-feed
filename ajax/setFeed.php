@@ -19,7 +19,7 @@ QUI::$Ajax->registerFunction(
 
         if ($feedId) {
             $Feed = $FeedManager->getFeed($feedId);
-            $Feed->setAttributes($params);
+            $Feed->setAttributes($FeedManager->filterFeedParams($Feed->getTypeId(), $params));
             $Feed->save();
         } else {
             if (empty($params['feedtype'])) {

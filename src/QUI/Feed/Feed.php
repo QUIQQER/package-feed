@@ -36,6 +36,11 @@ class Feed extends QUI\QDOM
     protected $typeId = '';
 
     /**
+     * @var QUI\Projects\Project
+     */
+    protected $Project;
+
+    /**
      * Constructor
      *
      * @param integer $feedId
@@ -62,18 +67,19 @@ class Feed extends QUI\QDOM
 
         $data = $data[0];
 
-        if (!empty($data['feed_settings'])) {
-            $feedSettings = \json_decode($data['feed_settings'], true);
-            $this->setAttributes($feedSettings);
-
-            unset($data['feed_settings']);
-        }
-
         if (!empty($data['type_id'])) {
             $this->typeId = $data['type_id'];
         }
 
         $this->setAttributes($data);
+
+        if (!empty($data['feed_settings'])) {
+            $feedSettings = \json_decode($data['feed_settings'], true);
+            $this->setAttributes($feedSettings);
+        }
+
+        // Build project
+        $this->Project = QUI::getProjectManager()::getProject($data['project'], $data['lang']);
     }
 
     /**
@@ -95,22 +101,14 @@ class Feed extends QUI\QDOM
     }
 
     /**
-     * Return the feed tyoe
+     * Return the feed type data (as configured in feed.xml)
      *
-     * @return string (rss|atom|googleSitemap)
+     * @return array
      */
-    public function getFeedType()
+    public function getFeedTypeData(): array
     {
-        $feedtype = 'rss';
-
-        switch ($this->getAttribute('feedtype')) {
-            case 'atom':
-            case 'googleSitemap':
-                $feedtype = $this->getAttribute('feedtype');
-                break;
-        }
-
-        return $feedtype;
+        $Manager = new Manager();
+        return $Manager->getType($this->typeId);
     }
 
     /**
@@ -188,15 +186,13 @@ class Feed extends QUI\QDOM
      */
     public function output($page = 0)
     {
-        $feedType = $this->getFeedType();
+        $projectHost  = $this->Project->getVHost(true, true);
+        $feedUrl      = $projectHost.URL_DIR.'feed='.$this->getId().'.xml';
+        $feedTypeData = $this->getFeedTypeData();
 
-        $Project = QUI::getProject(
-            $this->getAttribute('project'),
-            $this->getAttribute('lang')
-        );
-
-        $projectHost = $Project->getVHost(true, true);
-        $feedUrl     = $projectHost.URL_DIR.'feed='.$this->getId().'.xml';
+        $feedClass = $feedTypeData['class'];
+        /** @var QUI\Feed\Interfaces\FeedTypeInterface $Feed */
+        $FeedType = new $feedClass($this);
 
         switch ($feedType) {
             case 'atom':
@@ -212,81 +208,6 @@ class Feed extends QUI\QDOM
             default:
                 $Feed = new RSS();
                 break;
-        }
-
-        $Channel = $Feed->createChannel();
-
-        $Channel->setLanguage($Project->getLang());
-        $Channel->setHost($projectHost.URL_DIR);
-
-        $Channel->setAttribute('link', $feedUrl);
-        $Channel->setAttribute(
-            'description',
-            $this->getAttribute('feedDescription')
-        );
-        $Channel->setAttribute('title', $this->getAttribute('feedName'));
-        $Channel->setDate(\time());
-
-        $ids = $this->getSiteIDs();
-
-        // create feed
-        foreach ($ids as $id) {
-            try {
-                $Site = $Project->get($id);
-                $date = $Site->getAttribute('release_from');
-
-                if ($date == '0000-00-00 00:00:00') {
-                    $date = $Site->getAttribute('c_date');
-                }
-
-                // Workaround bug  $Site->getCanonical() come with protocol
-                $link      = $Site->getUrlRewritten();
-                $permalink = $Site->getCanonical();
-
-                if (\strpos($link, 'https:') === false && \strpos($link, 'http:') === false) {
-                    $link = $projectHost.$Site->getUrlRewritten();
-                }
-
-                if (\strpos($permalink, 'https:') === false && \strpos($permalink, 'http:') === false) {
-                    $permalink = $projectHost.$Site->getCanonical();
-                }
-
-                /** @var QUI\Feed\Handler\AbstractItem $Item */
-                $Item = $Channel->createItem([
-                    'title'        => $Site->getAttribute('title'),
-                    'description'  => $Site->getAttribute('short'),
-                    'language'     => $Project->getLang(),
-                    'date'         => \strtotime($date),
-                    'link'         => $link,
-                    'permalink'    => $permalink,
-                    'seoDirective' => $Site->getAttribute('quiqqer.meta.site.robots')
-                ]);
-
-                try {
-                    //Check if the create user should be picked
-                    if (QUI::getPackage("quiqqer/feed")->getConfig()->get("common", "user") != "c_user") {
-                        throw new QUI\Exception("Invalid user field choice!");
-                    }
-
-                    $User = QUI::getUsers()->get($Site->getAttribute("c_user"));
-                    $Item->setAttribute("author", $User->getName());
-                } catch (\Exception $Exception) {
-                    $Item->setAttribute(
-                        "author",
-                        QUI::getPackage("quiqqer/feed")->getConfig()->get("common", "author")
-                    );
-                }
-
-                // Image
-                $image = $Site->getAttribute('image_site');
-                if (!$image) {
-                    continue;
-                }
-
-                $Image = QUI\Projects\Media\Utils::getImageByUrl($image);
-                $Item->setImage($Image);
-            } catch (QUI\Exception $Exception) {
-            }
         }
 
         return $Feed->create();
@@ -653,5 +574,13 @@ class Feed extends QUI\QDOM
         $totalItems = \count($this->getSiteIDs());
 
         return \ceil($totalItems / $pageSize);
+    }
+
+    /**
+     * @return QUI\Projects\Project
+     */
+    public function getProject(): QUI\Projects\Project
+    {
+        return $this->Project;
     }
 }

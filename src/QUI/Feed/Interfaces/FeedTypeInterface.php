@@ -1,11 +1,8 @@
 <?php
 
-/**
- * This file contains QUI\Feed\Interfaces\Feed
- */
-
 namespace QUI\Feed\Interfaces;
 
+use QUI\Feed\Feed;
 use QUI\Feed\Utils\SimpleXML;
 
 /**
@@ -14,8 +11,13 @@ use QUI\Feed\Utils\SimpleXML;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-interface Feed
+interface FeedTypeInterface
 {
+    /**
+     * @param Feed $Feed
+     */
+    public function __construct(Feed $Feed);
+
     /**
      * Add a feed channel
      *

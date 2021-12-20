@@ -138,7 +138,9 @@ class EventHandler
                 continue;
             }
 
-            if ($Feed->getAttribute("publish") == false) {
+            $typeData = $Manager->getType($Feed->getTypeId());
+
+            if (empty($Feed->getAttribute("publish")) || !$typeData['publishable']) {
                 continue;
             }
 
@@ -166,26 +168,9 @@ class EventHandler
                 continue;
             }
 
-
             $projectHost = $FeedProject->getVHost(true, true);
             $url         = $projectHost.URL_DIR.'feed='.$Feed->getId().'.xml';
-
-            $mimeType = "";
-            $feedType = $Feed->getFeedType();
-
-            // Do not pusblish google sitemaps
-            if ($feedType == "googleSitemap") {
-                continue;
-            }
-
-            if ($feedType == "rss") {
-                $mimeType = "application/rss+xml";
-            }
-
-            if ($feedType == "atom") {
-                $mimeType = "application/atom+xml";
-            }
-
+            $mimeType    = $typeData['mimeType'];
 
             $rssTag = '<link rel="alternate" type="'.$mimeType.'" href="'.$url.'" />'.PHP_EOL;
             $Template->extendHeader($rssTag);
