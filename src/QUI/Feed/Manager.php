@@ -259,6 +259,13 @@ class Manager
                     $type['publishable'] = !empty($publishable->item(0)->nodeValue);
                 }
 
+                $pagination         = $FeedTypeNode->getElementsByTagName('pagination');
+                $type['pagination'] = false;
+
+                if ($pagination->length) {
+                    $type['pagination'] = !empty($pagination->item(0)->nodeValue);
+                }
+
                 // Mime type
                 $mimeType         = $FeedTypeNode->getElementsByTagName('mimeType');
                 $type['mimeType'] = 'application/xml'; // fallback
@@ -366,7 +373,7 @@ class Manager
                 'feedName',
                 'feedlimit',
                 'feedtype',
-                'pagesize',
+                'pageSize',
                 'project',
                 'publish',
                 'publish-sites',
