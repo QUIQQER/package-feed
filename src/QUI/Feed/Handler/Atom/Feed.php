@@ -1,12 +1,8 @@
 <?php
 
-/**
- * This file contains \QUI\Feed\Handler\Atom\Feed
- */
-
 namespace QUI\Feed\Handler\Atom;
 
-use QUI\Feed\Handler\AbstractFeed;
+use QUI\Feed\Handler\AbstractSiteFeedType;
 use \QUI\Feed\Utils\SimpleXML;
 
 /**
@@ -15,7 +11,7 @@ use \QUI\Feed\Utils\SimpleXML;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-class Feed extends AbstractFeed
+class Feed extends AbstractSiteFeedType
 {
     /**
      * Creat a channel
@@ -40,7 +36,7 @@ class Feed extends AbstractFeed
     {
         $XML = new SimpleXML(
             '<?xml version="1.0" encoding="UTF-8" ?>
-             <feed xmlns="http://www.w3.org/2005/Atom"  />'
+             <feed xmlns="http://www.w3.org/2005/Atom" />'
         );
 
         $channels = $this->getChannels();
@@ -83,13 +79,12 @@ class Feed extends AbstractFeed
                 ->addCData($Channel->getAttribute('subtitle'));
         }
 
-
 //        if ($Channel->getAttribute('author')) {
 //            $AuthorNode = $XML->addChild(
 //                'author',
 //                $Channel->getAttribute('author')
 //            );
-//            
+//
 //            $AuthorNode->addChild("name","Test"); // TODO ################################################
 //        }
 
@@ -98,9 +93,14 @@ class Feed extends AbstractFeed
 
         foreach ($items as $Item) {
             /* @var $Item Item */
-            $date = date(
+            $date = \date(
                 \DateTime::RFC3339,
                 (int)$Item->getAttribute('date')
+            );
+
+            $editDate = \date(
+                \DateTime::RFC3339,
+                (int)$Item->getAttribute('e_date')
             );
 
             $ItemXml = $XML->addChild('entry');
@@ -109,7 +109,7 @@ class Feed extends AbstractFeed
             $UrlLink->addAttribute("href", $Item->getAttribute('link'));
 
             $ItemXml->addChild('published', $date);
-            $ItemXml->addChild('updated', $date); // TODO ################################################
+            $ItemXml->addChild('updated', $editDate);
 
             $ItemXml->addChild('id', $Item->getAttribute('permalink'));
 
@@ -150,7 +150,7 @@ class Feed extends AbstractFeed
             $Enclosure->addAttribute("type", $Image->getAttribute('mime_type'));
             $Enclosure->addAttribute("length", $Image->getAttribute('filesize'));
             $Enclosure->addAttribute("title", $Image->getAttribute("title"));
-            $Enclosure->addAttribute("href", $host . trim($Image->getUrl(false), '/'));
+            $Enclosure->addAttribute("href", $host.trim($Image->getUrl(false), '/'));
         }
 
 

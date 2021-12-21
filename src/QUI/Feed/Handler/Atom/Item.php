@@ -6,14 +6,14 @@
 
 namespace QUI\Feed\Handler\Atom;
 
-use QUI\Feed\Handler\AbstractItem;
+use QUI\Feed\Handler\AbstractItemInterface;
 
 /**
  * Class Item
  *
  * @package quiqqer/feed
  */
-class Item extends AbstractItem
+class Item extends AbstractItemInterface
 {
 
 }

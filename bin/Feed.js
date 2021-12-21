@@ -3,19 +3,15 @@
  *
  * @module package/quiqqer/feed/bin/Feed
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require utils/Controls
- * @require Ajax
- * @require Locale
- * @require css!package/quiqqer/feed/bin/Feed
+ * @author www.pcsg.de (Patrick Müller)
  */
-
 define('package/quiqqer/feed/bin/Feed', [
 
     'qui/QUI',
     'qui/controls/Control',
+    'qui/controls/loader/Loader',
+
+    'qui/utils/Form',
     'utils/Controls',
     'Ajax',
     'Locale',
@@ -24,20 +20,24 @@ define('package/quiqqer/feed/bin/Feed', [
     'text!package/quiqqer/feed/bin/Feed.html',
     'css!package/quiqqer/feed/bin/Feed.css'
 
-], function (QUI, QUIControl, ControlUtils, Ajax, QUILocale, Mustache,
+], function (QUI, QUIControl, QUILoader, QUIFormUtils, ControlUtils, QUIAjax, QUILocale, Mustache,
              template) {
     'use strict';
 
-    var lg = 'quiqqer/feed';
+    const lg = 'quiqqer/feed';
 
     return new Class({
 
         Extends: QUIControl,
         Type   : 'package/quiqqer/feed/bin/Feed',
-        Binds  : [
+
+        Binds: [
             '$toogglePageSizeVisibility',
             '$togglePublishSitesVisibility',
-            '$detectSplitOption'
+            '$detectSplitOption',
+            '$onFeedTypeChange',
+            '$onProjectChange',
+            '$getFeedData'
         ],
 
         initialize: function (options) {
@@ -55,18 +55,24 @@ define('package/quiqqer/feed/bin/Feed', [
 
             this.parent(options);
 
-            this.$Feedtype                   = null;
-            this.$Project                    = null;
+            this.$FeedTypeSelect            = null;
+            this.$FeedTypeDescription       = null;
+            this.$FeedTypeSettingsContainer = null;
+            this.$EditFeedData              = null;
+
+            this.$Project              = null;
+            this.$ProjectSelectControl = null;
+
             this.$Limit                      = null;
-            this.$Sites                      = null;
             this.$Name                       = null;
             this.$Desc                       = null;
             this.$PageSize                   = null;
             this.$SplitCheckbox              = null;
             this.$Image                      = null;
-            this.$ImageButton                = null;
-            this.$PublishSiteSelect          = null;
             this.$PublishSiteSelectContainer = null;
+            this.$FeedTypes                  = {};
+
+            this.Loader = new QUILoader();
 
         },
 
@@ -92,12 +98,19 @@ define('package/quiqqer/feed/bin/Feed', [
                         pagesize                   : QUILocale.get(lg, 'quiqqer.feed.pageSize'),
                         publish                    : QUILocale.get(lg, 'quiqqer.feed.publish'),
                         publishSitesPlaceholder    : QUILocale.get(lg, 'quiqqer.feed.publish.sites.placeholder'),
-                        feedImage                  : QUILocale.get(lg, 'quiqqer.feed.image')
+                        feedImage                  : QUILocale.get(lg, 'quiqqer.feed.image'),
+                        publishSitesLabel          : QUILocale.get(lg, 'quiqqer.feed.publishSitesLabel'),
+                        headerGeneralSettings      : QUILocale.get(lg, 'quiqqer.feed.headerGeneralSettings')
                     }
                 })
             });
 
-            this.$Feedtype                   = this.$Elm.getElement('[name="feedtype"]');
+            this.Loader.inject(this.$Elm);
+
+            this.$FeedTypeSelect            = this.$Elm.getElement('[name="feedtype"]');
+            this.$FeedTypeDescription       = this.$Elm.getElement('.qui-control-feed-type-description');
+            this.$FeedTypeSettingsContainer = this.$Elm.getElement('.qui-control-feed-type-settings');
+
             this.$Project                    = this.$Elm.getElement('[name="project"]');
             this.$Limit                      = this.$Elm.getElement('[name="feedlimit"]');
             this.$Sites                      = this.$Elm.getElement('[name="feedsites"]');
@@ -114,189 +127,88 @@ define('package/quiqqer/feed/bin/Feed', [
 
             var self = this;
             // Split Feed event
-            self.$Elm.getElement('.qui-feed-feedwindow-split-label').addEvent('click', function () {
-                self.$SplitCheckbox.checked = !self.$SplitCheckbox.checked;
-                self.$toogglePageSizeVisibility();
-            });
+            //self.$Elm.getElement('.qui-feed-feedwindow-split-label').addEvent('click', function () {
+            //    self.$SplitCheckbox.checked = !self.$SplitCheckbox.checked;
+            //    self.$toogglePageSizeVisibility();
+            //});
             this.$SplitCheckbox.addEvent('change', self.$toogglePageSizeVisibility);
 
             // Publish sites event
-            self.$PublishCheckbox.addEvent('change', self.$togglePublishSitesVisibility);
-            this.$Elm.getElement('.qui-feed-feedwindow-publish-label').addEvent('click', function () {
-                self.$PublishCheckbox.checked = !self.$PublishCheckbox.checked;
-                self.$togglePublishSitesVisibility();
-            });
+            this.$PublishCheckbox.addEvent('change', self.$togglePublishSitesVisibility);
+
+            //this.$Elm.getElement('.qui-feed-feedwindow-publish-label').addEvent('click', function () {
+            //    self.$PublishCheckbox.checked = !self.$PublishCheckbox.checked;
+            //    self.$togglePublishSitesVisibility();
+            //});
 
             // Project select event
-            this.$Project.addEvent('change', function () {
-                var TypeSelect = QUI.Controls.getById(
-                    self.$Sites.get('data-quiid')
-                );
-
-                var TypesExcludeSelect = QUI.Controls.getById(
-                    self.$SitesExclude.get('data-quiid')
-                );
-
-                var ProjectSelect = QUI.Controls.getById(
-                    self.$Project.get('data-quiid')
-                );
-
-                if (ProjectSelect) {
-                    ProjectSelect.getProjects().each(function (Project) {
-                        if (TypeSelect) {
-                            TypeSelect.setProject(
-                                Project.getName(),
-                                Project.getLang()
-                            );
-                        }
-
-                        if (TypesExcludeSelect) {
-                            TypesExcludeSelect.setProject(
-                                Project.getName(),
-                                Project.getLang()
-                            );
-                        }
-                    });
-                }
-
-                var PublishSiteSelect = QUI.Controls.getById(self.$Elm.getElement('.qui-feed-publish-sites').get('data-quiid'));
-                if (PublishSiteSelect && ProjectSelect) {
-                    ProjectSelect.getProjects().each(function (Project) {
-                        PublishSiteSelect.setProject(
-                            Project.getName(),
-                            Project.getLang()
-                        );
-                    });
-                }
-            });
+            this.$Project.addEvent('change', this.$onProjectChange);
+            this.$onProjectChange();
 
             // Hide the split option, if it is not supported for the feed type
-            this.$Feedtype.addEvent('change', self.$detectSplitOption);
-            self.$detectSplitOption();
+            //this.$FeedTypeSelect.addEvent('change', self.$detectSplitOption);
+            this.$FeedTypeSelect.addEvent('change', this.$onFeedTypeChange);
+            this.$detectSplitOption();
 
-            // Image button event
-            this.$ImageButton.addEvent('click', function () {
-                require(['controls/projects/project/media/Popup'],
-                    function (MediaWindow) {
+            this.Loader.show();
 
-                        var projectName = false;
+            this.$getFeedTypes().then((feedTypes) => {
+                for (const FeedType of Object.values(feedTypes)) {
+                    this.$FeedTypes[FeedType.id] = FeedType;
 
-                        var projectData = JSON.decode(self.$Project.value);
-                        if (projectData &&
-                            typeof projectData[0] !== 'undefined' &&
-                            'project' in projectData[0]) {
-                            projectName = projectData[0].project;
+                    new Element('option', {
+                        value: FeedType.id,
+                        html : FeedType.title
+                    }).inject(this.$FeedTypeSelect);
+                }
+
+                if (this.getAttribute('feedId')) {
+                    return this.$getFeedData().then((FeedData) => {
+                        this.$EditFeedData = FeedData;
+
+                        FeedData.project = JSON.encode([{
+                            project: FeedData.project,
+                            lang   : FeedData.lang
+                        }]);
+
+                        const FeedType = this.$FeedTypes[this.$EditFeedData.type_id];
+
+                        this.$FeedTypeSettingsContainer.set('html', FeedType.settingsHtml);
+
+                        const PublishOption = this.$Elm.getElement('.qui-feed-feetwindow-publish');
+
+                        if (!FeedType.publishable) {
+                            PublishOption.addClass('qui-control-feed__hidden');
+                        } else {
+                            PublishOption.removeClass('qui-control-feed__hidden');
                         }
 
-                        var Window = new MediaWindow({
-                            project: projectName,
-                            events : {
-                                onSubmit: function (Popup, imageData) {
-                                    self.$Image.value = imageData.url;
-                                }
-                            }
-                        });
-                        Window.open();
+                        QUIFormUtils.setDataToNode(this.$EditFeedData, this.$Elm);
 
+                        this.$FeedTypeSelect.value = this.$EditFeedData.type_id;
                     });
-            });
-
-            ControlUtils.parse(this.$Elm);
-            QUI.parse(this.$Elm, function () {
-                if (self.getAttribute('feedId')) {
-                    self.refresh();
+                } else {
+                    return this.$onFeedTypeChange();
                 }
+            }).then(() => {
+                return ControlUtils.parse(this.$Elm);
+            }).then(() => {
+                return QUI.parse(this.$Elm);
+            }).then(() => {
+                this.$ProjectSelectControl = QUI.Controls.getById(
+                    this.$Project.get('data-quiid')
+                );
+
+                this.$onProjectChange();
+
+                if (this.$EditFeedData && this.$EditFeedData.publish) {
+                    this.$togglePublishSitesVisibility();
+                }
+
+                this.Loader.hide();
             });
 
             return this.$Elm;
-        },
-
-        /**
-         * refresh the data
-         */
-        refresh: function () {
-            var self = this;
-            Ajax.get('package_quiqqer_feed_ajax_getFeed', function (result) {
-                var quiid, Cntrl;
-
-                self.$Sites.value             = result.feedsites;
-                self.$SitesExclude.value      = result.feedsites_exclude;
-                self.$Feedtype.value          = result.feedtype;
-                self.$Limit.value             = result.feedlimit;
-                self.$Name.value              = result.feedName;
-                self.$Desc.value              = result.feedDescription;
-                self.$PublishCheckbox.checked = result.publish === '1';
-                self.$PublishSiteSelect.value = result.publish_sites;
-                self.$Image.value             = result.feedImage;
-
-                if (result.pageSize > 0) {
-                    self.$PageSize.value        = result.pageSize;
-                    self.$SplitCheckbox.checked = true;
-                    self.$toogglePageSizeVisibility();
-                }
-
-                self.$detectSplitOption();
-                self.$togglePublishSitesVisibility();
-
-                self.$Project.value = JSON.encode([
-                    {
-                        project: result.project,
-                        lang   : result.lang
-                    }]);
-
-                // project
-                quiid = self.$Project.get('data-quiid');
-                Cntrl = QUI.Controls.getById(quiid);
-
-                if (result.project !== '') {
-                    if (Cntrl) {
-                        Cntrl.addProject(result.project, result.lang);
-                    }
-                }
-
-                // site types
-                quiid = self.$Sites.get('data-quiid');
-                Cntrl = QUI.Controls.getById(quiid);
-
-                self.$Sites.set('data-project', result.project);
-                self.$Sites.set('data-lang', result.lang);
-
-                if (Cntrl) {
-                    Cntrl.setAttribute('placeholder', QUILocale.get(lg, 'quiqqer.feed.publish.sites.placeholder'));
-
-                    Cntrl.setProject(result.project, result.lang);
-                    Cntrl.setValue(self.$Sites.value);
-                    Cntrl.refresh();
-                }
-
-                // site types (exclude)
-                quiid = self.$SitesExclude.get('data-quiid');
-                Cntrl = QUI.Controls.getById(quiid);
-
-                self.$SitesExclude.set('data-project', result.project);
-                self.$SitesExclude.set('data-lang', result.lang);
-
-                if (Cntrl) {
-                    //Cntrl.setAttribute('placeholder', QUILocale.get(lg, 'quiqqer.feed.publish.sites.placeholder'));
-
-                    Cntrl.setProject(result.project, result.lang);
-                    Cntrl.setValue(self.$SitesExclude.value);
-                    Cntrl.refresh();
-                }
-
-                // Refresh the PublishSites control
-                var PublishSitesControl = QUI.Controls.getById(self.$PublishSiteSelect.get('data-quiid'));
-                if (PublishSitesControl) {
-                    PublishSitesControl.setAttribute('placeholder', QUILocale.get(lg, 'quiqqer.feed.sites.placeholder'));
-                    PublishSitesControl.setProject(result.project, result.lang);
-                    PublishSitesControl.setValue(self.$PublishSiteSelect.value);
-                    PublishSitesControl.refresh();
-                }
-
-            }, {
-                'package': 'quiqqer/feed',
-                feedId   : this.getAttribute('feedId')
-            });
         },
 
         /**
@@ -305,54 +217,48 @@ define('package/quiqqer/feed/bin/Feed', [
          * @returns {Object}
          */
         getFeedData: function () {
-            var project = JSON.decode(this.$Project.value);
+            const Data     = QUIFormUtils.getDataFromNode(this.$Elm);
+            const FeedType = this.$FeedTypes[Data.feedtype];
 
-            var projectName = '',
-                projectLang = '';
+            const allowedAttributes = [
+                'feedDescription',
+                'feedImage',
+                'feedName',
+                'feedlimit',
+                'feedtype',
+                'pagesize',
+                'project',
+                'publish',
+                'publish-sites',
+                'split'
+            ];
 
-            if (typeof project[0] !== 'undefined' && 'project' in project[0]) {
-                projectName = project[0].project;
-            }
+            allowedAttributes.append(FeedType.attributes);
 
-            if (typeof project[0] !== 'undefined' && 'lang' in project[0]) {
-                projectLang = project[0].lang;
-            }
+            const FeedData = {};
 
-            var pageSize = 0;
-            if (this.$SplitCheckbox.checked && this.$PageSize.value > 0) {
-                pageSize = this.$PageSize.value;
-            }
+            allowedAttributes.forEach((feedAttribute) => {
+                if (feedAttribute in Data) {
+                    FeedData[feedAttribute] = Data[feedAttribute];
+                }
+            });
 
-            return {
-                project          : projectName,
-                lang             : projectLang,
-                feedsites        : this.$Sites.value,
-                feedsites_exclude: this.$SitesExclude.value,
-                feedtype         : this.$Feedtype.value,
-                feedlimit        : this.$Limit.value,
-                feedName         : this.$Name.value,
-                feedDescription  : this.$Desc.value,
-                pageSize         : pageSize,
-                publish          : this.$PublishCheckbox.checked ? 1 : 0,
-                publish_sites    : this.$PublishSiteSelect.value,
-                feedImage        : this.$Image.value
-            };
+            return FeedData;
         },
 
         /**
          * Save the feed
          *
-         * @param {Function} callback - [optional] callback function
+         * @return {Promise}
          */
-        save: function (callback) {
-            Ajax.post('package_quiqqer_feed_ajax_setFeed', function () {
-                if (typeof callback !== 'undefined') {
-                    callback();
-                }
-            }, {
-                'package': 'quiqqer/feed',
-                feedId   : this.getAttribute('feedId'),
-                params   : JSON.encode(this.getFeedData())
+        save: function () {
+            return new Promise((resolve, reject) => {
+                QUIAjax.post('package_quiqqer_feed_ajax_setFeed', resolve, {
+                    'package': lg,
+                    feedId   : this.getAttribute('feedId'),
+                    params   : JSON.encode(this.getFeedData()),
+                    onError  : reject
+                });
             });
         },
 
@@ -384,13 +290,96 @@ define('package/quiqqer/feed/bin/Feed', [
          * Hides/Shows the visiblity of thec checkbox to split the feed into pages, depending o the current selected feeds support for pagination
          */
         $detectSplitOption: function () {
-            if (this.$Feedtype.value !== 'googleSitemap') {
+            if (this.$FeedTypeSelect.value !== 'googleSitemap') {
                 this.$SplitCheckbox.checked                                         = false;
                 this.$Elm.getElement('.qui-feed-feetwindow-pagesize').style.display = 'none';
                 this.$Elm.getElement('.qui-feed-feedwindow-split').style.display    = 'none';
             } else {
                 this.$Elm.getElement('.qui-feed-feedwindow-split').style.display = 'block';
             }
+        },
+
+        /**
+         * If the user changes the project
+         */
+        $onProjectChange: function () {
+            if (!this.$ProjectSelectControl) {
+                return;
+            }
+
+            const siteSelectControlElements = this.$Elm.getElements(
+                '[data-qui="controls/projects/project/site/Select"]'
+            );
+
+            this.$ProjectSelectControl.getProjects().each(function (Project) {
+                siteSelectControlElements.forEach((ControlElm) => {
+                    const Control = QUI.Controls.getById(ControlElm.get('data-quiid'));
+
+                    Control.setProject(
+                        Project.getName(),
+                        Project.getLang()
+                    );
+                });
+            });
+        },
+
+        /**
+         * Event: on feed type change
+         */
+        $onFeedTypeChange: function () {
+            const FeedType = this.$FeedTypes[this.$FeedTypeSelect.value];
+
+            if (FeedType.description) {
+                this.$FeedTypeDescription.set('html', FeedType.description);
+                this.$FeedTypeDescription.removeClass('qui-control-feed__hidden');
+            } else {
+                this.$FeedTypeDescription.addClass('qui-control-feed__hidden');
+            }
+
+            this.$FeedTypeSettingsContainer.set('html', FeedType.settingsHtml);
+
+            this.Loader.show();
+
+            const PublishOption = this.$Elm.getElement('.qui-feed-feetwindow-publish');
+
+            if (!FeedType.publishable) {
+                PublishOption.addClass('qui-control-feed__hidden');
+            } else {
+                PublishOption.removeClass('qui-control-feed__hidden');
+            }
+
+            return QUI.parse(this.$FeedTypeSettingsContainer).then(() => {
+                this.Loader.hide();
+            });
+        },
+
+        /**
+         * Get data for feed
+         *
+         * @return {Promise}
+         */
+        $getFeedData: function () {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('package_quiqqer_feed_ajax_getFeed', resolve, {
+                    'package': lg,
+                    feedId   : this.getAttribute('feedId'),
+                    onError  : reject
+                });
+            });
+        },
+
+        /**
+         * Get all feed types installed on this system
+         *
+         * @return {Promise}
+         */
+        $getFeedTypes: function () {
+            return new Promise((resolve, reject) => {
+                QUIAjax.get('package_quiqqer_feed_ajax_backend_getTypes', resolve, {
+                    'package': lg,
+                    onError  : reject
+                });
+            });
         }
     });
 });

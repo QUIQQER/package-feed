@@ -1,9 +1,5 @@
 <?php
 
-/**
- * This file contains \QUI\Feed\Utils\SimpleXML
- */
-
 namespace QUI\Feed\Utils;
 
 /**
@@ -20,7 +16,7 @@ class SimpleXML extends \SimpleXMLElement
      */
     public function addCData($cdata)
     {
-        $Node = dom_import_simplexml($this);
+        $Node   = dom_import_simplexml($this);
         $OwnDoc = $Node->ownerDocument;
 
         $Node->appendChild($OwnDoc->createCDATASection($cdata));

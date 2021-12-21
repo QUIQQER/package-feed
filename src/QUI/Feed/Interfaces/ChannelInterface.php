@@ -12,21 +12,21 @@ namespace QUI\Feed\Interfaces;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-interface Channel
+interface ChannelInterface
 {
     /**
      * Add an feed item
      *
-     * @param \QUI\Feed\Interfaces\FeedItem $Item
+     * @param \QUI\Feed\Interfaces\FeedItemInterface $Item
      */
-    public function addItem(FeedItem $Item);
+    public function addItem(FeedItemInterface $Item);
 
     /**
      * Create a item and add it to the channel
      *
      * @param array $params
      *
-     * @return FeedItem
+     * @return FeedItemInterface
      */
     public function createItem(array $params = array());
 

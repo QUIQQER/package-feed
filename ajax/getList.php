@@ -7,11 +7,11 @@
 /**
  * Returns the feed list
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @param string $gridParams - grid params
  *
  * @return array
+ * @author www.pcsg.de (Henning Leutz)
+ *
  */
 QUI::$Ajax->registerFunction(
     'package_quiqqer_feed_ajax_getList',
@@ -22,8 +22,14 @@ QUI::$Ajax->registerFunction(
         $Grid   = new QUI\Utils\Grid();
         $result = $FeedManager->getList($gridParams);
 
+        foreach ($result as $k => $row) {
+            $FeedType = $FeedManager->getType($row['type_id']);
+
+            $result[$k]['feedtype_title'] = $FeedType->getAttribute('title');
+        }
+
         return $Grid->parseResult($result, $FeedManager->count());
     },
-    array('gridParams'),
+    ['gridParams'],
     'Permission::checkAdminUser'
 );

@@ -3,18 +3,10 @@
  *
  * @module packages/quiqqer/feed/bin/Manager
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require controls/grid/Grid
- * @require package/quiqqer/feed/bin/FeedWindow
- * @require Locale
- * @require Ajax
- * @require Projects
+ * @author www.pcsg.de (Patrick Müller)
  */
 define('package/quiqqer/feed/bin/Manager', [
 
-    'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/windows/Confirm',
     'controls/grid/Grid',
@@ -23,7 +15,7 @@ define('package/quiqqer/feed/bin/Manager', [
     'Ajax',
     'Projects'
 
-], function (QUI, QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax, Projects) {
+], function (QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax, Projects) {
     "use strict";
 
     var lg = 'quiqqer/feed';
@@ -102,9 +94,9 @@ define('package/quiqqer/feed/bin/Manager', [
                     width    : 40
                 }, {
                     header   : QUILocale.get(lg, 'quiqqer.feed.feedtype'),
-                    dataIndex: 'feedtype',
+                    dataIndex: 'feedtype_title',
                     dataType : 'string',
-                    width    : 80
+                    width    : 150
                 }, {
                     header   : QUILocale.get('quiqqer/system', 'project'),
                     dataIndex: 'project',
@@ -119,7 +111,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     header   : QUILocale.get(lg, 'quiqqer.feed.feedlimit'),
                     dataIndex: 'feedlimit',
                     dataType : 'string',
-                    width    : 80
+                    width    : 120
                 }, {
                     header   : QUILocale.get(lg, 'quiqqer.feed.pageSize'),
                     dataIndex: 'pageSize',
@@ -129,7 +121,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     header   : QUILocale.get(lg, 'quiqqer.feed.displayInHeader'),
                     dataIndex: 'displayInHeader',
                     dataType : 'string',
-                    width    : 80
+                    width    : 150
                 }],
                 pagination           : true,
                 multipleSelection    : true,
@@ -150,7 +142,7 @@ define('package/quiqqer/feed/bin/Manager', [
                         var url = host + '/feed=' + rowData.id + '.xml';
 
                         new Element('div', {
-                            html  : 'Feed URL: ' + url,
+                            html  : 'Feed URL: <a href="' + url + '" target="_blank">' + url + '</a>',
                             styles: {
                                 padding: 10
                             }

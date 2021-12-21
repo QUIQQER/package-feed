@@ -6,7 +6,7 @@
 
 namespace QUI\Feed\Handler\GoogleSitemap;
 
-use QUI\Feed\Handler\AbstractChannel;
+use QUI\Feed\Handler\AbstractChannelInterface;
 
 /**
  * Class Channel - Google Sitemap XML
@@ -14,12 +14,12 @@ use QUI\Feed\Handler\AbstractChannel;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-class Channel extends AbstractChannel
+class Channel extends AbstractChannelInterface
 {
     /**
      * @param array $params
      *
-     * @return \QUI\Feed\Interfaces\FeedItem
+     * @return \QUI\Feed\Interfaces\FeedItemInterface
      */
     public function createItem(array $params = array())
     {

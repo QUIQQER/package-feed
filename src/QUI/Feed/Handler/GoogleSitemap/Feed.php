@@ -6,8 +6,10 @@
 
 namespace QUI\Feed\Handler\GoogleSitemap;
 
-use QUI\Feed\Handler\AbstractFeed;
-use QUI\Feed\Handler\AbstractItem;
+use QUI\Feed\Feed as FeedInstance;
+use QUI\Feed\Handler\AbstractFeedType;
+use QUI\Feed\Handler\AbstractItemInterface;
+use QUI\Feed\Handler\AbstractSiteFeedType;
 use QUI\Feed\Utils\SimpleXML;
 use QUI\System\Log;
 
@@ -17,7 +19,7 @@ use QUI\System\Log;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-class Feed extends AbstractFeed
+class Feed extends AbstractSiteFeedType
 {
     /**
      * @var int
@@ -44,6 +46,21 @@ class Feed extends AbstractFeed
     }
 
     /**
+     * Return the Feed as an XML string
+     *
+     * @param FeedInstance $Feed - The Feed that shall be created
+     * @param int|null $page (optional) - Get a specific page of the feed (only required if feed is paginated)
+     * @return string - Feed as XML string
+     */
+    public function create(FeedInstance $Feed, ?int $page = null): string
+    {
+        $this->setPage($page);
+        $this->setPageSize($Feed->getAttribute('pageSize'));
+
+        return parent::create($Feed, $page);
+    }
+
+    /**
      * Return XML of the feed
      *
      * @return \SimpleXMLElement
@@ -63,7 +80,7 @@ class Feed extends AbstractFeed
 
         // Filter items
         $Items = \array_filter($Items, function ($Item) {
-            /** @var AbstractItem $Item */
+            /** @var AbstractItemInterface $Item */
             $seoDirective = $Item->getAttribute('seoDirective');
 
             if (!empty($seoDirective) && \mb_strpos($seoDirective, 'noindex') !== false) {
@@ -122,7 +139,7 @@ class Feed extends AbstractFeed
         foreach ($items as $Item) {
             /* @var $Item Item */
             $ItemXml = $XML->addChild('url');
-            $date    = strtotime($Item->getAttribute('e_date'));
+            $date    = $Item->getAttribute('e_date');
 
             $ItemXml->addChild('loc', $Item->getAttribute('link'));
 
@@ -159,7 +176,7 @@ class Feed extends AbstractFeed
     /**
      * @param $pageSize
      */
-    public function setPageSize($pageSize)
+    protected function setPageSize($pageSize)
     {
         $this->pageSize = $pageSize;
     }
@@ -167,7 +184,7 @@ class Feed extends AbstractFeed
     /**
      * @param $page
      */
-    public function setPage($page)
+    protected function setPage($page)
     {
         $this->page = $page;
     }
