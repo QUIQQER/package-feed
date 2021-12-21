@@ -8,7 +8,6 @@
             <field type="varchar(2) DEFAULT ''">lang</field>
             <field type="text NULL DEFAULT NULL">feedsites</field>
             <field type="text NULL DEFAULT NULL">feedsites_exclude</field>
-            <field type="varchar(255) NULL DEFAULT NULL">feedtype</field>
             <field type="varchar(255) NULL DEFAULT NULL">feedName</field>
             <field type="varchar(255) NULL DEFAULT NULL">feedDescription</field>
             <field type="int(100) NULL DEFAULT NULL">feedlimit</field>

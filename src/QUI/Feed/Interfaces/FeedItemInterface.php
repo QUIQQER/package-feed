@@ -14,7 +14,7 @@ use QUI\Projects\Media\Image;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-interface FeedItem
+interface FeedItemInterface
 {
     /**
      * Set the title of the feed item

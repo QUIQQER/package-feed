@@ -94,9 +94,9 @@ define('package/quiqqer/feed/bin/Manager', [
                     width    : 40
                 }, {
                     header   : QUILocale.get(lg, 'quiqqer.feed.feedtype'),
-                    dataIndex: 'feedtype',
+                    dataIndex: 'feedtype_title',
                     dataType : 'string',
-                    width    : 80
+                    width    : 150
                 }, {
                     header   : QUILocale.get('quiqqer/system', 'project'),
                     dataIndex: 'project',
@@ -111,7 +111,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     header   : QUILocale.get(lg, 'quiqqer.feed.feedlimit'),
                     dataIndex: 'feedlimit',
                     dataType : 'string',
-                    width    : 80
+                    width    : 120
                 }, {
                     header   : QUILocale.get(lg, 'quiqqer.feed.pageSize'),
                     dataIndex: 'pageSize',
@@ -121,7 +121,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     header   : QUILocale.get(lg, 'quiqqer.feed.displayInHeader'),
                     dataIndex: 'displayInHeader',
                     dataType : 'string',
-                    width    : 80
+                    width    : 150
                 }],
                 pagination           : true,
                 multipleSelection    : true,
@@ -142,7 +142,7 @@ define('package/quiqqer/feed/bin/Manager', [
                         var url = host + '/feed=' + rowData.id + '.xml';
 
                         new Element('div', {
-                            html  : 'Feed URL: ' + url,
+                            html  : 'Feed URL: <a href="' + url + '" target="_blank">' + url + '</a>',
                             styles: {
                                 padding: 10
                             }

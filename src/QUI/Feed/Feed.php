@@ -41,6 +41,11 @@ class Feed extends QUI\QDOM
     protected $Project;
 
     /**
+     * @var QUI\Feed\Interfaces\FeedTypeInterface
+     */
+    protected $FeedType;
+
+    /**
      * Constructor
      *
      * @param integer $feedId
@@ -79,7 +84,15 @@ class Feed extends QUI\QDOM
         }
 
         // Build project
-        $this->Project = QUI::getProjectManager()::getProject($data['project'], $data['lang']);
+        if (!empty($data['project']) && !empty($data['lang'])) {
+            $this->Project = QUI::getProjectManager()::getProject($data['project'], $data['lang']);
+        } else {
+            $this->Project = QUI::getProjectManager()::getStandard();
+        }
+
+        // Build FeedType
+        $Manager        = new Manager();
+        $this->FeedType = $Manager->getType($this->typeId);
     }
 
     /**
@@ -112,11 +125,19 @@ class Feed extends QUI\QDOM
     }
 
     /**
+     * @return Interfaces\FeedTypeInterface
+     */
+    public function getFeedType(): QUI\Feed\Interfaces\FeedTypeInterface
+    {
+        return $this->FeedType;
+    }
+
+    /**
      * Return the feed attributes
      *
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         $attributes       = parent::getAttributes();
         $attributes['id'] = $this->feedId;
@@ -145,18 +166,16 @@ class Feed extends QUI\QDOM
             $feedDescription = Orthos::clear($this->getAttribute('feedDescription'));
         }
 
-        $Manager      = new Manager();
-        $typeData     = $Manager->getType($this->getAttribute('type_id'));
         $feedSettings = [];
 
-        foreach ($typeData['attributes'] as $attribute) {
+        foreach ($this->FeedType->getAttribute('attributes') as $attribute) {
             $feedSettings[$attribute] = $this->getAttribute($attribute);
         }
 
         QUI::getDataBase()->update($table, [
             'project'         => $this->getAttribute('project'),
             'lang'            => $this->getAttribute('lang'),
-            'feedtype'        => $this->getFeedType(),
+//            'feedtype'        => $this->getFeedType(),
 //            'feedsites'         => $this->getAttribute('feedsites'),
 //            'feedsites_exclude' => $this->getAttribute('feedsites_exclude'),
             'feedlimit'       => $feedlimit ?: 0,
@@ -166,7 +185,8 @@ class Feed extends QUI\QDOM
             'publish'         => $this->getAttribute("publish") ? 1 : 0,
             'publish_sites'   => $this->getAttribute("publish_sites"),
             'feedImage'       => $this->getAttribute("feedImage"),
-            'feed_settings'   => \json_encode($feedSettings)
+            'feed_settings'   => \json_encode($feedSettings),
+            'type_id'         => $this->getAttribute('type_id')
         ], [
             'id' => $this->getId()
         ]);
@@ -178,402 +198,22 @@ class Feed extends QUI\QDOM
     /**
      * Output the feed as XML
      *
-     * @param $page - (optional) The pagenumber, if supported
-     *
-     * @return string
-     *
-     * @throws QUI\Exception
+     * @param int $page - (optional) The pagenumber, if supported
+     * @return string - Feed as XML string
      */
-    public function output($page = 0)
+    public function output(int $page = 0): string
     {
-        $projectHost  = $this->Project->getVHost(true, true);
-        $feedUrl      = $projectHost.URL_DIR.'feed='.$this->getId().'.xml';
-        $feedTypeData = $this->getFeedTypeData();
-
-        $feedClass = $feedTypeData['class'];
-        /** @var QUI\Feed\Interfaces\FeedTypeInterface $Feed */
-        $FeedType = new $feedClass($this);
-
-        switch ($feedType) {
-            case 'atom':
-                $Feed = new Atom();
-                break;
-
-            case 'googleSitemap':
-                $Feed = new GoogleSitemap();
-                $Feed->setPageSize($this->getAttribute("pageSize"));
-                $Feed->setPage($page);
-                break;
-
-            default:
-                $Feed = new RSS();
-                break;
-        }
-
-        return $Feed->create();
-    }
-
-    /**
-     * Gets the site ids which should be used for the feed
-     *
-     * @return array
-     * @throws QUI\Exception
-     */
-    public function getSiteIDs()
-    {
-        $feedSites        = $this->getAttribute('feedsites');
-        $feedSitesExclude = $this->getAttribute('feedsites_exclude');
-
-        if (empty($feedSites)) {
-            $feedSites = [];
-        } else {
-            $feedSites = \explode(';', $feedSites);
-            $feedSites = \array_filter($feedSites, function ($siteId) {
-                return !empty($siteId);
-            });
-        }
-
-        if (empty($feedSitesExclude)) {
-            $feedSitesExclude = [];
-        } else {
-            $feedSitesExclude = \explode(';', $feedSitesExclude);
-            $feedSitesExclude = \array_filter($feedSitesExclude, function ($siteId) {
-                return !empty($siteId);
-            });
-        }
-
-        // Some site types are always excluded!
-        $feedSitesExclude[] = 'quiqqer/sitetypes:types/forwarding';
-
-        $feedLimit = (int)$this->getAttribute('feedlimit');
-
-        if (!$feedLimit && $feedLimit !== 0) {
-            $feedLimit = 10;
-        }
-
-        $Project = QUI::getProject(
-            $this->getAttribute('project'),
-            $this->getAttribute('lang')
-        );
-
-        // All sites, if no sites were selected.
-        if (empty($feedSites)) {
-            $queryParams = [
-                'order' => 'release_from DESC, c_date DESC'
-            ];
-
-            if ($feedLimit > 0) {
-                $queryParams['limit'] = $feedLimit;
-            }
-
-            $ids = $Project->getSitesIds($queryParams);
-
-            $siteIds = \array_map(function ($entry) {
-                return (int)$entry['id'];
-            }, $ids);
-        } else {
-            $siteIds = $this->getSiteIdsBySiteIdControlValues($feedSites);
-        }
-
-        if (empty($feedSitesExclude)) {
-            return $siteIds;
-        }
-
-        $siteIdsExclude = $this->getSiteIdsBySiteIdControlValues($feedSitesExclude);
-
-        return \array_diff($siteIds, $siteIdsExclude);
-    }
-
-    /**
-     * Get all Site IDs based on the values of the controls/projects/project/site/Select control
-     *
-     * @param array $values
-     * @return int[]
-     * @throws QUI\Exception
-     */
-    protected function getSiteIdsBySiteIdControlValues(array $values)
-    {
-        $Project = QUI::getProject(
-            $this->getAttribute('project'),
-            $this->getAttribute('lang')
-        );
-
-        $PDO      = QUI::getPDO();
-        $table    = $Project->getAttribute('db_table');
-        $idCount  = 0;
-        $strCount = 0;
-
-        $whereParts    = [];
-        $wherePrepared = [];
-        $childPageIDs  = [];
-
-        $feedLimit = (int)$this->getAttribute('feedlimit');
-
-        if (!$feedLimit && $feedLimit !== 0) {
-            $feedLimit = 10;
-        }
-
-        foreach ($values as $needle) {
-            //
-            if (\is_numeric($needle)) {
-                $_id = ':id'.$idCount;
-
-                $whereParts[] = " id = {$_id} ";
-
-                $wherePrepared[] = [
-                    'type'  => \PDO::PARAM_INT,
-                    'value' => $needle,
-                    'name'  => $_id
-                ];
-
-                $idCount++;
-                continue;
-            }
-
-            // Search for children of this site
-
-            if (\preg_match("~p[0-9]+~i", $needle)) {
-                $parentSiteID = (int)\substr($needle, 1);
-                $childPageIDs = \array_merge($childPageIDs, $Project->get($parentSiteID)->getChildrenIdsRecursive());
-                continue;
-            }
-
-            // Search for type
-            $_id = ':str'.$strCount;
-
-            $whereParts[]    = " type LIKE {$_id} ";
-            $wherePrepared[] = [
-                'type'  => \PDO::PARAM_STR,
-                'value' => $needle,
-                'name'  => $_id
-            ];
-
-            $strCount++;
-        }
-
-        // Create the part of the query for the site ids of child sites.
-        // `id` IN ( id1, id2, id3, id4 )
-        if (!empty($childPageIDs)) {
-            $childPageIDs = \array_unique($childPageIDs);
-
-            $idString = "";
-
-            for ($i = 0; $i < \count($childPageIDs); $i++) {
-                $idString .= ":pageid".$i.",";
-            }
-
-            $idString     = \rtrim($idString, ",");
-            $whereParts[] = " id IN ({$idString}) ";
-
-            $i = 0;
-
-            foreach ($childPageIDs as $id) {
-                $wherePrepared[] = [
-                    'type'  => \PDO::PARAM_INT,
-                    'value' => $id,
-                    'name'  => ":pageid".$i
-                ];
-                $i++;
-            }
-        }
-
-        $where = \implode(' OR ', $whereParts);
-
-        // query
-        $query = "
-                SELECT id
-                FROM {$table}
-                WHERE active = 1 AND ({$where})
-                ORDER BY release_from DESC, c_date DESC
-            ";
-
-        if ($feedLimit > 0) {
-            $query .= "LIMIT :limit";
-        }
-
-        // search
-        $Statement = $PDO->prepare($query);
-
-        foreach ($wherePrepared as $prepared) {
-            $Statement->bindValue(
-                $prepared['name'],
-                $prepared['value'],
-                $prepared['type']
-            );
-        }
-
-        if ($feedLimit > 0) {
-            $Statement->bindValue(':limit', $feedLimit, \PDO::PARAM_INT);
-        }
-
-        $Statement->execute();
-        $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
-
-        $ids = [];
-
-        foreach ($result as $row) {
-            $ids[] = $row['id'];
-        }
-
-        return $ids;
-    }
-
-    /**
-     * Parses the value of the site select control and returns all selected Site IDs
-     * @param $siteSelectValue
-     *
-     * @return array
-     * @throws QUI\Exception
-     */
-    public function parseSiteSelect($siteSelectValue)
-    {
-        $ids     = [];
-        $Project = QUI::getProject(
-            $this->getAttribute('project'),
-            $this->getAttribute('lang')
-        );
-
-        // All sites, if no sites were selected.
-        if (empty($siteSelectValue)) {
-            $queryParams = [
-                'order' => 'release_from DESC, c_date DESC'
-            ];
-
-
-            $ids = $Project->getSitesIds($queryParams);
-
-            $ids = \array_map(function ($entry) {
-                return (int)$entry['id'];
-            }, $ids);
-
-            return $ids;
-        }
-
-        // Get the IDs of the selected sites
-        $PDO   = QUI::getPDO();
-        $table = $Project->getAttribute('db_table');
-        $sites = \explode(';', $siteSelectValue);
-
-        $idCount  = 0;
-        $strCount = 0;
-
-        $whereParts    = [];
-        $wherePrepared = [];
-
-        $childPageIDs = [];
-        foreach ($sites as $needle) {
-            //
-            if (\is_numeric($needle)) {
-                $_id = ':id'.$idCount;
-
-                $whereParts[] = " id = {$_id} ";
-
-                $wherePrepared[] = [
-                    'type'  => \PDO::PARAM_INT,
-                    'value' => $needle,
-                    'name'  => $_id
-                ];
-
-                $idCount++;
-                continue;
-            }
-
-            // Search for children of this site
-            if (\preg_match("~p[0-9]+~i", $needle)) {
-                $parentSiteID = (int)\substr($needle, 1);
-                $childPageIDs = \array_merge($childPageIDs, $Project->get($parentSiteID)->getChildrenIdsRecursive());
-                continue;
-            }
-
-            // Search for type
-            $_id = ':str'.$strCount;
-
-            $whereParts[]    = " type LIKE {$_id} ";
-            $wherePrepared[] = [
-                'type'  => \PDO::PARAM_STR,
-                'value' => $needle,
-                'name'  => $_id
-            ];
-
-            $strCount++;
-        }
-
-        // Create the part of the query for the site ids of child sites.
-        // `id` IN ( id1, id2, id3, id4 )
-        if (!empty($childPageIDs)) {
-            $childPageIDs = \array_unique($childPageIDs);
-
-            $idString = "";
-
-            for ($i = 0; $i < \count($childPageIDs); $i++) {
-                $idString .= ":pageid".$i.",";
-            }
-
-            $idString = \rtrim($idString, ",");
-
-            $whereParts[] = " id IN ({$idString}) ";
-
-            $i = 0;
-            foreach ($childPageIDs as $id) {
-                $wherePrepared[] = [
-                    'type'  => \PDO::PARAM_INT,
-                    'value' => $id,
-                    'name'  => ":pageid".$i
-                ];
-                $i++;
-            }
-        }
-
-        $where = \implode(' OR ', $whereParts);
-
-        // query
-        $query = "
-                SELECT id
-                FROM {$table}
-                WHERE active = 1 AND ({$where})
-                ORDER BY release_from DESC, c_date DESC
-            ";
-
-
-        // search
-        $Statement = $PDO->prepare($query);
-
-        foreach ($wherePrepared as $prepared) {
-            $Statement->bindValue(
-                $prepared['name'],
-                $prepared['value'],
-                $prepared['type']
-            );
-        }
-
-
-        $Statement->execute();
-        $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
-
-        foreach ($result as $row) {
-            $ids[] = $row['id'];
-        }
-
-        return $ids;
+        return $this->FeedType->create($this, $page);
     }
 
     /**
      * Returns the number of pages of this feed.
      *
      * @return int - Returns the number of pages or 0 if nor pages are used
-     *
-     * @throws QUI\Exception
      */
-    public function getPageCount()
+    public function getPageCount(): int
     {
-        if (!$this->getAttribute("pageSize")) {
-            return 0;
-        }
-
-        $pageSize   = $this->getAttribute("pageSize");
-        $totalItems = \count($this->getSiteIDs());
-
-        return \ceil($totalItems / $pageSize);
+        return $this->FeedType->getPageCount($this);
     }
 
     /**
@@ -582,5 +222,16 @@ class Feed extends QUI\QDOM
     public function getProject(): QUI\Projects\Project
     {
         return $this->Project;
+    }
+
+    /**
+     * Check if this Feed should be published on $Site
+     *
+     * @param QUI\Projects\Site $Site
+     * @return bool
+     */
+    public function publishOnSite(QUI\Projects\Site $Site): bool
+    {
+        return $this->FeedType->publishOnSite($this, $Site);
     }
 }

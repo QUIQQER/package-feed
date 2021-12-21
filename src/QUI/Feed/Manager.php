@@ -5,6 +5,7 @@ namespace QUI\Feed;
 use QUI;
 use QUI\Utils\Grid;
 use QUI\Utils\DOM as DOMUtils;
+use QUI\Cache\LongTermCache;
 
 /**
  * Class Feed Manager
@@ -19,6 +20,13 @@ class Manager
      * Feed Table
      */
     const TABLE = 'feeds';
+
+    /**
+     * Runtime cache for feed types
+     *
+     * @var QUI\Feed\Interfaces\FeedTypeInterface[]
+     */
+    protected array $feedTypes = [];
 
     /**
      * Add a new feed
@@ -76,7 +84,6 @@ class Manager
      */
     public function deleteFeed($feedId)
     {
-
         try {
             $feedId = (int)$feedId;
 
@@ -89,7 +96,7 @@ class Manager
                 ]
             );
         } catch (QUI\Exception $Exception) {
-            // feed not exist
+            QUI\System\Log::writeException($Exception);
         }
     }
 
@@ -121,15 +128,23 @@ class Manager
      * Get data of a specific feed type.
      *
      * @param string $typeId
-     * @return array
+     * @return QUI\Feed\Interfaces\FeedTypeInterface
      *
      * @throws QUI\Exception
      */
-    public function getType(string $typeId): array
+    public function getType(string $typeId): QUI\Feed\Interfaces\FeedTypeInterface
     {
-        foreach ($this->getTypes() as $type) {
-            if ($typeId === $type['id']) {
-                return $type;
+        if (isset($this->feedTypes[$typeId])) {
+            return $this->feedTypes[$typeId];
+        }
+
+        foreach ($this->getTypes() as $typeData) {
+            if ($typeId === $typeData['id']) {
+                $FeedType = new $typeData['class']($typeData);
+
+                $this->feedTypes[$typeId] = $FeedType;
+
+                return $FeedType;
             }
         }
 
@@ -149,6 +164,14 @@ class Manager
      */
     public function getTypes(): array
     {
+        $cacheName = QUI\Feed\Utils\Utils::getFeedTypeCachePath();
+
+        try {
+            return LongTermCache::get($cacheName);
+        } catch (\Exception $Exception) {
+            // no worries; re-build cache
+        }
+
         // @todo cache
 
         $types = [];
@@ -253,6 +276,8 @@ class Manager
             }
         }
 
+        LongTermCache::set($cacheName, $types);
+
         return $types;
     }
 
@@ -332,7 +357,7 @@ class Manager
      */
     public function filterFeedParams(string $typeId, array $params): array
     {
-        $typeData = $this->getType($typeId);
+        $FeedType = $this->getType($typeId);
 
         $feedAttributes = \array_merge(
             [
@@ -347,7 +372,7 @@ class Manager
                 'publish-sites',
                 'split'
             ],
-            $typeData['attributes']
+            $FeedType->getAttribute('attributes')
         );
 
         $sanitizedAttributes = [];

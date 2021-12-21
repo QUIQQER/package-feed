@@ -7,8 +7,8 @@
 namespace QUI\Feed\Handler;
 
 use QUI\QDOM;
-use QUI\Feed\Interfaces\Channel as InterfaceChannel;
-use QUI\Feed\Interfaces\FeedItem;
+use QUI\Feed\Interfaces\ChannelInterface as InterfaceChannel;
+use QUI\Feed\Interfaces\FeedItemInterface;
 
 /**
  * Class AbstractChannel
@@ -16,7 +16,7 @@ use QUI\Feed\Interfaces\FeedItem;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-abstract class AbstractChannel extends QDOM implements InterfaceChannel
+abstract class AbstractChannelInterface extends QDOM implements InterfaceChannel
 {
     /**
      * Main host
@@ -51,9 +51,9 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Add an item to the channel
      *
-     * @param FeedItem $item
+     * @param FeedItemInterface $item
      */
-    public function addItem(FeedItem $item)
+    public function addItem(FeedItemInterface $item)
     {
         $this->items[] = $item;
     }

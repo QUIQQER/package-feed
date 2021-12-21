@@ -201,7 +201,7 @@ define('package/quiqqer/feed/bin/Feed', [
 
                 this.$onProjectChange();
 
-                if (this.$EditFeedData.publish) {
+                if (this.$EditFeedData && this.$EditFeedData.publish) {
                     this.$togglePublishSitesVisibility();
                 }
 

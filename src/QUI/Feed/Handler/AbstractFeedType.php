@@ -1,15 +1,12 @@
 <?php
 
-/**
- * this file contains \QUI\Feed\Handler\AbstractFeed
- */
-
 namespace QUI\Feed\Handler;
 
+use QUI;
 use QUI\Feed\Feed;
 use QUI\QDOM;
 use QUI\Feed\Interfaces\FeedTypeInterface as FeedInterface;
-use QUI\Feed\Interfaces\Channel as ChannelInterface;
+use QUI\Feed\Interfaces\ChannelInterface as ChannelInterface;
 
 /**
  * Class AbstractFeed
@@ -20,16 +17,11 @@ use QUI\Feed\Interfaces\Channel as ChannelInterface;
 abstract class AbstractFeedType extends QDOM implements FeedInterface
 {
     /**
-     * @var Feed
+     * @param array $attributes - Feed type attributes
      */
-    protected Feed $Feed;
-
-    /**
-     * @param Feed $Feed
-     */
-    public function __construct(Feed $Feed)
+    public function __construct(array $attributes = [])
     {
-        $this->Feed = $Feed;
+        $this->setAttributes($attributes);
     }
 
     /**
@@ -60,19 +52,33 @@ abstract class AbstractFeedType extends QDOM implements FeedInterface
     }
 
     /**
-     * Return the XML of the feed
+     * Return the Feed as an XML string
      *
-     * @return string
+     * @param int|null $page (optional) - Get a specific page of the feed (only required if feed is paginated)
+     * @return string - Feed as XML string
      */
-    public function create()
+    abstract public function create(Feed $Feed, ?int $page = null): string;
+
+    /**
+     * Returns the number of pages of this feed.
+     *
+     * @param Feed $Feed
+     * @return int - Returns the number of pages or 0 if nor pages are used
+     */
+    public function getPageCount(Feed $Feed): int
     {
-        $XML = $this->getXML();
+        return 0;
+    }
 
-        $Dom                     = new \DOMDocument('1.0', 'UTF-8');
-        $Dom->preserveWhiteSpace = false;
-        $Dom->formatOutput       = true;
-        $Dom->loadXML($XML->asXML());
-
-        return $Dom->saveXML();
+    /**
+     * Check if $Feed shall be published on $Site
+     *
+     * @param Feed $Feed
+     * @param QUI\Projects\Site $Site
+     * @return bool
+     */
+    public function publishOnSite(Feed $Feed, QUI\Projects\Site $Site): bool
+    {
+        return !empty($Feed->getAttribute('publish')) && !empty($this->getAttribute('publishable'));
     }
 }

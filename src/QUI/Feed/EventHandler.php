@@ -1,13 +1,13 @@
 <?php
 
-/**
- * This file contains \QUI\Feed\EventHandler
- */
-
 namespace QUI\Feed;
 
 use QUI;
 use Symfony\Component\HttpFoundation\Response;
+use QUI\Cache\LongTermCache;
+use QUI\Feed\Handler\RSS\Feed as FeedRSS;
+use QUI\Feed\Handler\Atom\Feed as FeedAtom;
+use QUI\Feed\Handler\GoogleSitemap\Feed as FeedGoogleSitemap;
 
 /**
  * Class Events -> System Events
@@ -17,6 +17,69 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class EventHandler
 {
+    /**
+     * quiqqer/quiqqer: onPackageSetup
+     *
+     * @param QUI\Package\Package $Package
+     * @return void
+     */
+    public static function onPackageSetup(QUI\Package\Package $Package)
+    {
+        if ($Package->getName() !== 'quiqqer/feed') {
+            return;
+        }
+
+        LongTermCache::clear(QUI\Feed\Utils\Utils::getFeedTypeCachePath());
+
+        self::patchV1();
+    }
+
+    /**
+     * Patch database for migration from quiqqer/feed 1.*
+     *
+     * @return void
+     */
+    protected static function patchV1(): void
+    {
+        $result = QUI::getDataBase()->fetch([
+            'from'  => QUI::getDBTableName(Manager::TABLE),
+            'where' => [
+                'type_id' => null
+            ]
+        ]);
+
+        $Manager             = new Manager();
+        $types               = $Manager->getTypes();
+        $feedIdRss           = '1de938991bab7c523b9adbb631de5077588ecd348a68e7d993f619200f5a8bec';
+        $feedIdAtom          = 'b71ca88546347228c7a9057939de67a49852df3f5fc90fac389bc19f509f7bc1';
+        $feedIdGoogleSitemap = '2db63240d86aee59430c7c17f92039cb954d2e88fde05889ea3a60a6266462cb';
+
+        foreach ($result as $row) {
+            $update = [];
+
+            switch ($row['feedtype']) {
+                case 'googleSitemap':
+                    $update['type_id'] = $feedIdGoogleSitemap;
+                    break;
+
+                case 'atom':
+                    $update['type_id'] = $feedIdAtom;
+                    break;
+
+                case 'rss':
+                    $update['type_id'] = $feedIdRss;
+                    break;
+            }
+
+            $update['feed_settings'] = \json_encode([
+                'feedsites'         => !empty($row['feedsites']) ? $row['feedsites'] : '',
+                'feedsites_exclude' => !empty($row['feedsites_exclude']) ? $row['feedsites_exclude'] : ''
+            ]);
+
+            
+        }
+    }
+
     /**
      * event : on request
      *
@@ -138,9 +201,14 @@ class EventHandler
                 continue;
             }
 
-            $typeData = $Manager->getType($Feed->getTypeId());
+            try {
+                $FeedType = $Manager->getType($Feed->getTypeId());
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                continue;
+            }
 
-            if (empty($Feed->getAttribute("publish")) || !$typeData['publishable']) {
+            if (empty($Feed->getAttribute('publish')) || empty($FeedType->getAttribute('publishable'))) {
                 continue;
             }
 
@@ -161,16 +229,13 @@ class EventHandler
 
 
             // Check if the feed should be included on this page
-            $publishSitesString = $Feed->getAttribute("publish_sites");
-            $feedPublishSiteIDs = $Feed->parseSiteSelect($publishSitesString);
-
-            if (!empty($publishSitesString) && !in_array(QUI::getRewrite()->getSite()->getId(), $feedPublishSiteIDs)) {
+            if (!$Feed->publishOnSite(QUI::getRewrite()->getSite())) {
                 continue;
             }
 
             $projectHost = $FeedProject->getVHost(true, true);
             $url         = $projectHost.URL_DIR.'feed='.$Feed->getId().'.xml';
-            $mimeType    = $typeData['mimeType'];
+            $mimeType    = $FeedType->getAttribute('mimeType');
 
             $rssTag = '<link rel="alternate" type="'.$mimeType.'" href="'.$url.'" />'.PHP_EOL;
             $Template->extendHeader($rssTag);
