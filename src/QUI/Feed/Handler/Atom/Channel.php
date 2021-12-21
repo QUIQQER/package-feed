@@ -6,7 +6,7 @@
 
 namespace QUI\Feed\Handler\Atom;
 
-use QUI\Feed\Handler\AbstractChannelInterface;
+use QUI\Feed\Handler\AbstractChannel;
 
 /**
  * Class Channel - Atom Feed
@@ -14,7 +14,7 @@ use QUI\Feed\Handler\AbstractChannelInterface;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-class Channel extends AbstractChannelInterface
+class Channel extends AbstractChannel
 {
     /**
      * @param array $params

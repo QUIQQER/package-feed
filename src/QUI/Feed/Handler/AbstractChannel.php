@@ -16,7 +16,7 @@ use QUI\Feed\Interfaces\FeedItemInterface;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-abstract class AbstractChannelInterface extends QDOM implements InterfaceChannel
+abstract class AbstractChannel extends QDOM implements InterfaceChannel
 {
     /**
      * Main host
