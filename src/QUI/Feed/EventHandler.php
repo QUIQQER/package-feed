@@ -76,7 +76,7 @@ class EventHandler
                 'feedsites_exclude' => !empty($row['feedsites_exclude']) ? $row['feedsites_exclude'] : ''
             ]);
 
-            
+
         }
     }
 

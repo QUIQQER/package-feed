@@ -79,7 +79,6 @@ class Feed extends AbstractSiteFeedType
                 ->addCData($Channel->getAttribute('subtitle'));
         }
 
-
 //        if ($Channel->getAttribute('author')) {
 //            $AuthorNode = $XML->addChild(
 //                'author',
