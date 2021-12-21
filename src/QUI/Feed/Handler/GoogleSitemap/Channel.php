@@ -6,7 +6,7 @@
 
 namespace QUI\Feed\Handler\GoogleSitemap;
 
-use QUI\Feed\Handler\AbstractChannelInterface;
+use QUI\Feed\Handler\AbstractChannel;
 
 /**
  * Class Channel - Google Sitemap XML
@@ -14,7 +14,7 @@ use QUI\Feed\Handler\AbstractChannelInterface;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-class Channel extends AbstractChannelInterface
+class Channel extends AbstractChannel
 {
     /**
      * @param array $params

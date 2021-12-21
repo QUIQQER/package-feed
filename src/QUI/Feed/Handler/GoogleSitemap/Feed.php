@@ -8,7 +8,7 @@ namespace QUI\Feed\Handler\GoogleSitemap;
 
 use QUI\Feed\Feed as FeedInstance;
 use QUI\Feed\Handler\AbstractFeedType;
-use QUI\Feed\Handler\AbstractItemInterface;
+use QUI\Feed\Handler\AbstractItem;
 use QUI\Feed\Handler\AbstractSiteFeedType;
 use QUI\Feed\Utils\SimpleXML;
 use QUI\System\Log;
@@ -80,7 +80,7 @@ class Feed extends AbstractSiteFeedType
 
         // Filter items
         $Items = \array_filter($Items, function ($Item) {
-            /** @var AbstractItemInterface $Item */
+            /** @var AbstractItem $Item */
             $seoDirective = $Item->getAttribute('seoDirective');
 
             if (!empty($seoDirective) && \mb_strpos($seoDirective, 'noindex') !== false) {

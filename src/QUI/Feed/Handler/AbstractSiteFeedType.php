@@ -67,7 +67,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
                     $permalink = $projectHost.$Site->getCanonical();
                 }
 
-                /** @var QUI\Feed\Handler\AbstractItemInterface $Item */
+                /** @var QUI\Feed\Handler\AbstractItem $Item */
                 $Item = $Channel->createItem([
                     'title'        => $Site->getAttribute('title'),
                     'description'  => $Site->getAttribute('short'),

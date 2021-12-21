@@ -16,7 +16,7 @@ use QUI\Feed\Interfaces\FeedItemInterface as InterfaceItem;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-abstract class AbstractItemInterface extends QDOM implements InterfaceItem
+abstract class AbstractItem extends QDOM implements InterfaceItem
 {
     /**
      * Image for the feed item
