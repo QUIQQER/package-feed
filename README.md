@@ -1,6 +1,7 @@
 ![QUIQQER Blog](bin/images/Readme.jpg)
-QUIQQER Feeds
-========
+#QUIQQER Feeds
+
+The QUIQQER Feeds package allows you to create customized XML Feeds for your website.
 
 Packagename:
 
@@ -11,14 +12,13 @@ Features
 --------
 
 - Feed management
-  - Create
-  - Edit
-  - Delete
-- RSS Feeds
-- Atom feeds
-- Google Sitemaps
+- Feed types included:
+  - RSS
+  - Atom
+  - Google Sitemaps
+- `feed.xml` API for developers to expand the available feed types (docs: https://dev.quiqqer.com/quiqqer/package-feed/-/wikis/feed-xml-api)
 - Share your feeds in your websites header
-- Display your feeds with the modules brick
+- Display your feeds with the special Feeds brick (in conjunction with `quiqqer/bricks`)
 
 #### Bricks
 - Feedlist
