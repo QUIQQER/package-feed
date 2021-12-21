@@ -137,16 +137,17 @@ class EventHandler
 
 
         $cacheName = 'quiqqer/feed/'.$feedId."/".$pageNo;
+        $mimeType  = $Feed->getFeedType()->getAttribute('mimeType');
 
         try {
-            header('Content-Type: application/rss+xml; charset=UTF-8');
+            header('Content-Type: '.$mimeType.'; charset=UTF-8');
             echo QUI\Cache\Manager::get($cacheName);
             exit;
         } catch (QUI\Exception $Exception) {
         }
 
         try {
-            header('Content-Type: application/rss+xml; charset=UTF-8');
+            header('Content-Type: '.$mimeType.'; charset=UTF-8');
             $output = $Feed->output($pageNo);
 
             QUI\Cache\Manager::set($cacheName, $output);
