@@ -49,7 +49,6 @@ class EventHandler
         ]);
 
         $Manager             = new Manager();
-        $types               = $Manager->getTypes();
         $feedIdRss           = '1de938991bab7c523b9adbb631de5077588ecd348a68e7d993f619200f5a8bec';
         $feedIdAtom          = 'b71ca88546347228c7a9057939de67a49852df3f5fc90fac389bc19f509f7bc1';
         $feedIdGoogleSitemap = '2db63240d86aee59430c7c17f92039cb954d2e88fde05889ea3a60a6266462cb';
@@ -76,7 +75,13 @@ class EventHandler
                 'feedsites_exclude' => !empty($row['feedsites_exclude']) ? $row['feedsites_exclude'] : ''
             ]);
 
-
+            QUI::getDataBase()->update(
+                QUI::getDBTableName(Manager::TABLE),
+                $update,
+                [
+                    'id' => $row['id']
+                ]
+            );
         }
     }
 

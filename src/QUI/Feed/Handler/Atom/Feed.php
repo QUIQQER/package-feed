@@ -84,7 +84,7 @@ class Feed extends AbstractSiteFeedType
 //                'author',
 //                $Channel->getAttribute('author')
 //            );
-//            
+//
 //            $AuthorNode->addChild("name","Test"); // TODO ################################################
 //        }
 
