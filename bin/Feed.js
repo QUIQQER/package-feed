@@ -95,7 +95,7 @@ define('package/quiqqer/feed/bin/Feed', [
                         feedSitesPlaceholder       : QUILocale.get(lg, 'quiqqer.feed.sites.placeholder'),
                         feedSitesExcludePlaceholder: QUILocale.get(lg, 'quiqqer.feed.sites_exclude.placeholder'),
                         split                      : QUILocale.get(lg, 'quiqqer.feed.split'),
-                        pagesize                   : QUILocale.get(lg, 'quiqqer.feed.pageSize'),
+                        pageSize                   : QUILocale.get(lg, 'quiqqer.feed.pageSize'),
                         publish                    : QUILocale.get(lg, 'quiqqer.feed.publish'),
                         publishSitesPlaceholder    : QUILocale.get(lg, 'quiqqer.feed.publish.sites.placeholder'),
                         feedImage                  : QUILocale.get(lg, 'quiqqer.feed.image'),
@@ -118,7 +118,7 @@ define('package/quiqqer/feed/bin/Feed', [
             this.$Name                       = this.$Elm.getElement('[name="feedName"]');
             this.$Desc                       = this.$Elm.getElement('[name="feedDescription"]');
             this.$SplitCheckbox              = this.$Elm.getElement('[name="split"]');
-            this.$PageSize                   = this.$Elm.getElement('[name="pagesize"]');
+            this.$PageSize                   = this.$Elm.getElement('[name="pageSize"]');
             this.$PublishCheckbox            = this.$Elm.getElement('[name="publish"]');
             this.$Image                      = this.$Elm.getElement('[name="feedImage"]');
             this.$ImageButton                = this.$Elm.getElement('.qui-control-feed-btn-image');
@@ -143,12 +143,10 @@ define('package/quiqqer/feed/bin/Feed', [
 
             // Project select event
             this.$Project.addEvent('change', this.$onProjectChange);
-            this.$onProjectChange();
 
             // Hide the split option, if it is not supported for the feed type
             //this.$FeedTypeSelect.addEvent('change', self.$detectSplitOption);
             this.$FeedTypeSelect.addEvent('change', this.$onFeedTypeChange);
-            this.$detectSplitOption();
 
             this.Loader.show();
 
@@ -200,6 +198,7 @@ define('package/quiqqer/feed/bin/Feed', [
                 );
 
                 this.$onProjectChange();
+                this.$detectSplitOption();
 
                 if (this.$EditFeedData && this.$EditFeedData.publish) {
                     this.$togglePublishSitesVisibility();
@@ -226,7 +225,7 @@ define('package/quiqqer/feed/bin/Feed', [
                 'feedName',
                 'feedlimit',
                 'feedtype',
-                'pagesize',
+                'pageSize',
                 'project',
                 'publish',
                 'publish-sites',
@@ -266,7 +265,7 @@ define('package/quiqqer/feed/bin/Feed', [
          * Toggles the visibility of the page size input field
          */
         $toogglePageSizeVisibility: function () {
-            var pageSizeContainer = this.$Elm.getElement('.qui-feed-feetwindow-pagesize');
+            var pageSizeContainer = this.$Elm.getElement('.qui-feed-feetwindow-pageSize');
 
             if (this.$SplitCheckbox.checked) {
                 pageSizeContainer.style.display = 'block';
@@ -290,12 +289,26 @@ define('package/quiqqer/feed/bin/Feed', [
          * Hides/Shows the visiblity of thec checkbox to split the feed into pages, depending o the current selected feeds support for pagination
          */
         $detectSplitOption: function () {
-            if (this.$FeedTypeSelect.value !== 'googleSitemap') {
-                this.$SplitCheckbox.checked                                         = false;
-                this.$Elm.getElement('.qui-feed-feetwindow-pagesize').style.display = 'none';
-                this.$Elm.getElement('.qui-feed-feedwindow-split').style.display    = 'none';
+            const FeedType = this.$FeedTypes[this.$FeedTypeSelect.value];
+
+            const PageSizeInputSetting = this.$Elm.getElement('.qui-feed-feetwindow-pageSize');
+            const PaginationSetting    = this.$Elm.getElement('.qui-feed-feedwindow-split');
+
+            if (!FeedType.pagination) {
+                this.$SplitCheckbox.checked = false;
+
+                PageSizeInputSetting.addClass('qui-control-feed__hidden');
+                PaginationSetting.addClass('qui-control-feed__hidden');
             } else {
-                this.$Elm.getElement('.qui-feed-feedwindow-split').style.display = 'block';
+                PaginationSetting.removeClass('qui-control-feed__hidden');
+
+                if (this.$EditFeedData && parseInt(this.$EditFeedData.pageSize)) {
+                    this.$SplitCheckbox.checked = true;
+
+                    this.$Elm.getElement('.qui-feed-feetwindow-pageSize').value = this.$EditFeedData.pageSize;
+
+                    PageSizeInputSetting.removeClass('qui-control-feed__hidden');
+                }
             }
         },
 
@@ -350,6 +363,7 @@ define('package/quiqqer/feed/bin/Feed', [
 
             return QUI.parse(this.$FeedTypeSettingsContainer).then(() => {
                 this.Loader.hide();
+                this.$detectSplitOption();
             });
         },
 
