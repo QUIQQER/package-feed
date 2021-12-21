@@ -15,7 +15,7 @@ define('package/quiqqer/feed/bin/Manager', [
     'Ajax',
     'Projects'
 
-], function (QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, Ajax, Projects) {
+], function (QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, QUIAjax, Projects) {
     "use strict";
 
     var lg = 'quiqqer/feed';
@@ -181,7 +181,12 @@ define('package/quiqqer/feed/bin/Manager', [
 
             var self = this;
 
-            Ajax.get('package_quiqqer_feed_ajax_getList', function (result) {
+            QUIAjax.get('package_quiqqer_feed_ajax_getList', function (result) {
+                result.data = result.data.map((Row) => {
+                    Row.pageSize = parseInt(Row.pageSize) ? Row.pageSize : '-';
+                    return Row;
+                });
+
                 self.$Grid.setData(result);
             }, {
                 'package' : 'quiqqer/feed',
@@ -250,7 +255,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     onSubmit: function (Win) {
                         Win.Loader.show();
 
-                        Ajax.post('package_quiqqer_feed_ajax_delete', function () {
+                        QUIAjax.post('package_quiqqer_feed_ajax_delete', function () {
                             self.refresh();
                             Win.close();
 
