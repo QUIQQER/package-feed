@@ -181,7 +181,7 @@ class Feed extends QUI\QDOM
             'feedlimit'       => $feedlimit ?: 0,
             'feedName'        => $feedName,
             'feedDescription' => $feedDescription,
-            'pageSize'        => $this->getAttribute("pageSize"),
+            'pageSize'        => $this->getAttribute("pageSize") ?: 0,
             'publish'         => $this->getAttribute("publish") ? 1 : 0,
             'publish_sites'   => $this->getAttribute("publish_sites"),
             'feedImage'       => $this->getAttribute("feedImage"),
