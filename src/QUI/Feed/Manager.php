@@ -50,9 +50,15 @@ class Manager
             ]);
         }
 
+        $DefaultProject = QUI::getProjectManager()::getStandard();
+
         QUI::getDataBase()->insert(
             QUI::getDBTableName(self::TABLE),
-            ['type_id' => $typeId]
+            [
+                'type_id' => $typeId,
+                'project' => $DefaultProject->getName(),
+                'lang'    => $DefaultProject->getLang()
+            ]
         );
 
         $id   = QUI::getDataBase()->getPDO()->lastInsertId();
