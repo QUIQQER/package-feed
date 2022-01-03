@@ -1,0 +1,44 @@
+<?php
+
+define('QUIQQER_SYSTEM', true);
+define('QUIQQER_AJAX', true);
+
+$exit = function (int $code) {
+    $Response = QUI::getGlobalResponse();
+    $Response->setStatusCode($code);
+    $Response->send();
+
+    exit;
+};
+
+if (!isset($_REQUEST['id'])) {
+    $exit(400);
+}
+
+require_once dirname(__FILE__, 5).'/header.php';
+
+use QUI\Feed\Manager as FeedManager;
+
+$User          = QUI::getUserBySession();
+$isBackendUser = $User->canUseBackend();
+
+if (!$isBackendUser) {
+    $exit(401);
+}
+
+$Request = QUI::getRequest();
+
+try {
+    $FeedManager = new FeedManager();
+    $Feed        = $FeedManager->getFeed((int)$_REQUEST['id']);
+    $xmlString   = $Feed->output();
+    $varDir      = QUI::getPackage('quiqqer/feed')->getVarDir();
+    $tmpFile     = $varDir.\hash('sha256', \microtime(true)).'.xml';
+
+    \file_put_contents($tmpFile, $xmlString);
+
+    QUI\Utils\System\File::send($tmpFile, 0, 'feed_'.$Feed->getId().'.xml');
+} catch (\Exception $Exception) {
+    QUI\System\Log::addDebug($Exception->getMessage());
+    $exit(500);
+}
