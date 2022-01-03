@@ -9,13 +9,17 @@ define('package/quiqqer/feed/bin/Manager', [
 
     'qui/controls/desktop/Panel',
     'qui/controls/windows/Confirm',
+    'qui/controls/buttons/Button',
+
     'controls/grid/Grid',
     'package/quiqqer/feed/bin/FeedWindow',
     'Locale',
     'Ajax',
-    'Projects'
+    'Projects',
 
-], function (QUIPanel, QUIConfirm, Grid, FeedWindow, QUILocale, QUIAjax, Projects) {
+    'css!package/quiqqer/feed/bin/Manager.css'
+
+], function (QUIPanel, QUIConfirm, QUIButton, Grid, FeedWindow, QUILocale, QUIAjax, Projects) {
     "use strict";
 
     var lg = 'quiqqer/feed';
@@ -27,7 +31,8 @@ define('package/quiqqer/feed/bin/Manager', [
 
         Binds: [
             '$onCreate',
-            '$onResize'
+            '$onResize',
+            '$onClickDownload'
         ],
 
         options: {
@@ -122,6 +127,11 @@ define('package/quiqqer/feed/bin/Manager', [
                     dataIndex: 'displayInHeader',
                     dataType : 'string',
                     width    : 150
+                }, {
+                    header   : QUILocale.get(lg, 'quiqqer.feed.actions'),
+                    dataIndex: 'actions',
+                    dataType : 'node',
+                    width    : 150
                 }],
                 pagination           : true,
                 multipleSelection    : true,
@@ -181,9 +191,24 @@ define('package/quiqqer/feed/bin/Manager', [
 
             var self = this;
 
-            QUIAjax.get('package_quiqqer_feed_ajax_getList', function (result) {
+            QUIAjax.get('package_quiqqer_feed_ajax_getList', (result) => {
                 result.data = result.data.map((Row) => {
                     Row.pageSize = parseInt(Row.pageSize) ? Row.pageSize : '-';
+
+                    Row.actions = new Element('div', {
+                        'class': 'quiqqer-feeds-manager-actions'
+                    });
+
+                    new QUIButton({
+                        'class': 'quiqqer-feeds-manager-actions-btn',
+                        icon   : 'fa fa-download',
+                        title  : QUILocale.get(lg, 'quiqqer.feed.action.download'),
+                        feedId : Row.id,
+                        events : {
+                            onClick: this.$onClickDownload
+                        }
+                    }).inject(Row.actions);
+
                     return Row;
                 });
 
@@ -266,6 +291,35 @@ define('package/quiqqer/feed/bin/Manager', [
                     }
                 }
             }).open();
+        },
+
+        /**
+         * Download feed file
+         *
+         * @param {Object} Btn - QUIButton
+         */
+        $onClickDownload: function (Btn) {
+            const feedId = Btn.getAttribute('feedId');
+            const uid    = String.uniqueID();
+            const id     = 'download-feed-file-' + uid;
+
+            new Element('iframe', {
+                src   : URL_OPT_DIR + 'quiqqer/feed/bin/backend/download.php?' + Object.toQueryString({
+                    id: feedId,
+                }),
+                id    : id,
+                styles: {
+                    position: 'absolute',
+                    top     : -200,
+                    left    : -200,
+                    width   : 50,
+                    height  : 50
+                }
+            }).inject(document.body);
+
+            (function () {
+                document.getElements('#' + id).destroy();
+            }).delay(20000, this);
         }
     });
 });

@@ -234,4 +234,14 @@ class Feed extends QUI\QDOM
     {
         return $this->FeedType->publishOnSite($this, $Site);
     }
+
+    /**
+     * Get feed URL
+     *
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->Project->getVHost(true, true).'feed='.$this->getId().'.xml';
+    }
 }
