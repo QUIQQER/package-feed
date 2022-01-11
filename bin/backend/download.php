@@ -19,10 +19,9 @@ require_once dirname(__FILE__, 5).'/header.php';
 
 use QUI\Feed\Manager as FeedManager;
 
-$User          = QUI::getUserBySession();
-$isBackendUser = $User->canUseBackend();
+$User = QUI::getUserBySession();
 
-if (!$isBackendUser) {
+if (!$User->canUseBackend()) {
     $exit(401);
 }
 
