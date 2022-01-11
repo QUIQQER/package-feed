@@ -85,6 +85,39 @@
             <de><![CDATA[Allgemeine Feed-Einstellungen]]></de>
             <en><![CDATA[General feed settings]]></en>
         </locale>
+
+        <locale name="quiqqer.feed.action.download">
+            <de><![CDATA[Hier klicken, um die Feed-Datei herunterzuladen]]></de>
+            <en><![CDATA[Click here to download the feed file]]></en>
+        </locale>
+        <locale name="quiqqer.feed.action.recreate">
+            <de><![CDATA[Hier klicken, um den Feed neu zu erstellen]]></de>
+            <en><![CDATA[Click here to recreate the feed]]></en>
+        </locale>
+        <locale name="quiqqer.feed.btn.create">
+            <de><![CDATA[Neuer Feed]]></de>
+            <en><![CDATA[New feed]]></en>
+        </locale>
+        <locale name="quiqqer.feed.btn.delete">
+            <de><![CDATA[Markierte(n) Feed(s) löschen]]></de>
+            <en><![CDATA[Delete selected feed(s)]]></en>
+        </locale>
+        <locale name="quiqqer.feed.dialog.recreate.title">
+            <de><![CDATA[Feed neu erstellen]]></de>
+            <en><![CDATA[Recreate feed]]></en>
+        </locale>
+        <locale name="quiqqer.feed.dialog.recreate.text">
+            <de><![CDATA[Feed neu erstellen]]></de>
+            <en><![CDATA[Recreate feed]]></en>
+        </locale>
+        <locale name="quiqqer.feed.dialog.recreate.information">
+            <de><![CDATA[Soll Feed #[feedId] neu erstellt werden? Der im Cache befindlichen Feed-Daten werden gelöscht und der Feed auf Basis der jetzt vorliegenden Daten neu erstellt.]]></de>
+            <en><![CDATA[Should feed #[feedId] be recreated? The cached feed data is deleted and the feed is recreated based on the data that is now available.]]></en>
+        </locale>
+        <locale name="quiqqer.feed.dialog.recreate.btn.confirm">
+            <de><![CDATA[Feed neu erstellen]]></de>
+            <en><![CDATA[Recreate feed]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/feed" datatype="php">
@@ -150,6 +183,11 @@
         <locale name="feed.GoogleSitemap.settings.title">
             <de><![CDATA[Feed-Seiten einschränken]]></de>
             <en><![CDATA[Restrict feed sites]]></en>
+        </locale>
+
+        <locale name="message.ajax.backend.recreate.success">
+            <de><![CDATA[Feed #[feedId] wurde neu erstellt.]]></de>
+            <en><![CDATA[Feed #[feedId] was recreated.]]></en>
         </locale>
     </groups>
 

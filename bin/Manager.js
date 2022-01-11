@@ -32,7 +32,9 @@ define('package/quiqqer/feed/bin/Manager', [
         Binds: [
             '$onCreate',
             '$onResize',
-            '$onClickDownload'
+            '$onClickDownload',
+            '$onClickRecreate',
+            '$recreateFeed'
         ],
 
         options: {
@@ -58,7 +60,7 @@ define('package/quiqqer/feed/bin/Manager', [
 
             this.addButton({
                 name     : 'add',
-                text     : 'Neuen Feed anlegen',
+                text     : QUILocale.get(lg, 'quiqqer.feed.btn.create'),
                 textimage: 'fa fa-plus',
                 events   : {
                     onClick: function () {
@@ -73,7 +75,7 @@ define('package/quiqqer/feed/bin/Manager', [
 
             this.addButton({
                 name     : 'delete',
-                text     : 'Markierten Feed löschen',
+                text     : QUILocale.get(lg, 'quiqqer.feed.btn.delete'),
                 textimage: 'fa fa-trash',
                 disabled : true,
                 events   : {
@@ -101,7 +103,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     header   : QUILocale.get(lg, 'quiqqer.feed.feedtype'),
                     dataIndex: 'feedtype_title',
                     dataType : 'string',
-                    width    : 150
+                    width    : 250
                 }, {
                     header   : QUILocale.get('quiqqer/system', 'project'),
                     dataIndex: 'project',
@@ -206,6 +208,16 @@ define('package/quiqqer/feed/bin/Manager', [
                         feedId : Row.id,
                         events : {
                             onClick: this.$onClickDownload
+                        }
+                    }).inject(Row.actions);
+
+                    new QUIButton({
+                        'class': 'quiqqer-feeds-manager-actions-btn',
+                        icon   : 'fa fa-repeat',
+                        title  : QUILocale.get(lg, 'quiqqer.feed.action.recreate'),
+                        feedId : Row.id,
+                        events : {
+                            onClick: this.$onClickRecreate
                         }
                     }).inject(Row.actions);
 
@@ -320,6 +332,67 @@ define('package/quiqqer/feed/bin/Manager', [
             (function () {
                 document.getElements('#' + id).destroy();
             }).delay(20000, this);
+        },
+
+        /**
+         * Re-create feed
+         *
+         * @param {Object} Btn - QUIButton
+         */
+        $onClickRecreate: function (Btn) {
+            const feedId = Btn.getAttribute('feedId');
+
+            new QUIConfirm({
+                maxHeight: 350,
+                maxWidth : 400,
+
+                autoclose         : false,
+                backgroundClosable: true,
+
+                information: QUILocale.get(lg, 'quiqqer.feed.dialog.recreate.information', {
+                    feedId: feedId
+                }),
+                title      : QUILocale.get(lg, 'quiqqer.feed.dialog.recreate.title'),
+                texticon   : 'fa fa-repeat',
+                text       : QUILocale.get(lg, 'quiqqer.feed.dialog.recreate.text'),
+                icon       : 'fa fa-repeat',
+
+                cancel_button: {
+                    text     : false,
+                    textimage: 'icon-remove fa fa-remove'
+                },
+                ok_button    : {
+                    text     : QUILocale.get(lg, 'quiqqer.feed.dialog.recreate.btn.confirm'),
+                    textimage: 'icon-ok fa fa-check'
+                },
+                events       : {
+                    onSubmit: (Win) => {
+                        Win.Loader.show();
+
+                        this.$recreateFeed(feedId).then(() => {
+                            Win.close();
+                        }).catch(() => {
+                            Win.Loader.hide();
+                        });
+                    }
+                }
+            }).open();
+        },
+
+        /**
+         * Recreate feed
+         *
+         * @param {Number} feedId
+         * @return {Promise}
+         */
+        $recreateFeed: function (feedId) {
+            return new Promise((resolve, reject) => {
+                QUIAjax.post('package_quiqqer_feed_ajax_backend_recreate', resolve, {
+                    'package': lg,
+                    feedId   : feedId,
+                    onError  : reject
+                });
+            });
         }
     });
 });
