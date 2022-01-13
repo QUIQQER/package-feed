@@ -93,6 +93,10 @@
             <de><![CDATA[Allgemeine Feed-Einstellungen]]></de>
             <en><![CDATA[General feed settings]]></en>
         </locale>
+        <locale name="quiqqer.feed.actions">
+            <de><![CDATA[Aktionen]]></de>
+            <en><![CDATA[Actions]]></en>
+        </locale>
 
         <locale name="quiqqer.feed.action.download">
             <de><![CDATA[Hier klicken, um die Feed-Datei herunterzuladen]]></de>
