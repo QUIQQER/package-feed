@@ -172,6 +172,9 @@ class Feed extends QUI\QDOM
             $feedSettings[$attribute] = $this->getAttribute($attribute);
         }
 
+        // Special attributes that are set directly to the feed settings array
+        $feedSettings['directOutput'] = $this->getAttribute('directOutput');
+
         QUI::getDataBase()->update($table, [
             'project'         => $this->getAttribute('project'),
             'lang'            => $this->getAttribute('lang'),

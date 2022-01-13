@@ -14,6 +14,14 @@
             <de><![CDATA[Maximale Einträge]]></de>
             <en><![CDATA[Maximum entries]]></en>
         </locale>
+        <locale name="quiqqer.feed.directOutput">
+            <de><![CDATA[Feed bei Anfrage erstellen]]></de>
+            <en><![CDATA[Create feed on request]]></en>
+        </locale>
+        <locale name="quiqqer.feed.directOutputDescription">
+            <de><![CDATA[Bei Anfrage des Feeds über die Feed URL soll der Feed erstellt werden, wenn er noch nicht erstellt wurde. Die Anfragezeit erhöht sich je nach Umfang des Feeds. Bei Feeds mit sehr vielen Einträgen (z.B. bei sehr vielen Seiten im System) sollte diese Option deaktiviert werden. Dann wird der Feed ausschließlich über den Cron "Feeds cachen" erstellt.]]></de>
+            <en><![CDATA[When requesting the feed via the feed URL, the feed should be created if it has not been created yet. The request time increases depending on the size of the feed. For feeds with a lot of entries (e.g. with a lot of Sites in the system) this option should be deactivated. Then the feed is created exclusively via the cron "Cache feeds".]]></en>
+        </locale>
         <locale name="quiqqer.feed.feedName">
             <de><![CDATA[Name des Feeds]]></de>
             <en><![CDATA[Name of the feed]]></en>
@@ -94,6 +102,30 @@
             <de><![CDATA[Hier klicken, um den Feed neu zu erstellen]]></de>
             <en><![CDATA[Click here to recreate the feed]]></en>
         </locale>
+        <locale name="quiqqer.feed.action.delete.title">
+            <de><![CDATA[Feed(s) löschen]]></de>
+            <en><![CDATA[Delete feed(s)]]></en>
+        </locale>
+        <locale name="quiqqer.feed.action.delete.text">
+            <de><![CDATA[Sollen folgende Feeds unwiderruflich gelöscht werden?]]></de>
+            <en><![CDATA[Shall the following feeds be deleted permanently?]]></en>
+        </locale>
+        <locale name="quiqqer.feed.prompot.not_downloadable.information">
+            <de><![CDATA[Der Feed ist bisher noch nicht erzeugt und so eingestellt, dass er nur durch den Cron "Feeds cachen" erstellt werden kann. Bitte führe zunächst diesen Cron aus, um den Feed verfügbar zu machen.]]></de>
+            <en><![CDATA[The feed has not been created yet and is set to be created only by the cron "Cache feeds". Please run this cron first to make the feed available.]]></en>
+        </locale>
+        <locale name="quiqqer.feed.prompot.not_downloadable.title">
+            <de><![CDATA[Feed noch nicht verfügbar]]></de>
+            <en><![CDATA[Feed not yet available]]></en>
+        </locale>
+        <locale name="quiqqer.feed.prompot.not_downloadable.ok">
+            <de><![CDATA[Ok]]></de>
+            <en><![CDATA[Ok]]></en>
+        </locale>
+        <locale name="quiqqer.feed.prompot.not_downloadable.text">
+            <de><![CDATA[Feed noch nicht verfügbar]]></de>
+            <en><![CDATA[Feed not yet available]]></en>
+        </locale>
         <locale name="quiqqer.feed.btn.create">
             <de><![CDATA[Neuer Feed]]></de>
             <en><![CDATA[New feed]]></en>
@@ -111,8 +143,8 @@
             <en><![CDATA[Recreate feed]]></en>
         </locale>
         <locale name="quiqqer.feed.dialog.recreate.information">
-            <de><![CDATA[Soll Feed #[feedId] neu erstellt werden? Der im Cache befindlichen Feed-Daten werden gelöscht und der Feed auf Basis der jetzt vorliegenden Daten neu erstellt.]]></de>
-            <en><![CDATA[Should feed #[feedId] be recreated? The cached feed data is deleted and the feed is recreated based on the data that is now available.]]></en>
+            <de><![CDATA[Soll Feed #[feedId] neu erstellt werden? Die im Cache befindlichen Feed-Daten werden gelöscht und der Feed bei der nächsten Anfrage oder per Cron neu erstellt.]]></de>
+            <en><![CDATA[Should feed #[feedId] be recreated? The cached feed data is deleted and the feed is recreated on the next request or cronjob.]]></en>
         </locale>
         <locale name="quiqqer.feed.dialog.recreate.btn.confirm">
             <de><![CDATA[Feed neu erstellen]]></de>
@@ -186,8 +218,8 @@
         </locale>
 
         <locale name="message.ajax.backend.recreate.success">
-            <de><![CDATA[Feed #[feedId] wurde neu erstellt.]]></de>
-            <en><![CDATA[Feed #[feedId] was recreated.]]></en>
+            <de><![CDATA[Cache-Daten von Feed #[feedId] wurden erfolgreich gelöscht.]]></de>
+            <en><![CDATA[Cache data of feed #[feedId] were deleted successfully.]]></en>
         </locale>
     </groups>
 

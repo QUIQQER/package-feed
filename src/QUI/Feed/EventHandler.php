@@ -31,7 +31,17 @@ class EventHandler
 
         LongTermCache::clear(QUI\Feed\Utils\Utils::getFeedTypeCachePath());
 
-        self::patchV1();
+        try {
+            self::patchV1();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        try {
+            self::patchV2();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -86,6 +96,41 @@ class EventHandler
     }
 
     /**
+     * Patch feed attributes
+     *
+     * @return void
+     */
+    protected static function patchV2(): void
+    {
+        $result = QUI::getDataBase()->fetch([
+            'select' => ['id', 'feed_settings'],
+            'from'   => QUI::getDBTableName(Manager::TABLE)
+        ]);
+
+        foreach ($result as $row) {
+            if (!empty($row['feed_settings'])) {
+                $settings = \json_decode($row['feed_settings'], true);
+            } else {
+                $settings = [];
+            }
+
+            if (!\array_key_exists('directOutput', $settings)) {
+                $settings['directOutput'] = true;
+
+                QUI::getDataBase()->update(
+                    QUI::getDBTableName(Manager::TABLE),
+                    [
+                        'feed_settings' => \json_encode($settings)
+                    ],
+                    [
+                        'id' => $row['id']
+                    ]
+                );
+            }
+        }
+    }
+
+    /**
      * event : on request
      *
      * @param \QUI\Rewrite $Rewrite
@@ -135,26 +180,21 @@ class EventHandler
             exit;
         }
 
-
-        $cacheName = 'quiqqer/feed/'.$feedId."/".$pageNo;
-        $mimeType  = $Feed->getFeedType()->getAttribute('mimeType');
-
-        try {
-            header('Content-Type: '.$mimeType.'; charset=UTF-8');
-            echo QUI\Cache\Manager::get($cacheName);
+        if (!$Manager->isFeedBuilt($Feed, $pageNo) && !$Feed->getAttribute('directOutput')) {
+            $Response = new Response();
+            $Response->setStatusCode(503);
+            $Response->send();
             exit;
-        } catch (QUI\Exception $Exception) {
         }
 
+        $mimeType = $Feed->getFeedType()->getAttribute('mimeType');
+
         try {
             header('Content-Type: '.$mimeType.'; charset=UTF-8');
-            $output = $Feed->output($pageNo);
-
-            QUI\Cache\Manager::set($cacheName, $output);
-
-            echo $output;
+            echo $Manager->getFeedOutput($Feed, $pageNo);
             exit;
-        } catch (\Exception $Exception) {
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
         }
     }
 

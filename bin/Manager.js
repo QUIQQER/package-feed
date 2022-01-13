@@ -279,13 +279,13 @@ define('package/quiqqer/feed/bin/Manager', [
                 return;
             }
 
-            var self = this;
+            const self = this;
 
             // #locale
             new QUIConfirm({
-                title      : 'Feeds löschen',
+                title      : QUILocale.get(lg, 'quiqqer.feed.action.delete.title'),
                 icon       : 'fa fa-trash',
-                text       : 'Möchten Sie folgende Feeds wirklich löschen?',
+                text       : QUILocale.get(lg, 'quiqqer.feed.action.delete.text'),
                 information: feedIds.join(', '),
                 autoclose  : false,
                 events     : {
@@ -312,26 +312,57 @@ define('package/quiqqer/feed/bin/Manager', [
          */
         $onClickDownload: function (Btn) {
             const feedId = Btn.getAttribute('feedId');
-            const uid    = String.uniqueID();
-            const id     = 'download-feed-file-' + uid;
 
-            new Element('iframe', {
-                src   : URL_OPT_DIR + 'quiqqer/feed/bin/backend/download.php?' + Object.toQueryString({
-                    id: feedId,
-                }),
-                id    : id,
-                styles: {
-                    position: 'absolute',
-                    top     : -200,
-                    left    : -200,
-                    width   : 50,
-                    height  : 50
+            this.Loader.show();
+
+            this.$downloadCheck(feedId).then((isDownloadable) => {
+                this.Loader.hide();
+
+                if (!isDownloadable) {
+                    new QUIConfirm({
+                        maxHeight: 300,
+                        maxWidth : 500,
+
+                        autoclose         : true,
+                        backgroundClosable: false,
+
+                        information: QUILocale.get(lg, 'quiqqer.feed.prompot.not_downloadable.information'),
+                        title      : QUILocale.get(lg, 'quiqqer.feed.prompot.not_downloadable.title'),
+                        texticon   : 'fa fa-download',
+                        text       : QUILocale.get(lg, 'quiqqer.feed.prompot.not_downloadable.text'),
+                        icon       : 'fa fa-download',
+
+                        cancel_button: false,
+                        ok_button    : {
+                            text     : QUILocale.get(lg, 'quiqqer.feed.prompot.not_downloadable.ok'),
+                            textimage: 'icon-ok fa fa-check'
+                        }
+                    }).open();
+
+                    return;
                 }
-            }).inject(document.body);
 
-            (function () {
-                document.getElements('#' + id).destroy();
-            }).delay(20000, this);
+                const uid = String.uniqueID();
+                const id  = 'download-feed-file-' + uid;
+
+                new Element('iframe', {
+                    src   : URL_OPT_DIR + 'quiqqer/feed/bin/backend/download.php?' + Object.toQueryString({
+                        id: feedId,
+                    }),
+                    id    : id,
+                    styles: {
+                        position: 'absolute',
+                        top     : -200,
+                        left    : -200,
+                        width   : 50,
+                        height  : 50
+                    }
+                }).inject(document.body);
+
+                (function () {
+                    document.getElements('#' + id).destroy();
+                }).delay(20000, this);
+            });
         },
 
         /**
@@ -343,8 +374,8 @@ define('package/quiqqer/feed/bin/Manager', [
             const feedId = Btn.getAttribute('feedId');
 
             new QUIConfirm({
-                maxHeight: 350,
-                maxWidth : 400,
+                maxHeight: 300,
+                maxWidth : 500,
 
                 autoclose         : false,
                 backgroundClosable: true,
@@ -393,6 +424,22 @@ define('package/quiqqer/feed/bin/Manager', [
                     onError  : reject
                 });
             });
-        }
+        },
+
+        /**
+         * Check if a feed is downloadable
+         *
+         * @param {Number} feedId
+         * @return {Promise}
+         */
+        $downloadCheck: function (feedId) {
+            return new Promise((resolve, reject) => {
+                QUIAjax.post('package_quiqqer_feed_ajax_backend_downloadCheck', resolve, {
+                    'package': lg,
+                    feedId   : feedId,
+                    onError  : reject
+                });
+            });
+        },
     });
 });

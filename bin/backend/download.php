@@ -30,9 +30,14 @@ $Request = QUI::getRequest();
 try {
     $FeedManager = new FeedManager();
     $Feed        = $FeedManager->getFeed((int)$_REQUEST['id']);
-    $xmlString   = $Feed->output();
-    $varDir      = QUI::getPackage('quiqqer/feed')->getVarDir();
-    $tmpFile     = $varDir.\hash('sha256', \microtime(true)).'.xml';
+
+    if (!$FeedManager->isFeedBuilt($Feed) && !$Feed->getAttribute('directOutput')) {
+        $exit(503);
+    }
+
+    $xmlString = $FeedManager->getFeedOutput($Feed);
+    $varDir    = QUI::getPackage('quiqqer/feed')->getVarDir();
+    $tmpFile   = $varDir.\hash('sha256', \microtime(true)).'.xml';
 
     \file_put_contents($tmpFile, $xmlString);
 

@@ -91,6 +91,8 @@ define('package/quiqqer/feed/bin/Feed', [
                         feedDescription            : QUILocale.get(lg, 'quiqqer.feed.feedDescription'),
                         project                    : QUILocale.get('quiqqer/system', 'project'),
                         feedlimit                  : QUILocale.get(lg, 'quiqqer.feed.feedlimit'),
+                        directOutput               : QUILocale.get(lg, 'quiqqer.feed.directOutput'),
+                        directOutputDescription    : QUILocale.get(lg, 'quiqqer.feed.directOutputDescription'),
                         feedSites                  : QUILocale.get(lg, 'quiqqer.feed.feedSites'),
                         feedSitesPlaceholder       : QUILocale.get(lg, 'quiqqer.feed.sites.placeholder'),
                         feedSitesExcludePlaceholder: QUILocale.get(lg, 'quiqqer.feed.sites_exclude.placeholder'),
@@ -113,16 +115,12 @@ define('package/quiqqer/feed/bin/Feed', [
 
             this.$Project                    = this.$Elm.getElement('[name="project"]');
             this.$Limit                      = this.$Elm.getElement('[name="feedlimit"]');
-            this.$Sites                      = this.$Elm.getElement('[name="feedsites"]');
-            this.$SitesExclude               = this.$Elm.getElement('[name="feedsites_exclude"]');
             this.$Name                       = this.$Elm.getElement('[name="feedName"]');
             this.$Desc                       = this.$Elm.getElement('[name="feedDescription"]');
             this.$SplitCheckbox              = this.$Elm.getElement('[name="split"]');
             this.$PageSize                   = this.$Elm.getElement('[name="pageSize"]');
             this.$PublishCheckbox            = this.$Elm.getElement('[name="publish"]');
             this.$Image                      = this.$Elm.getElement('[name="feedImage"]');
-            this.$ImageButton                = this.$Elm.getElement('.qui-control-feed-btn-image');
-            this.$PublishSiteSelect          = this.$Elm.getElement('[name="publish-sites"]');
             this.$PublishSiteSelectContainer = this.$Elm.getElement('.qui-feed-publish-sites-container');
 
             var self = this;
@@ -184,6 +182,7 @@ define('package/quiqqer/feed/bin/Feed', [
                         QUIFormUtils.setDataToNode(this.$EditFeedData, this.$Elm);
 
                         this.$FeedTypeSelect.value = this.$EditFeedData.type_id;
+                        this.$onFeedTypeChange();
                     });
                 } else {
                     return this.$onFeedTypeChange();
@@ -229,7 +228,8 @@ define('package/quiqqer/feed/bin/Feed', [
                 'project',
                 'publish',
                 'publish-sites',
-                'split'
+                'split',
+                'directOutput'
             ];
 
             allowedAttributes.append(FeedType.attributes);
