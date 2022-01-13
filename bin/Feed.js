@@ -182,7 +182,11 @@ define('package/quiqqer/feed/bin/Feed', [
                         QUIFormUtils.setDataToNode(this.$EditFeedData, this.$Elm);
 
                         this.$FeedTypeSelect.value = this.$EditFeedData.type_id;
-                        this.$onFeedTypeChange();
+
+                        if (FeedType.description) {
+                            this.$FeedTypeDescription.set('html', FeedType.description);
+                            this.$FeedTypeDescription.removeClass('qui-control-feed__hidden');
+                        }
                     });
                 } else {
                     return this.$onFeedTypeChange();
