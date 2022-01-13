@@ -321,6 +321,8 @@ class Manager
      */
     public function buildFeed(Feed $Feed): void
     {
+        $this->deleteFeedOutputCache($Feed);
+
         for ($pageNo = 0; $pageNo <= $Feed->getPageCount(); $pageNo++) {
             $output    = $Feed->output($pageNo);
             $cacheName = $this->getFeedOutputCacheName($Feed, $pageNo);
