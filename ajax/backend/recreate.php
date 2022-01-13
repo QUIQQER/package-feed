@@ -12,17 +12,7 @@ QUI::$Ajax->registerFunction(
         $FeedManager = new QUI\Feed\Manager();
         $Feed        = $FeedManager->getFeed((int)$feedId);
 
-        for ($pageNo = 0; $pageNo <= $Feed->getPageCount(); $pageNo++) {
-            $output = $Feed->output($pageNo);
-
-            $cacheName = 'quiqqer/feed/'.$Feed->getId()."/".$pageNo;
-
-            try {
-                QUI\Cache\Manager::set($cacheName, $output);
-            } catch (\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
-            }
-        }
+        $FeedManager->deleteFeedOutputCache($Feed);
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(

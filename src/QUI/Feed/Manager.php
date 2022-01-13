@@ -6,6 +6,8 @@ use QUI;
 use QUI\Utils\Grid;
 use QUI\Utils\DOM as DOMUtils;
 use QUI\Cache\LongTermCache;
+use QUI\Cache\Manager as QUICacheManager;
+use QUI\Feed\Feed;
 
 /**
  * Class Feed Manager
@@ -312,6 +314,115 @@ class Manager
     }
 
     /**
+     * Build feed and write to cache.
+     *
+     * @param \QUI\Feed\Feed $Feed
+     * @return void
+     */
+    public function buildFeed(Feed $Feed): void
+    {
+        for ($pageNo = 0; $pageNo <= $Feed->getPageCount(); $pageNo++) {
+            $output    = $Feed->output($pageNo);
+            $cacheName = $this->getFeedOutputCacheName($Feed, $pageNo);
+
+            try {
+                QUI\Cache\Manager::set($cacheName, $output);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+    }
+
+    /**
+     * Check if feed is built and is available in the cache.
+     *
+     * @param \QUI\Feed\Feed $Feed
+     * @param int|null $page (optional)
+     * @return bool
+     */
+    public function isFeedBuilt(Feed $Feed, ?int $page = null): bool
+    {
+        if (!\is_null($page)) {
+            $cacheName = $this->getFeedOutputCacheName($Feed, $page);
+
+            try {
+                QUI\Cache\Manager::get($cacheName);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                return false;
+            }
+
+            return true;
+        }
+
+        for ($pageNo = 0; $pageNo <= $Feed->getPageCount(); $pageNo++) {
+            $cacheName = $this->getFeedOutputCacheName($Feed, $pageNo);
+
+            try {
+                QUI\Cache\Manager::get($cacheName);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns feed output
+     *
+     * @param \QUI\Feed\Feed $Feed
+     * @param int $pageNo (optional)
+     * @return string
+     */
+    public function getFeedOutput(Feed $Feed, int $pageNo = 0): string
+    {
+        $cacheName = $this->getFeedOutputCacheName($Feed, $pageNo);
+
+        try {
+            return QUICacheManager::get($cacheName);
+        } catch (\Exception $Exception) {
+            // re-build cache
+        }
+
+        $output = $Feed->output($pageNo);
+
+        QUICacheManager::set($cacheName, $output);
+
+        return $output;
+    }
+
+    /**
+     * Delete feed cache
+     *
+     * @param \QUI\Feed\Feed $Feed
+     * @return void
+     */
+    public function deleteFeedOutputCache(Feed $Feed): void
+    {
+        QUICacheManager::clear($this->getFeedOutputCacheName($Feed));
+    }
+
+    /**
+     * Geed internal cache name of feed output.
+     *
+     * @param \QUI\Feed\Feed $Feed
+     * @param int|null $pageNo (optional) - If omitted, return cache path for ALL feed pages
+     * @return string
+     */
+    protected function getFeedOutputCacheName(Feed $Feed, ?int $pageNo = null): string
+    {
+        $cacheName = 'quiqqer/feed/'.$Feed->getId();
+
+        if ($pageNo) {
+            $cacheName .= '/'.$pageNo;
+        }
+
+        return $cacheName;
+    }
+
+    /**
      * Get list of all feed.xml files of installed QUIQQER packages.
      *
      * @return string[]
@@ -383,7 +494,8 @@ class Manager
                 'project',
                 'publish',
                 'publish-sites',
-                'split'
+                'split',
+                'directOutput'
             ],
             $FeedType->getAttribute('attributes')
         );
