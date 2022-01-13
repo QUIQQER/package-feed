@@ -82,8 +82,8 @@
             <en><![CDATA[Please select the pages which should be explicitly EXCLUDED from the feed.]]></en>
         </locale>
         <locale name="quiqqer.feed.displayInHeader">
-            <de><![CDATA[Feed im Header einfügen]]></de>
-            <en><![CDATA[Insert feed in the header]]></en>
+            <de><![CDATA[im Header]]></de>
+            <en><![CDATA[in header]]></en>
         </locale>
         <locale name="quiqqer.feed.publishSitesLabel">
             <de><![CDATA[Seiten, auf denen der Feed publiziert werden soll]]></de>

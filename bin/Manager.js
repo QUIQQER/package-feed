@@ -100,10 +100,15 @@ define('package/quiqqer/feed/bin/Manager', [
                     dataType : 'string',
                     width    : 40
                 }, {
+                    header   : QUILocale.get('quiqqer/quiqqer', 'title'),
+                    dataIndex: 'feedName',
+                    dataType : 'string',
+                    width    : 200
+                }, {
                     header   : QUILocale.get(lg, 'quiqqer.feed.feedtype'),
                     dataIndex: 'feedtype_title',
                     dataType : 'string',
-                    width    : 250
+                    width    : 200
                 }, {
                     header   : QUILocale.get('quiqqer/system', 'project'),
                     dataIndex: 'project',
@@ -128,7 +133,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     header   : QUILocale.get(lg, 'quiqqer.feed.displayInHeader'),
                     dataIndex: 'displayInHeader',
                     dataType : 'string',
-                    width    : 150
+                    width    : 75
                 }, {
                     header   : QUILocale.get(lg, 'quiqqer.feed.actions'),
                     dataIndex: 'actions',
