@@ -328,7 +328,7 @@ class Manager
             $cacheName = $this->getFeedOutputCacheName($Feed, $pageNo);
 
             try {
-                QUI\Cache\Manager::set($cacheName, $output);
+                LongTermCache::set($cacheName, $output);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -383,14 +383,14 @@ class Manager
         $cacheName = $this->getFeedOutputCacheName($Feed, $pageNo);
 
         try {
-            return QUICacheManager::get($cacheName);
+            return LongTermCache::get($cacheName);
         } catch (\Exception $Exception) {
             // re-build cache
         }
 
         $output = $Feed->output($pageNo);
 
-        QUICacheManager::set($cacheName, $output);
+        LongTermCache::set($cacheName, $output);
 
         return $output;
     }
@@ -403,7 +403,7 @@ class Manager
      */
     public function deleteFeedOutputCache(Feed $Feed): void
     {
-        QUICacheManager::clear($this->getFeedOutputCacheName($Feed));
+        LongTermCache::clear($this->getFeedOutputCacheName($Feed));
     }
 
     /**
