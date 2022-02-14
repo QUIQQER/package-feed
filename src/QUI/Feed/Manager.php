@@ -329,6 +329,10 @@ class Manager
 
             try {
                 LongTermCache::set($cacheName, $output);
+
+                // Test
+                LongTermCache::get($cacheName);
+                \QUI\System\Log::writeRecursive("feed ".$Feed->getId()." written to cache!");
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -348,7 +352,7 @@ class Manager
             $cacheName = $this->getFeedOutputCacheName($Feed, $page);
 
             try {
-                QUI\Cache\Manager::get($cacheName);
+                LongTermCache::get($cacheName);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
                 return false;
@@ -361,7 +365,7 @@ class Manager
             $cacheName = $this->getFeedOutputCacheName($Feed, $pageNo);
 
             try {
-                QUI\Cache\Manager::get($cacheName);
+                LongTermCache::get($cacheName);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
                 return false;
