@@ -329,10 +329,6 @@ class Manager
 
             try {
                 LongTermCache::set($cacheName, $output);
-
-                // Test
-                LongTermCache::get($cacheName);
-                \QUI\System\Log::writeRecursive("feed ".$Feed->getId()." written to cache!");
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
