@@ -350,7 +350,7 @@ class Manager
             try {
                 LongTermCache::get($cacheName);
             } catch (\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
+                QUI\System\Log::writeDebugException($Exception);
                 return false;
             }
 
@@ -363,7 +363,7 @@ class Manager
             try {
                 LongTermCache::get($cacheName);
             } catch (\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
+                QUI\System\Log::writeDebugException($Exception);
                 return false;
             }
         }
