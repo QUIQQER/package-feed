@@ -102,6 +102,7 @@
                 <locale group="quiqqer/feed" var="feed.GoogleSitemap.description"/>
             </description>
 
+            <mimeType><![CDATA[application/xml]]></mimeType>
             <publishable>0</publishable>
             <pagination>1</pagination>
 
