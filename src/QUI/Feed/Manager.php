@@ -281,8 +281,8 @@ class Manager
                 if ($mimeType->length) {
                     $type['mimeType'] = $mimeType->item(0)->nodeValue;
                 } else {
-                    QUI\System\Log::addWarning(
-                        'quiqqer/feed - Feed type "'.$feedClass.'" does not have a <mimeType> set.'
+                    QUI\System\Log::addNotice(
+                        'quiqqer/feed - Feed type "'.$feedClass.'" does not have a mimeType set in feed.xml.'
                         .' Using default "application/xml" mime type.'
                     );
                 }
