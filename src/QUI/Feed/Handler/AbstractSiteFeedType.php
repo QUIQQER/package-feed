@@ -5,6 +5,8 @@ namespace QUI\Feed\Handler;
 use QUI;
 use QUI\Feed\Feed;
 use QUI\Feed\Feed as FeedInstance;
+use QUI\Feed\Interfaces\ChannelInterface;
+use QUI\Feed\Interfaces\FeedTypeInterface;
 
 /**
  * Class AbstractSiteFeedType
@@ -41,7 +43,32 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
         $Channel->setAttribute('title', $Feed->getAttribute('feedName'));
         $Channel->setDate(\time());
 
-        $ids = $this->getSiteIds($Feed);
+        $this->addItemsToChannel($Feed, $Channel);
+
+        // Create the XML
+        $XML = $this->getXML();
+
+        $Dom                     = new \DOMDocument('1.0', 'UTF-8');
+        $Dom->preserveWhiteSpace = false;
+        $Dom->formatOutput       = true;
+        $Dom->loadXML($XML->asXML());
+
+        return $Dom->saveXML();
+    }
+
+    /**
+     * Add all relevant items to a feed channel.
+     *
+     * @param FeedInstance $Feed
+     * @param ChannelInterface $Channel
+     * @return void
+     * @throws QUI\Exception
+     */
+    protected function addItemsToChannel(FeedInstance $Feed, ChannelInterface $Channel)
+    {
+        $Project     = $Feed->getProject();
+        $projectHost = $Project->getVHost(true, true);
+        $ids         = $this->getSiteIds($Feed);
 
         // create feed
         foreach ($ids as $id) {
@@ -105,16 +132,6 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
             } catch (QUI\Exception $Exception) {
             }
         }
-
-        // Create the XML
-        $XML = $this->getXML();
-
-        $Dom                     = new \DOMDocument('1.0', 'UTF-8');
-        $Dom->preserveWhiteSpace = false;
-        $Dom->formatOutput       = true;
-        $Dom->loadXML($XML->asXML());
-
-        return $Dom->saveXML();
     }
 
     /**
@@ -130,7 +147,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
         }
 
         $pageSize   = $Feed->getAttribute("pageSize");
-        $totalItems = \count($this->getSiteIds($Feed));
+        $totalItems = $this->getTotalItemCount($Feed);
 
         return (int)\ceil($totalItems / $pageSize);
     }
@@ -138,11 +155,11 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
     /**
      * Gets the site ids which should be used for the feed
      *
-     * @param Feed $Feed - Get Site IDs from specific feed
+     * @param FeedInstance $Feed - Get Site IDs from specific feed
      * @return array
      * @throws QUI\Exception
      */
-    protected function getSiteIds(Feed $Feed): array
+    protected function getSiteIds(FeedInstance $Feed): array
     {
         $feedSites        = $Feed->getAttribute('feedsites');
         $feedSitesExclude = $Feed->getAttribute('feedsites_exclude');
@@ -205,6 +222,18 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
         $siteIdsExclude = $this->getSiteIdsBySiteIdControlValues($Feed, $feedSitesExclude);
 
         return \array_diff($siteIds, $siteIdsExclude);
+    }
+
+    /**
+     * Get total item count for a feed.
+     *
+     * @param FeedInstance $Feed
+     * @return int
+     * @throws QUI\Exception
+     */
+    protected function getTotalItemCount(Feed $Feed): int
+    {
+        return \count($this->getSiteIds($Feed));
     }
 
     /**
