@@ -6,12 +6,13 @@
 
 namespace QUI\Feed\Handler\GoogleSitemap;
 
+use QUI;
 use QUI\Feed\Feed as FeedInstance;
-use QUI\Feed\Handler\AbstractFeedType;
 use QUI\Feed\Handler\AbstractItem;
 use QUI\Feed\Handler\AbstractSiteFeedType;
+use QUI\Feed\Interfaces\ChannelInterface;
 use QUI\Feed\Utils\SimpleXML;
-use QUI\System\Log;
+use QUI\ERP\Products\Handler\Products;
 
 /**
  * Class Feed
@@ -187,5 +188,80 @@ class Feed extends AbstractSiteFeedType
     protected function setPage($page)
     {
         $this->page = $page;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getFeedProductIds(): array
+    {
+        return Products::getProductIds([
+            'where' => [
+                'active' => 1,
+                'parent' => null
+            ]
+        ]);
+    }
+
+    /**
+     * Get total item count for a feed.
+     *
+     * @param FeedInstance $Feed
+     * @return int
+     * @throws QUI\Exception
+     */
+    protected function getTotalItemCount(FeedInstance $Feed): int
+    {
+        $count = parent::getTotalItemCount($Feed);
+        $count += \count($this->getFeedProductIds());
+
+        return $count;
+    }
+
+    /**
+     * Add all relevant items to a feed channel.
+     *
+     * @param FeedInstance $Feed
+     * @param ChannelInterface $Channel
+     * @return void
+     * @throws QUI\Exception
+     */
+    protected function addItemsToChannel(FeedInstance $Feed, ChannelInterface $Channel)
+    {
+        parent::addItemsToChannel($Feed, $Channel);
+
+        if (!QUI::getPackageManager()->isInstalled('quiqqer/products')) {
+            return;
+        }
+
+        if (empty($Feed->getAttribute('includeProductUrls'))) {
+            return;
+        }
+
+        $productIds = $this->getFeedProductIds();
+        $Project    = $Feed->getProject();
+        $lang       = $Project->getLang();
+        $Locale     = new QUI\Locale();
+        $Locale->setCurrent($lang);
+
+        foreach ($productIds as $productId) {
+            try {
+                $Product = Products::getProduct($productId);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                continue;
+            }
+
+            $Channel->createItem([
+                'title'        => $Product->getTitle($Locale),
+                'description'  => $Product->getDescription($Locale),
+                'language'     => $Project->getLang(),
+                'date'         => \strtotime($Product->getAttribute('c_date')),
+                'e_date'       => \strtotime($Product->getAttribute('e_date')),
+                'link'         => $Product->getUrlRewrittenWithHost($Project),
+                'permalink'    => null,
+                'seoDirective' => null
+            ]);
+        }
     }
 }

@@ -113,6 +113,17 @@
                             <locale group="quiqqer/feed" var="feed.GoogleSitemap.settings.title"/>
                         </title>
 
+                        <input type="checkbox"
+                               conf="includeProductUrls"
+                        >
+                            <text>
+                                <locale group="quiqqer/feed" var="feed.settings.includeProductUrls.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/feed" var="feed.settings.includeProductUrls.description"/>
+                            </description>
+                        </input>
+
                         <input type="hidden"
                                conf="feedsites"
                                data-qui="controls/projects/project/site/Select"

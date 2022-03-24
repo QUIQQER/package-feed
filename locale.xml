@@ -194,6 +194,14 @@
             <de><![CDATA[Welche Seiten sollen <b>nicht</b> im Feed enthalten sein? (Blacklist)]]></de>
             <en><![CDATA[Which sites should <b>nicht</b> be part of the feed? (Blacklist]]></en>
         </locale>
+        <locale name="feed.settings.includeProductUrls.title">
+            <de><![CDATA[Produkt-URLs inkludieren]]></de>
+            <en><![CDATA[Include product URLs]]></en>
+        </locale>
+        <locale name="feed.settings.includeProductUrls.description">
+            <de><![CDATA[URLs von Produkten sollen in die Sitemap eingefügt werden. Setzt voraus, dass das ecoyn Produkte-Modul installiert ist.]]></de>
+            <en><![CDATA[URLs of products are to be inserted into the sitemap. Requires that the ecoyn products module is installed.]]></en>
+        </locale>
 
         <locale name="feed.Atom.title">
             <de><![CDATA[CMS-Seiten (Atom)]]></de>
