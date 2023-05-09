@@ -439,6 +439,7 @@ class Manager
             try {
                 $Package = QUI::getPackage($package['name']);
             } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
                 continue;
             }
 
