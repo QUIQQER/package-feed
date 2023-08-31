@@ -6,7 +6,6 @@ use QUI;
 use QUI\Feed\Feed;
 use QUI\Feed\Feed as FeedInstance;
 use QUI\Feed\Interfaces\ChannelInterface;
-use QUI\Feed\Interfaces\FeedTypeInterface;
 
 /**
  * Class AbstractSiteFeedType
@@ -26,14 +25,14 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
      */
     public function create(FeedInstance $Feed, ?int $page = null): string
     {
-        $Project     = $Feed->getProject();
+        $Project = $Feed->getProject();
         $projectHost = $Project->getVHost(true, true);
-        $feedUrl     = $projectHost.URL_DIR.'feed='.$Feed->getId().'.xml';
+        $feedUrl = $projectHost . URL_DIR . 'feed=' . $Feed->getId() . '.xml';
 
         $Channel = $this->createChannel();
 
         $Channel->setLanguage($Project->getLang());
-        $Channel->setHost($projectHost.URL_DIR);
+        $Channel->setHost($projectHost . URL_DIR);
 
         $Channel->setAttribute('link', $feedUrl);
         $Channel->setAttribute(
@@ -48,9 +47,9 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
         // Create the XML
         $XML = $this->getXML();
 
-        $Dom                     = new \DOMDocument('1.0', 'UTF-8');
+        $Dom = new \DOMDocument('1.0', 'UTF-8');
         $Dom->preserveWhiteSpace = false;
-        $Dom->formatOutput       = true;
+        $Dom->formatOutput = true;
         $Dom->loadXML($XML->asXML());
 
         return $Dom->saveXML();
@@ -66,9 +65,9 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
      */
     protected function addItemsToChannel(FeedInstance $Feed, ChannelInterface $Channel)
     {
-        $Project     = $Feed->getProject();
+        $Project = $Feed->getProject();
         $projectHost = $Project->getVHost(true, true);
-        $ids         = $this->getSiteIds($Feed);
+        $ids = $this->getSiteIds($Feed);
 
         // create feed
         foreach ($ids as $id) {
@@ -83,26 +82,26 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
                 $editDate = $Site->getAttribute('e_date');
 
                 // Workaround bug  $Site->getCanonical() come with protocol
-                $link      = $Site->getUrlRewritten();
+                $link = $Site->getUrlRewritten();
                 $permalink = $Site->getCanonical();
 
                 if (\strpos($link, 'https:') === false && \strpos($link, 'http:') === false) {
-                    $link = $projectHost.$Site->getUrlRewritten();
+                    $link = $projectHost . $Site->getUrlRewritten();
                 }
 
                 if (\strpos($permalink, 'https:') === false && \strpos($permalink, 'http:') === false) {
-                    $permalink = $projectHost.$Site->getCanonical();
+                    $permalink = $projectHost . $Site->getCanonical();
                 }
 
                 /** @var QUI\Feed\Handler\AbstractItem $Item */
                 $Item = $Channel->createItem([
-                    'title'        => $Site->getAttribute('title'),
-                    'description'  => $Site->getAttribute('short'),
-                    'language'     => $Project->getLang(),
-                    'date'         => \strtotime($date),
-                    'e_date'       => \strtotime($editDate),
-                    'link'         => $link,
-                    'permalink'    => $permalink,
+                    'title' => $Site->getAttribute('title'),
+                    'description' => $Site->getAttribute('short'),
+                    'language' => $Project->getLang(),
+                    'date' => \strtotime($date),
+                    'e_date' => \strtotime($editDate),
+                    'link' => $link,
+                    'permalink' => $permalink,
                     'seoDirective' => $Site->getAttribute('quiqqer.meta.site.robots')
                 ]);
 
@@ -146,7 +145,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
             return 0;
         }
 
-        $pageSize   = $Feed->getAttribute("pageSize");
+        $pageSize = $Feed->getAttribute("pageSize");
         $totalItems = $this->getTotalItemCount($Feed);
 
         return (int)\ceil($totalItems / $pageSize);
@@ -161,7 +160,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
      */
     protected function getSiteIds(FeedInstance $Feed): array
     {
-        $feedSites        = $Feed->getAttribute('feedsites');
+        $feedSites = $Feed->getAttribute('feedsites');
         $feedSitesExclude = $Feed->getAttribute('feedsites_exclude');
 
         if (empty($feedSites)) {
@@ -245,15 +244,15 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
      */
     protected function getSiteIdsBySiteIdControlValues(Feed $Feed, array $values): array
     {
-        $Project  = $Feed->getProject();
-        $PDO      = QUI::getPDO();
-        $table    = $Project->getAttribute('db_table');
-        $idCount  = 0;
+        $Project = $Feed->getProject();
+        $PDO = QUI::getPDO();
+        $table = $Project->getAttribute('db_table');
+        $idCount = 0;
         $strCount = 0;
 
-        $whereParts    = [];
+        $whereParts = [];
         $wherePrepared = [];
-        $childPageIDs  = [];
+        $childPageIDs = [];
 
         $feedLimit = (int)$Feed->getAttribute('feedlimit');
 
@@ -264,14 +263,14 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
         foreach ($values as $needle) {
             //
             if (\is_numeric($needle)) {
-                $_id = ':id'.$idCount;
+                $_id = ':id' . $idCount;
 
                 $whereParts[] = " id = {$_id} ";
 
                 $wherePrepared[] = [
-                    'type'  => \PDO::PARAM_INT,
+                    'type' => \PDO::PARAM_INT,
                     'value' => $needle,
-                    'name'  => $_id
+                    'name' => $_id
                 ];
 
                 $idCount++;
@@ -287,13 +286,13 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
             }
 
             // Search for type
-            $_id = ':str'.$strCount;
+            $_id = ':str' . $strCount;
 
-            $whereParts[]    = " type LIKE {$_id} ";
+            $whereParts[] = " type LIKE {$_id} ";
             $wherePrepared[] = [
-                'type'  => \PDO::PARAM_STR,
+                'type' => \PDO::PARAM_STR,
                 'value' => $needle,
-                'name'  => $_id
+                'name' => $_id
             ];
 
             $strCount++;
@@ -307,19 +306,19 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
             $idString = "";
 
             for ($i = 0; $i < \count($childPageIDs); $i++) {
-                $idString .= ":pageid".$i.",";
+                $idString .= ":pageid" . $i . ",";
             }
 
-            $idString     = \rtrim($idString, ",");
+            $idString = \rtrim($idString, ",");
             $whereParts[] = " id IN ({$idString}) ";
 
             $i = 0;
 
             foreach ($childPageIDs as $id) {
                 $wherePrepared[] = [
-                    'type'  => \PDO::PARAM_INT,
+                    'type' => \PDO::PARAM_INT,
                     'value' => $id,
-                    'name'  => ":pageid".$i
+                    'name' => ":pageid" . $i
                 ];
                 $i++;
             }
@@ -393,28 +392,28 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
         }
 
         // Get the IDs of the selected sites
-        $PDO   = QUI::getPDO();
+        $PDO = QUI::getPDO();
         $table = $Project->getAttribute('db_table');
         $sites = \explode(';', $siteSelectValue);
 
-        $idCount  = 0;
+        $idCount = 0;
         $strCount = 0;
 
-        $whereParts    = [];
+        $whereParts = [];
         $wherePrepared = [];
 
         $childPageIDs = [];
         foreach ($sites as $needle) {
             //
             if (\is_numeric($needle)) {
-                $_id = ':id'.$idCount;
+                $_id = ':id' . $idCount;
 
                 $whereParts[] = " id = {$_id} ";
 
                 $wherePrepared[] = [
-                    'type'  => \PDO::PARAM_INT,
+                    'type' => \PDO::PARAM_INT,
                     'value' => $needle,
-                    'name'  => $_id
+                    'name' => $_id
                 ];
 
                 $idCount++;
@@ -429,13 +428,13 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
             }
 
             // Search for type
-            $_id = ':str'.$strCount;
+            $_id = ':str' . $strCount;
 
-            $whereParts[]    = " type LIKE {$_id} ";
+            $whereParts[] = " type LIKE {$_id} ";
             $wherePrepared[] = [
-                'type'  => \PDO::PARAM_STR,
+                'type' => \PDO::PARAM_STR,
                 'value' => $needle,
-                'name'  => $_id
+                'name' => $_id
             ];
 
             $strCount++;
@@ -449,7 +448,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
             $idString = "";
 
             for ($i = 0; $i < \count($childPageIDs); $i++) {
-                $idString .= ":pageid".$i.",";
+                $idString .= ":pageid" . $i . ",";
             }
 
             $idString = \rtrim($idString, ",");
@@ -459,9 +458,9 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
             $i = 0;
             foreach ($childPageIDs as $id) {
                 $wherePrepared[] = [
-                    'type'  => \PDO::PARAM_INT,
+                    'type' => \PDO::PARAM_INT,
                     'value' => $id,
-                    'name'  => ":pageid".$i
+                    'name' => ":pageid" . $i
                 ];
                 $i++;
             }

@@ -15,5 +15,4 @@ use QUI\Feed\Handler\AbstractItem;
  */
 class Item extends AbstractItem
 {
-
 }

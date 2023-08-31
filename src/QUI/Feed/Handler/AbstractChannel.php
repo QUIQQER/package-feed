@@ -6,9 +6,9 @@
 
 namespace QUI\Feed\Handler;
 
-use QUI\QDOM;
 use QUI\Feed\Interfaces\ChannelInterface as InterfaceChannel;
 use QUI\Feed\Interfaces\FeedItemInterface;
+use QUI\QDOM;
 
 /**
  * Class AbstractChannel
@@ -30,22 +30,22 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @var array
      */
-    protected $items = array();
+    protected $items = [];
 
     /**
      * constructor
      *
      * @param array $params
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         // defaults
-        $this->setAttributes(array(
+        $this->setAttributes([
             'title' => '',
             'description' => '',
             'timestamp' => '',
             'language' => ''
-        ));
+        ]);
     }
 
     /**

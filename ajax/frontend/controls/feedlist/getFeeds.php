@@ -1,13 +1,13 @@
 <?php
 
+use QUI\Feed\Manager;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_feed_ajax_frontend_controls_feedlist_getFeeds',
     function () {
-        $Manager = new \QUI\Feed\Manager();
-
+        $Manager = new Manager();
         $feedList = $Manager->getList();
-
-        $result = array();
+        $result = [];
 
         foreach ($feedList as $feedRow) {
             if ($feedRow['publish'] != "1") {
@@ -24,13 +24,12 @@ QUI::$Ajax->registerFunction(
             );
 
             $projectHost = $Project->getVHost(true, true);
-            $feedUrl     = $projectHost . URL_DIR . 'feed=' . $feedRow['id'] . '.xml';
+            $feedUrl = $projectHost . URL_DIR . 'feed=' . $feedRow['id'] . '.xml';
 
             $feedRow['url'] = $feedUrl;
-            $result[]       = $feedRow;
+            $result[] = $feedRow;
         }
 
         return $result;
-    },
-    array()
+    }
 );

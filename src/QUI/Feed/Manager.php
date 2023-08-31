@@ -3,11 +3,9 @@
 namespace QUI\Feed;
 
 use QUI;
-use QUI\Utils\Grid;
-use QUI\Utils\DOM as DOMUtils;
 use QUI\Cache\LongTermCache;
-use QUI\Cache\Manager as QUICacheManager;
-use QUI\Feed\Feed;
+use QUI\Utils\DOM as DOMUtils;
+use QUI\Utils\Grid;
 
 /**
  * Class Feed Manager
@@ -59,11 +57,11 @@ class Manager
             [
                 'type_id' => $typeId,
                 'project' => $DefaultProject->getName(),
-                'lang'    => $DefaultProject->getLang()
+                'lang' => $DefaultProject->getLang()
             ]
         );
 
-        $id   = QUI::getDataBase()->getPDO()->lastInsertId();
+        $id = QUI::getDataBase()->getPDO()->lastInsertId();
         $Feed = new Feed($id);
 
         $Feed->setAttributes($this->filterFeedParams($typeId, $params));
@@ -195,25 +193,30 @@ class Manager
 
                 if (empty($feedClass)) {
                     QUI\System\Log::addError(
-                        'quiqqer/feed - Feed from feeds.xml file "'.$xmlFile.'"'
-                        .' is missing the "class" attribute. Feed is ignored!'
+                        'quiqqer/feed - Feed from feeds.xml file "' . $xmlFile . '"'
+                        . ' is missing the "class" attribute. Feed is ignored!'
                     );
 
                     continue;
                 }
 
-                if (!\class_exists($feedClass) || !\is_a($feedClass, QUI\Feed\Interfaces\FeedTypeInterface::class,
-                        true)) {
+                if (
+                    !\class_exists($feedClass) || !\is_a(
+                        $feedClass,
+                        QUI\Feed\Interfaces\FeedTypeInterface::class,
+                        true
+                    )
+                ) {
                     QUI\System\Log::addError(
-                        'quiqqer/feed - Feed class "'.$feedClass.'" from feeds.xml file "'.$xmlFile.'"'
-                        .' does not exist or does not implement "QUI\Feed\Interfaces\Feed". Feed is ignored!'
+                        'quiqqer/feed - Feed class "' . $feedClass . '" from feeds.xml file "' . $xmlFile . '"'
+                        . ' does not exist or does not implement "QUI\Feed\Interfaces\Feed". Feed is ignored!'
                     );
 
                     continue;
                 }
 
                 $type = [
-                    'id'    => $this->parseFeedClassToHash($feedClass),
+                    'id' => $this->parseFeedClassToHash($feedClass),
                     'class' => $feedClass
                 ];
 
@@ -222,8 +225,8 @@ class Manager
 
                 if (!$title->length) {
                     QUI\System\Log::addError(
-                        'quiqqer/feed - Feed class "'.$feedClass.'" from feeds.xml file "'.$xmlFile.'"'
-                        .' does not have a "title" attribute in the <feed> tag. Feed is ignored!'
+                        'quiqqer/feed - Feed class "' . $feedClass . '" from feeds.xml file "' . $xmlFile . '"'
+                        . ' does not have a "title" attribute in the <feed> tag. Feed is ignored!'
                     );
 
                     continue;
@@ -241,7 +244,7 @@ class Manager
                 }
 
                 // Settings
-                $settings     = $FeedTypeNode->getElementsByTagName('category');
+                $settings = $FeedTypeNode->getElementsByTagName('category');
                 $settingsHtml = '';
 
                 foreach ($settings as $settingNode) {
@@ -260,14 +263,14 @@ class Manager
                 $type['attributes'] = !empty($matches[1]) ? $matches[1] : [];
 
                 // Special attributes
-                $publishable         = $FeedTypeNode->getElementsByTagName('publishable');
+                $publishable = $FeedTypeNode->getElementsByTagName('publishable');
                 $type['publishable'] = false;
 
                 if ($publishable->length) {
                     $type['publishable'] = !empty($publishable->item(0)->nodeValue);
                 }
 
-                $pagination         = $FeedTypeNode->getElementsByTagName('pagination');
+                $pagination = $FeedTypeNode->getElementsByTagName('pagination');
                 $type['pagination'] = false;
 
                 if ($pagination->length) {
@@ -275,15 +278,15 @@ class Manager
                 }
 
                 // Mime type
-                $mimeType         = $FeedTypeNode->getElementsByTagName('mimeType');
+                $mimeType = $FeedTypeNode->getElementsByTagName('mimeType');
                 $type['mimeType'] = 'application/xml'; // fallback
 
                 if ($mimeType->length) {
                     $type['mimeType'] = $mimeType->item(0)->nodeValue;
                 } else {
                     QUI\System\Log::addNotice(
-                        'quiqqer/feed - Feed type "'.$feedClass.'" does not have a mimeType set in feed.xml.'
-                        .' Using default "application/xml" mime type.'
+                        'quiqqer/feed - Feed type "' . $feedClass . '" does not have a mimeType set in feed.xml.'
+                        . ' Using default "application/xml" mime type.'
                     );
                 }
 
@@ -324,7 +327,7 @@ class Manager
         $this->deleteFeedOutputCache($Feed);
 
         for ($pageNo = 0; $pageNo <= $Feed->getPageCount(); $pageNo++) {
-            $output    = $Feed->output($pageNo);
+            $output = $Feed->output($pageNo);
             $cacheName = $this->getFeedOutputCacheName($Feed, $pageNo);
 
             try {
@@ -415,10 +418,10 @@ class Manager
      */
     protected function getFeedOutputCacheName(Feed $Feed, ?int $pageNo = null): string
     {
-        $cacheName = 'quiqqer/feed/'.$Feed->getId();
+        $cacheName = 'quiqqer/feed/' . $Feed->getId();
 
         if ($pageNo) {
-            $cacheName .= '/'.$pageNo;
+            $cacheName .= '/' . $pageNo;
         }
 
         return $cacheName;
@@ -432,7 +435,7 @@ class Manager
     protected function getFeedXmlFiles()
     {
         $packages = QUI::getPackageManager()->getInstalled();
-        $list     = [];
+        $list = [];
 
         /* @var $Package \QUI\Package\Package */
         foreach ($packages as $package) {
@@ -447,7 +450,7 @@ class Manager
                 continue;
             }
 
-            $feedXmlFile = $Package->getDir().'/feeds.xml';
+            $feedXmlFile = $Package->getDir() . '/feeds.xml';
 
             if (\file_exists($feedXmlFile)) {
                 $list[] = $feedXmlFile;
@@ -467,9 +470,9 @@ class Manager
         $result = QUI::getDataBase()->fetch([
             'count' => [
                 'select' => 'id',
-                'as'     => 'count'
+                'as' => 'count'
             ],
-            'from'  => QUI::getDBTableName(self::TABLE)
+            'from' => QUI::getDBTableName(self::TABLE)
         ]);
 
         return (int)$result[0]['count'];
@@ -519,7 +522,7 @@ class Manager
                         $project = $projects[0];
 
                         $sanitizedAttributes['project'] = $project['project'];
-                        $sanitizedAttributes['lang']    = $project['lang'];
+                        $sanitizedAttributes['lang'] = $project['lang'];
                     }
                     break;
 

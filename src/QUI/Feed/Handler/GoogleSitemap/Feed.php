@@ -7,12 +7,12 @@
 namespace QUI\Feed\Handler\GoogleSitemap;
 
 use QUI;
+use QUI\ERP\Products\Handler\Products;
 use QUI\Feed\Feed as FeedInstance;
 use QUI\Feed\Handler\AbstractItem;
 use QUI\Feed\Handler\AbstractSiteFeedType;
 use QUI\Feed\Interfaces\ChannelInterface;
 use QUI\Feed\Utils\SimpleXML;
-use QUI\ERP\Products\Handler\Products;
 
 /**
  * Class Feed
@@ -120,7 +120,7 @@ class Feed extends AbstractSiteFeedType
 
         // Pagination - page
         $startIndex = ($this->page - 1) * $this->pageSize;
-        $pageItems  = array_slice($Items, $startIndex, $this->pageSize);
+        $pageItems = array_slice($Items, $startIndex, $this->pageSize);
 
         return $this->createSitemapXML($pageItems);
     }
@@ -140,7 +140,7 @@ class Feed extends AbstractSiteFeedType
         foreach ($items as $Item) {
             /* @var $Item Item */
             $ItemXml = $XML->addChild('url');
-            $date    = $Item->getAttribute('e_date');
+            $date = $Item->getAttribute('e_date');
 
             $ItemXml->addChild('loc', $Item->getAttribute('link'));
 
@@ -166,7 +166,7 @@ class Feed extends AbstractSiteFeedType
         );
 
         for ($i = 1; $i <= $pages; $i++) {
-            $sitemapURL = $baseURL."-".$i.".xml";
+            $sitemapURL = $baseURL . "-" . $i . ".xml";
             $SitemapXML = $XML->addChild("sitemap");
             $SitemapXML->addChild("loc", $sitemapURL);
         }
@@ -239,9 +239,9 @@ class Feed extends AbstractSiteFeedType
         }
 
         $productIds = $this->getFeedProductIds();
-        $Project    = $Feed->getProject();
-        $lang       = $Project->getLang();
-        $Locale     = new QUI\Locale();
+        $Project = $Feed->getProject();
+        $lang = $Project->getLang();
+        $Locale = new QUI\Locale();
         $Locale->setCurrent($lang);
 
         foreach ($productIds as $productId) {
@@ -253,13 +253,13 @@ class Feed extends AbstractSiteFeedType
             }
 
             $Channel->createItem([
-                'title'        => $Product->getTitle($Locale),
-                'description'  => $Product->getDescription($Locale),
-                'language'     => $Project->getLang(),
-                'date'         => \strtotime($Product->getAttribute('c_date')),
-                'e_date'       => \strtotime($Product->getAttribute('e_date')),
-                'link'         => $Product->getUrlRewrittenWithHost($Project),
-                'permalink'    => null,
+                'title' => $Product->getTitle($Locale),
+                'description' => $Product->getDescription($Locale),
+                'language' => $Project->getLang(),
+                'date' => \strtotime($Product->getAttribute('c_date')),
+                'e_date' => \strtotime($Product->getAttribute('e_date')),
+                'link' => $Product->getUrlRewrittenWithHost($Project),
+                'permalink' => null,
                 'seoDirective' => null
             ]);
         }

@@ -3,7 +3,7 @@
 namespace QUI\Feed\Handler\Atom;
 
 use QUI\Feed\Handler\AbstractSiteFeedType;
-use \QUI\Feed\Utils\SimpleXML;
+use QUI\Feed\Utils\SimpleXML;
 
 /**
  * Class Feed
@@ -40,7 +40,7 @@ class Feed extends AbstractSiteFeedType
         );
 
         $channels = $this->getChannels();
-        $Channel  = $channels[0];
+        $Channel = $channels[0];
 
 
         $host = $Channel->getHost();
@@ -150,7 +150,7 @@ class Feed extends AbstractSiteFeedType
             $Enclosure->addAttribute("type", $Image->getAttribute('mime_type'));
             $Enclosure->addAttribute("length", $Image->getAttribute('filesize'));
             $Enclosure->addAttribute("title", $Image->getAttribute("title"));
-            $Enclosure->addAttribute("href", $host.trim($Image->getUrl(false), '/'));
+            $Enclosure->addAttribute("href", $host . trim($Image->getUrl(false), '/'));
         }
 
 
