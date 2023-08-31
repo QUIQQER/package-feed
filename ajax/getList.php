@@ -11,15 +11,15 @@
  *
  * @return array
  * @author www.pcsg.de (Henning Leutz)
- *
  */
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_feed_ajax_getList',
     function ($gridParams) {
         $FeedManager = new QUI\Feed\Manager();
-        $gridParams  = json_decode($gridParams, true);
+        $gridParams = json_decode($gridParams, true);
 
-        $Grid   = new QUI\Utils\Grid();
+        $Grid = new QUI\Utils\Grid();
         $result = $FeedManager->getList($gridParams);
 
         foreach ($result as $k => $row) {

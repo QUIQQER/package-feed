@@ -6,11 +6,12 @@
  * @param int $feedId
  * @return void
  */
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_feed_ajax_backend_recreate',
     function ($feedId) {
         $FeedManager = new QUI\Feed\Manager();
-        $Feed        = $FeedManager->getFeed((int)$feedId);
+        $Feed = $FeedManager->getFeed((int)$feedId);
 
         $FeedManager->deleteFeedOutputCache($Feed);
 

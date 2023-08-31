@@ -7,8 +7,8 @@
 namespace QUI\Feed\Handler;
 
 use QUI;
-use QUI\QDOM;
 use QUI\Feed\Interfaces\FeedItemInterface as InterfaceItem;
+use QUI\QDOM;
 
 /**
  * Class AbstractItem
@@ -30,7 +30,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      *
      * @param array $params
      */
-    public function __construct(array $params = array())
+    public function __construct(array $params = [])
     {
         $this->setAttributes($params);
     }

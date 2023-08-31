@@ -9,13 +9,13 @@
  * @return array
  * @throws QUI\Exception
  * @author www.pcsg.de (Henning Leutz)
- *
  */
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_feed_ajax_setFeed',
     function ($feedId, $params) {
         $FeedManager = new QUI\Feed\Manager();
-        $params      = \json_decode($params, true);
+        $params = json_decode($params, true);
 
         if ($feedId) {
             $Feed = $FeedManager->getFeed($feedId);

@@ -2,10 +2,8 @@
 
 namespace QUI\Feed\Handler\RSS;
 
-use QUI;
 use QUI\Feed\Handler\AbstractSiteFeedType;
 use QUI\Feed\Utils\SimpleXML;
-use QUI\Feed\Feed as FeedInstance;
 use QUI\Feed\Utils\Utils;
 
 /**
@@ -118,7 +116,7 @@ class Feed extends AbstractSiteFeedType
                 $EnclosureDom = $ItemXml->addChild('enclosure');
                 $EnclosureDom->addAttribute(
                     'url',
-                    Utils::fixLinkProtocol($host.trim($Image->getUrl(false), '/'))
+                    Utils::fixLinkProtocol($host . trim($Image->getUrl(false), '/'))
                 );
 
                 $EnclosureDom->addAttribute(
