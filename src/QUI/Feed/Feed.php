@@ -7,9 +7,7 @@
 namespace QUI\Feed;
 
 use QUI;
-use QUI\Feed\Handler\RSS\Feed as RSS;
-use QUI\Feed\Handler\Atom\Feed as Atom;
-use QUI\Feed\Handler\GoogleSitemap\Feed as GoogleSitemap;
+use QUI\Exception;
 use QUI\Utils\Security\Orthos;
 
 /**
@@ -57,7 +55,7 @@ class Feed extends QUI\QDOM
         $this->feedId = $feedId;
 
         $data = QUI::getDataBase()->fetch([
-            'from'  => QUI::getDBTableName(Manager::TABLE),
+            'from' => QUI::getDBTableName(Manager::TABLE),
             'where' => [
                 'id' => $this->feedId
             ],
@@ -91,7 +89,7 @@ class Feed extends QUI\QDOM
         }
 
         // Build FeedType
-        $Manager        = new Manager();
+        $Manager = new Manager();
         $this->FeedType = $Manager->getType($this->typeId);
     }
 
@@ -116,9 +114,10 @@ class Feed extends QUI\QDOM
     /**
      * Return the feed type data (as configured in feed.xml)
      *
-     * @return array
+     * @return Interfaces\FeedTypeInterface
+     * @throws Exception
      */
-    public function getFeedTypeData(): array
+    public function getFeedTypeData(): Interfaces\FeedTypeInterface
     {
         $Manager = new Manager();
         return $Manager->getType($this->typeId);
@@ -139,7 +138,7 @@ class Feed extends QUI\QDOM
      */
     public function getAttributes(): array
     {
-        $attributes       = parent::getAttributes();
+        $attributes = parent::getAttributes();
         $attributes['id'] = $this->feedId;
 
         return $attributes;
@@ -154,8 +153,8 @@ class Feed extends QUI\QDOM
     {
         $table = QUI::getDBTableName(Manager::TABLE);
 
-        $feedlimit       = (int)$this->getAttribute('feedlimit');
-        $feedName        = '';
+        $feedlimit = (int)$this->getAttribute('feedlimit');
+        $feedName = '';
         $feedDescription = '';
 
         if ($this->getAttribute('feedName')) {
@@ -176,26 +175,26 @@ class Feed extends QUI\QDOM
         $feedSettings['directOutput'] = $this->getAttribute('directOutput');
 
         QUI::getDataBase()->update($table, [
-            'project'         => $this->getAttribute('project'),
-            'lang'            => $this->getAttribute('lang'),
+            'project' => $this->getAttribute('project'),
+            'lang' => $this->getAttribute('lang'),
 //            'feedtype'        => $this->getFeedType(),
 //            'feedsites'         => $this->getAttribute('feedsites'),
 //            'feedsites_exclude' => $this->getAttribute('feedsites_exclude'),
-            'feedlimit'       => $feedlimit ?: 0,
-            'feedName'        => $feedName,
+            'feedlimit' => $feedlimit ?: 0,
+            'feedName' => $feedName,
             'feedDescription' => $feedDescription,
-            'pageSize'        => $this->getAttribute("pageSize") ?: 0,
-            'publish'         => $this->getAttribute("publish") ? 1 : 0,
-            'publish_sites'   => $this->getAttribute("publish_sites"),
-            'feedImage'       => $this->getAttribute("feedImage"),
-            'feed_settings'   => \json_encode($feedSettings),
-            'type_id'         => $this->getAttribute('type_id')
+            'pageSize' => $this->getAttribute("pageSize") ?: 0,
+            'publish' => $this->getAttribute("publish") ? 1 : 0,
+            'publish_sites' => $this->getAttribute("publish_sites"),
+            'feedImage' => $this->getAttribute("feedImage"),
+            'feed_settings' => \json_encode($feedSettings),
+            'type_id' => $this->getAttribute('type_id')
         ], [
             'id' => $this->getId()
         ]);
 
         // clear cache
-        QUI\Cache\Manager::clear('quiqqer/feed/'.$this->getId());
+        QUI\Cache\Manager::clear('quiqqer/feed/' . $this->getId());
     }
 
     /**
@@ -245,6 +244,6 @@ class Feed extends QUI\QDOM
      */
     public function getUrl(): string
     {
-        return $this->Project->getVHost(true, true).'feed='.$this->getId().'.xml';
+        return $this->Project->getVHost(true, true) . 'feed=' . $this->getId() . '.xml';
     }
 }

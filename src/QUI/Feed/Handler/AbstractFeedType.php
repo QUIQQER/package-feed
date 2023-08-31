@@ -4,9 +4,9 @@ namespace QUI\Feed\Handler;
 
 use QUI;
 use QUI\Feed\Feed;
-use QUI\QDOM;
-use QUI\Feed\Interfaces\FeedTypeInterface as FeedInterface;
 use QUI\Feed\Interfaces\ChannelInterface as ChannelInterface;
+use QUI\Feed\Interfaces\FeedTypeInterface as FeedInterface;
+use QUI\QDOM;
 
 /**
  * Class AbstractFeed

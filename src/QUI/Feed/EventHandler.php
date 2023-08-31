@@ -3,11 +3,14 @@
 namespace QUI\Feed;
 
 use QUI;
-use Symfony\Component\HttpFoundation\Response;
 use QUI\Cache\LongTermCache;
-use QUI\Feed\Handler\RSS\Feed as FeedRSS;
-use QUI\Feed\Handler\Atom\Feed as FeedAtom;
-use QUI\Feed\Handler\GoogleSitemap\Feed as FeedGoogleSitemap;
+use QUI\Projects\Site;
+use QUI\Projects\Site\Edit;
+use QUI\Rewrite;
+use Symfony\Component\HttpFoundation\Response;
+
+use function json_decode;
+use function json_encode;
 
 /**
  * Class Events -> System Events
@@ -52,15 +55,15 @@ class EventHandler
     protected static function patchV1(): void
     {
         $result = QUI::getDataBase()->fetch([
-            'from'  => QUI::getDBTableName(Manager::TABLE),
+            'from' => QUI::getDBTableName(Manager::TABLE),
             'where' => [
                 'type_id' => null
             ]
         ]);
 
-        $Manager             = new Manager();
-        $feedIdRss           = '1de938991bab7c523b9adbb631de5077588ecd348a68e7d993f619200f5a8bec';
-        $feedIdAtom          = 'b71ca88546347228c7a9057939de67a49852df3f5fc90fac389bc19f509f7bc1';
+        $Manager = new Manager();
+        $feedIdRss = '1de938991bab7c523b9adbb631de5077588ecd348a68e7d993f619200f5a8bec';
+        $feedIdAtom = 'b71ca88546347228c7a9057939de67a49852df3f5fc90fac389bc19f509f7bc1';
         $feedIdGoogleSitemap = '2db63240d86aee59430c7c17f92039cb954d2e88fde05889ea3a60a6266462cb';
 
         foreach ($result as $row) {
@@ -80,8 +83,8 @@ class EventHandler
                     break;
             }
 
-            $update['feed_settings'] = \json_encode([
-                'feedsites'         => !empty($row['feedsites']) ? $row['feedsites'] : '',
+            $update['feed_settings'] = json_encode([
+                'feedsites' => !empty($row['feedsites']) ? $row['feedsites'] : '',
                 'feedsites_exclude' => !empty($row['feedsites_exclude']) ? $row['feedsites_exclude'] : ''
             ]);
 
@@ -104,12 +107,12 @@ class EventHandler
     {
         $result = QUI::getDataBase()->fetch([
             'select' => ['id', 'feed_settings'],
-            'from'   => QUI::getDBTableName(Manager::TABLE)
+            'from' => QUI::getDBTableName(Manager::TABLE)
         ]);
 
         foreach ($result as $row) {
             if (!empty($row['feed_settings'])) {
-                $settings = \json_decode($row['feed_settings'], true);
+                $settings = json_decode($row['feed_settings'], true);
             } else {
                 $settings = [];
             }
@@ -120,7 +123,7 @@ class EventHandler
                 QUI::getDataBase()->update(
                     QUI::getDBTableName(Manager::TABLE),
                     [
-                        'feed_settings' => \json_encode($settings)
+                        'feed_settings' => json_encode($settings)
                     ],
                     [
                         'id' => $row['id']
@@ -133,7 +136,7 @@ class EventHandler
     /**
      * event : on request
      *
-     * @param \QUI\Rewrite $Rewrite
+     * @param Rewrite $Rewrite
      * @param String $url
      *
      * @return void
@@ -157,9 +160,9 @@ class EventHandler
 
         // The identifier of the name, can be either just the feed id or the feedid with the pagenomber, for paginated feeds
         $feedIdentifier = $params[1];
-        $feedDetails    = explode("-", $feedIdentifier);
-        $feedId         = (int)$feedDetails[0];
-        $pageNo         = 0;
+        $feedDetails = explode("-", $feedIdentifier);
+        $feedId = (int)$feedDetails[0];
+        $pageNo = 0;
 
         if (isset($feedDetails[1])) {
             $pageNo = (int)$feedDetails[1];
@@ -167,7 +170,7 @@ class EventHandler
 
         try {
             $Manager = new Manager();
-            $Feed    = $Manager->getFeed($feedId);
+            $Feed = $Manager->getFeed($feedId);
         } catch (\Exception $Exception) {
             $Response = new Response("Feed not found", 404);
             $Response->send();
@@ -190,7 +193,7 @@ class EventHandler
         $mimeType = $Feed->getFeedType()->getAttribute('mimeType');
 
         try {
-            header('Content-Type: '.$mimeType.'; charset=UTF-8');
+            header('Content-Type: ' . $mimeType . '; charset=UTF-8');
             echo $Manager->getFeedOutput($Feed, $pageNo);
             exit;
         } catch (QUI\Exception $Exception) {
@@ -198,11 +201,10 @@ class EventHandler
         }
     }
 
-
     /**
      * event : site change it
      *
-     * @param \QUI\Projects\Site $Site
+     * @param Site|Edit $Site
      */
     public static function onSiteChange($Site)
     {
@@ -225,7 +227,7 @@ class EventHandler
             }
 
             // clear cache
-            QUI\Cache\Manager::clear('quiqqer/feed/'.$feed['id']);
+            QUI\Cache\Manager::clear('quiqqer/feed/' . $feed['id']);
         }
     }
 
@@ -234,16 +236,16 @@ class EventHandler
      */
     public static function onTemplateGetHeader($Template)
     {
-        $Manager  = new Manager();
-        $feedrows = $Manager->getList();
+        $Manager = new Manager();
+        $feedRows = $Manager->getList();
 
-        foreach ($feedrows as $databaseRow) {
+        foreach ($feedRows as $databaseRow) {
             $feedID = $databaseRow['id'];
 
             try {
                 $Feed = new Feed($feedID);
             } catch (\Exception $Exception) {
-                QUI\System\Log::addWarning("Attempt to add non existing feed '".$feedID."' to header");
+                QUI\System\Log::addWarning("Attempt to add non existing feed '" . $feedID . "' to header");
                 continue;
             }
 
@@ -280,10 +282,10 @@ class EventHandler
             }
 
             $projectHost = $FeedProject->getVHost(true, true);
-            $url         = $projectHost.URL_DIR.'feed='.$Feed->getId().'.xml';
-            $mimeType    = $FeedType->getAttribute('mimeType');
+            $url = $projectHost . URL_DIR . 'feed=' . $Feed->getId() . '.xml';
+            $mimeType = $FeedType->getAttribute('mimeType');
 
-            $rssTag = '<link rel="alternate" type="'.$mimeType.'" href="'.$url.'" />'.PHP_EOL;
+            $rssTag = '<link rel="alternate" type="' . $mimeType . '" href="' . $url . '" />' . PHP_EOL;
             $Template->extendHeader($rssTag);
         }
     }

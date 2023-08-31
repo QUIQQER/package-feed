@@ -5,6 +5,7 @@
  *
  * @return array
  */
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_feed_ajax_backend_getTypes',
     function () {

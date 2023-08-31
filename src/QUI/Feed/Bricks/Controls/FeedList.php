@@ -6,16 +6,14 @@ use QUI;
 
 class FeedList extends QUI\Control
 {
-
-    public function __construct($attributes = array())
+    public function __construct($attributes = [])
     {
-
-        $this->setAttributes(array(
-            'title'    => '',
-            'text'     => '',
-            'class'    => 'qui-feeds-brick-FeedList',
+        $this->setAttributes([
+            'title' => '',
+            'text' => '',
+            'class' => 'qui-feeds-brick-FeedList',
             'nodeName' => 'div'
-        ));
+        ]);
 
         $this->addCSSFile(
             dirname(__FILE__) . '/FeedList.css'
@@ -25,11 +23,9 @@ class FeedList extends QUI\Control
         parent::__construct($attributes);
     }
 
-
     public function getBody()
     {
         $Engine = QUI::getTemplateManager()->getEngine();
-
 
         if ($this->getAttribute("layout") == "icons") {
             $this->addCSSFile(
@@ -37,15 +33,15 @@ class FeedList extends QUI\Control
             );
         }
 
-        $Engine->assign(array(
-            'this'      => $this,
-            'feeds'     => $this->getFeeds(),
+        $Engine->assign([
+            'this' => $this,
+            'feeds' => $this->getFeeds(),
             'newwindow' => $this->getAttribute("newwindow"),
-            'layout'    => $this->getAttribute("layout")
-        ));
-
+            'layout' => $this->getAttribute("layout")
+        ]);
 
         $template = dirname(__FILE__) . '/FeedList.html';
+
         if ($this->getAttribute("layout") == "icons") {
             $template = dirname(__FILE__) . '/FeedListIcons.html';
         }
@@ -61,19 +57,17 @@ class FeedList extends QUI\Control
     protected function getFeeds()
     {
         $Manager = new QUI\Feed\Manager();
-
         $configuredFeeds = $Manager->getList();
-
-        $result = array();
+        $result = [];
 
         foreach ($configuredFeeds as $feed) {
-            $feedID      = $feed['id'];
-            $name        = $feed['feedName'];
-            $type        = $feed['feedtype'];
+            $feedID = $feed['id'];
+            $name = $feed['feedName'];
+            $type = $feed['feedtype'];
             $description = $feed['feedDescription'];
-            $project     = $feed['project'];
-            $language    = $feed['lang'];
-            $publish     = $feed['publish'];
+            $project = $feed['project'];
+            $language = $feed['lang'];
+            $publish = $feed['publish'];
 
             $curProject = QUI::getRewrite()->getProject();
 
@@ -93,24 +87,21 @@ class FeedList extends QUI\Control
                 continue;
             }
 
-
             $projectHost = $curProject->getVHost(true, true);
-            $url         = $projectHost . URL_DIR . 'feed=' . $feedID . '.xml';
+            $url = $projectHost . URL_DIR . 'feed=' . $feedID . '.xml';
 
-            $result[] = array(
+            $result[] = [
                 "feedID" => $feedID,
-                "name"   => $name,
-                "type"   => $type,
-                "desc"   => $description,
-                "url"    => $url
-            );
+                "name" => $name,
+                "type" => $type,
+                "desc" => $description,
+                "url" => $url
+            ];
         }
-
 
         if ($this->getAttribute("limit") > 0) {
             $result = array_slice($result, 0, $this->getAttribute("limit"));
         }
-
 
         return $result;
     }

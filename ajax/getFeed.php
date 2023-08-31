@@ -7,12 +7,13 @@
 /**
  * Returns the feed list
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @param integer $feedId - ID of the Feed
  *
  * @return array
+ * @author www.pcsg.de (Henning Leutz)
+ *
  */
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_feed_ajax_getFeed',
     function ($feedId) {
@@ -20,6 +21,6 @@ QUI::$Ajax->registerFunction(
 
         return $FeedManager->getFeed($feedId)->getAttributes();
     },
-    array('feedId'),
+    ['feedId'],
     'Permission::checkAdminUser'
 );

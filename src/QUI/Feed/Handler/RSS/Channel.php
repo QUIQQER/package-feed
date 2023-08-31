@@ -21,7 +21,7 @@ class Channel extends AbstractChannel
      *
      * @return \QUI\Feed\Interfaces\FeedItemInterface
      */
-    public function createItem(array $params = array())
+    public function createItem(array $params = [])
     {
         $Item = new Item($params);
         $this->addItem($Item);
