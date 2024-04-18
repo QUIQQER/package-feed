@@ -14,7 +14,7 @@ class SimpleXML extends \SimpleXMLElement
      *
      * @param string $cdata - CDATA value
      */
-    public function addCData($cdata)
+    public function addCData(string $cdata): void
     {
         $Node = dom_import_simplexml($this);
         $OwnDoc = $Node->ownerDocument;

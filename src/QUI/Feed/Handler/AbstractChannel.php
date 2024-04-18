@@ -23,21 +23,21 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @var string
      */
-    protected $host = '';
+    protected string $host = '';
 
     /**
      * RSS Channel items
      *
      * @var array
      */
-    protected $items = [];
+    protected array $items = [];
 
     /**
      * constructor
      *
      * @param array $params
      */
-    public function __construct($params = [])
+    public function __construct(array $params = [])
     {
         // defaults
         $this->setAttributes([
@@ -51,11 +51,11 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
     /**
      * Add an item to the channel
      *
-     * @param FeedItemInterface $item
+     * @param FeedItemInterface $Item
      */
-    public function addItem(FeedItemInterface $item)
+    public function addItem(FeedItemInterface $Item): void
     {
-        $this->items[] = $item;
+        $this->items[] = $Item;
     }
 
     /**
@@ -63,7 +63,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @return array
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->items;
     }
@@ -73,7 +73,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->setAttribute('title', $title);
     }
@@ -83,7 +83,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @param string $description
      */
-    public function setDescription($description)
+    public function setDescription(string $description): void
     {
         $this->setAttribute('description', $description);
     }
@@ -93,7 +93,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @param integer $timestamp - Unix timestamp
      */
-    public function setDate($timestamp)
+    public function setDate(int $timestamp): void
     {
         $this->setAttribute('timestamp', $timestamp);
     }
@@ -103,7 +103,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @param string $language
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language): void
     {
         $this->setAttribute('language', $language);
     }
@@ -113,7 +113,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @param string $host - eq http://www.myhost.com
      */
-    public function setHost($host)
+    public function setHost(string $host): void
     {
         $this->host = $host;
     }
@@ -123,7 +123,7 @@ abstract class AbstractChannel extends QDOM implements InterfaceChannel
      *
      * @return string
      */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->host;
     }

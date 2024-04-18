@@ -21,28 +21,28 @@ interface FeedItemInterface
      *
      * @param string $title
      */
-    public function setTitle($title);
+    public function setTitle(string $title);
 
     /**
      * Set the description of the feed item
      *
      * @param string $description
      */
-    public function setDescription($description);
+    public function setDescription(string $description);
 
     /**
      * Set the unix timestamp
      *
      * @param integer $timestamp - Unix timestamp
      */
-    public function setDate($timestamp);
+    public function setDate(int $timestamp);
 
     /**
      * Set the link of the feed item
      *
      * @param string $link
      */
-    public function setLink($link);
+    public function setLink(string $link);
 
     /**
      * Set the permalink
@@ -50,14 +50,14 @@ interface FeedItemInterface
      *
      * @param string $link
      */
-    public function setPermaLink($link);
+    public function setPermaLink(string $link);
 
     /**
      * Set the language of the feed item
      *
      * @param string $language
      */
-    public function setLanguage($language);
+    public function setLanguage(string $language);
 
     /**
      * Image
@@ -75,7 +75,7 @@ interface FeedItemInterface
      *
      * @return null|Image
      */
-    public function getImage();
+    public function getImage(): ?Image;
 
     /**
      * Remove the image for the item

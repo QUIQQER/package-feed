@@ -15,55 +15,55 @@ namespace QUI\Feed\Interfaces;
 interface ChannelInterface
 {
     /**
-     * Add an feed item
+     * Add a feed item
      *
-     * @param \QUI\Feed\Interfaces\FeedItemInterface $Item
+     * @param FeedItemInterface $Item
      */
     public function addItem(FeedItemInterface $Item);
 
     /**
-     * Create a item and add it to the channel
+     * Create an item and add it to the channel
      *
      * @param array $params
      *
      * @return FeedItemInterface
      */
-    public function createItem(array $params = array());
+    public function createItem(array $params = []): FeedItemInterface;
 
     /**
      * Return the feed items
      *
      * @return array
      */
-    public function getItems();
+    public function getItems(): array;
 
     /**
      * Set the title of the channel
      *
      * @param string $title
      */
-    public function setTitle($title);
+    public function setTitle(string $title);
 
     /**
      * Set the description of the channel
      *
      * @param string $description
      */
-    public function setDescription($description);
+    public function setDescription(string $description);
 
     /**
      * Set the unix timestamp
      *
      * @param integer $timestamp - Unix timestamp
      */
-    public function setDate($timestamp);
+    public function setDate(int $timestamp);
 
     /**
      * Set the language of the channel
      *
      * @param string $language
      */
-    public function setLanguage($language);
+    public function setLanguage(string $language);
 
     /**
      * Host
@@ -74,12 +74,12 @@ interface ChannelInterface
      *
      * @param string $host - http://my.host.com
      */
-    public function setHost($host);
+    public function setHost(string $host);
 
     /**
      * Return the main host
      *
      * @return string
      */
-    public function getHost();
+    public function getHost(): string;
 }

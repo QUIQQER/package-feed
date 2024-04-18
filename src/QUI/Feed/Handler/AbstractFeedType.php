@@ -29,14 +29,14 @@ abstract class AbstractFeedType extends QDOM implements FeedInterface
      *
      * @var array
      */
-    protected $channels = [];
+    protected array $channels = [];
 
     /**
      * Add a channel to the feed
      *
      * @param ChannelInterface $Channel
      */
-    public function addChannel(ChannelInterface $Channel)
+    public function addChannel(ChannelInterface $Channel): void
     {
         $this->channels[] = $Channel;
     }
@@ -46,7 +46,7 @@ abstract class AbstractFeedType extends QDOM implements FeedInterface
      *
      * @return array
      */
-    public function getChannels()
+    public function getChannels(): array
     {
         return $this->channels;
     }

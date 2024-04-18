@@ -22,8 +22,8 @@
     "url": "https:\/\/www.pcsg.de"
   },
   "require": {
-    "php": "^7.4|^8",
-    "quiqqer\/quiqqer": "^1|*@dev"
+    "php": "^8",
+    "quiqqer\/quiqqer": "^2"
   },
   "autoload": {
     "psr-0": {

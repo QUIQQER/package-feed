@@ -3,6 +3,7 @@
 namespace QUI\Feed\Bricks\Controls;
 
 use QUI;
+use QUI\Database\Exception;
 
 class FeedList extends QUI\Control
 {
@@ -23,7 +24,7 @@ class FeedList extends QUI\Control
         parent::__construct($attributes);
     }
 
-    public function getBody()
+    public function getBody(): string
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 
@@ -53,8 +54,9 @@ class FeedList extends QUI\Control
      * Gets all currently configured feeds
      *
      * @return array
+     * @throws Exception|QUI\Exception
      */
-    protected function getFeeds()
+    protected function getFeeds(): array
     {
         $Manager = new QUI\Feed\Manager();
         $configuredFeeds = $Manager->getList();

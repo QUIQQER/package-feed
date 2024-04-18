@@ -4,7 +4,7 @@ namespace QUI\Feed\Interfaces;
 
 use QUI;
 use QUI\Feed\Feed;
-use QUI\Feed\Utils\SimpleXML;
+use QUI\Feed\Interfaces\ChannelInterface as ChannelInterface;
 
 /**
  * Interface Feed
@@ -23,21 +23,23 @@ interface FeedTypeInterface extends QUI\QDOMInterface
     /**
      * Add a feed channel
      *
-     * @param \QUI\Feed\Interfaces\ChannelInterface $Channel
+     * @param ChannelInterface $Channel
      */
-    public function addChannel(ChannelInterface $Channel);
+    public function addChannel(ChannelInterface $Channel): void;
 
     /**
      * Create a new channel and add it to the feed
+     *
+     * @return ChannelInterface
      */
-    public function createChannel();
+    public function createChannel(): ChannelInterface;
 
     /**
      * Return the channel list
      *
      * @return array
      */
-    public function getChannels();
+    public function getChannels(): array;
 
     /**
      * Return the Feed as an XML string

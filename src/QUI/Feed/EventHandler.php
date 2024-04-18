@@ -4,11 +4,11 @@ namespace QUI\Feed;
 
 use QUI;
 use QUI\Cache\LongTermCache;
-use QUI\Projects\Site;
-use QUI\Projects\Site\Edit;
+use QUI\Exception;
 use QUI\Rewrite;
 use Symfony\Component\HttpFoundation\Response;
 
+use function array_key_exists;
 use function json_decode;
 use function json_encode;
 
@@ -26,7 +26,7 @@ class EventHandler
      * @param QUI\Package\Package $Package
      * @return void
      */
-    public static function onPackageSetup(QUI\Package\Package $Package)
+    public static function onPackageSetup(QUI\Package\Package $Package): void
     {
         if ($Package->getName() !== 'quiqqer/feed') {
             return;
@@ -51,6 +51,7 @@ class EventHandler
      * Patch database for migration from quiqqer/feed 1.*
      *
      * @return void
+     * @throws QUI\Database\Exception
      */
     protected static function patchV1(): void
     {
@@ -61,7 +62,6 @@ class EventHandler
             ]
         ]);
 
-        $Manager = new Manager();
         $feedIdRss = '1de938991bab7c523b9adbb631de5077588ecd348a68e7d993f619200f5a8bec';
         $feedIdAtom = 'b71ca88546347228c7a9057939de67a49852df3f5fc90fac389bc19f509f7bc1';
         $feedIdGoogleSitemap = '2db63240d86aee59430c7c17f92039cb954d2e88fde05889ea3a60a6266462cb';
@@ -102,6 +102,7 @@ class EventHandler
      * Patch feed attributes
      *
      * @return void
+     * @throws QUI\Database\Exception
      */
     protected static function patchV2(): void
     {
@@ -117,7 +118,7 @@ class EventHandler
                 $settings = [];
             }
 
-            if (!\array_key_exists('directOutput', $settings)) {
+            if (!array_key_exists('directOutput', $settings)) {
                 $settings['directOutput'] = true;
 
                 QUI::getDataBase()->update(
@@ -137,17 +138,17 @@ class EventHandler
      * event : on request
      *
      * @param Rewrite $Rewrite
-     * @param String $url
+     * @param string $url
      *
      * @return void
      */
-    public static function onRequest($Rewrite, $url)
+    public static function onRequest(Rewrite $Rewrite, string $url): void
     {
         if (stripos($url, 'feed=') === false) {
             return;
         }
 
-        if (strpos($url, '.xml') === false) {
+        if (!str_contains($url, '.xml')) {
             return;
         }
 
@@ -171,7 +172,7 @@ class EventHandler
         try {
             $Manager = new Manager();
             $Feed = $Manager->getFeed($feedId);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             $Response = new Response("Feed not found", 404);
             $Response->send();
             exit;
@@ -192,21 +193,18 @@ class EventHandler
 
         $mimeType = $Feed->getFeedType()->getAttribute('mimeType');
 
-        try {
-            header('Content-Type: ' . $mimeType . '; charset=UTF-8');
-            echo $Manager->getFeedOutput($Feed, $pageNo);
-            exit;
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
+        header('Content-Type: ' . $mimeType . '; charset=UTF-8');
+        echo $Manager->getFeedOutput($Feed, $pageNo);
+        exit;
     }
 
     /**
      * event : site change it
      *
-     * @param Site|Edit $Site
+     * @param QUI\Interfaces\Projects\Site $Site |Edit $Site
+     * @throws QUI\Database\Exception
      */
-    public static function onSiteChange($Site)
+    public static function onSiteChange(QUI\Interfaces\Projects\Site $Site): void
     {
         // get feeds by project
         $Project = $Site->getProject();
@@ -233,8 +231,9 @@ class EventHandler
 
     /**
      * @param QUI\Template $Template
+     * @throws Exception
      */
-    public static function onTemplateGetHeader($Template)
+    public static function onTemplateGetHeader(QUI\Template $Template): void
     {
         $Manager = new Manager();
         $feedRows = $Manager->getList();
@@ -244,7 +243,7 @@ class EventHandler
 
             try {
                 $Feed = new Feed($feedID);
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 QUI\System\Log::addWarning("Attempt to add non existing feed '" . $feedID . "' to header");
                 continue;
             }

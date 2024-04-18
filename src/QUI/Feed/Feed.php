@@ -10,6 +10,9 @@ use QUI;
 use QUI\Exception;
 use QUI\Utils\Security\Orthos;
 
+use function json_decode;
+use function json_encode;
+
 /**
  * Class Feed
  * One Feed, you can edit and save the feed, and get the feed as an XML / RSS Feed
@@ -24,24 +27,24 @@ class Feed extends QUI\QDOM
      *
      * @var integer
      */
-    protected $feedId;
+    protected int $feedId;
 
     /**
      * ID of the Feed type (hashed classname)
      *
      * @var string
      */
-    protected $typeId = '';
+    protected mixed $typeId = '';
 
     /**
-     * @var QUI\Projects\Project
+     * @var ?QUI\Projects\Project
      */
-    protected $Project;
+    protected ?QUI\Projects\Project $Project;
 
     /**
      * @var QUI\Feed\Interfaces\FeedTypeInterface
      */
-    protected $FeedType;
+    protected Interfaces\FeedTypeInterface $FeedType;
 
     /**
      * Constructor
@@ -77,7 +80,7 @@ class Feed extends QUI\QDOM
         $this->setAttributes($data);
 
         if (!empty($data['feed_settings'])) {
-            $feedSettings = \json_decode($data['feed_settings'], true);
+            $feedSettings = json_decode($data['feed_settings'], true);
             $this->setAttributes($feedSettings);
         }
 
@@ -98,7 +101,7 @@ class Feed extends QUI\QDOM
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->feedId;
     }
@@ -149,7 +152,7 @@ class Feed extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function save()
+    public function save(): void
     {
         $table = QUI::getDBTableName(Manager::TABLE);
 
@@ -187,7 +190,7 @@ class Feed extends QUI\QDOM
             'publish' => $this->getAttribute("publish") ? 1 : 0,
             'publish_sites' => $this->getAttribute("publish_sites"),
             'feedImage' => $this->getAttribute("feedImage"),
-            'feed_settings' => \json_encode($feedSettings),
+            'feed_settings' => json_encode($feedSettings),
             'type_id' => $this->getAttribute('type_id')
         ], [
             'id' => $this->getId()
@@ -232,7 +235,7 @@ class Feed extends QUI\QDOM
      * @param QUI\Projects\Site $Site
      * @return bool
      */
-    public function publishOnSite(QUI\Projects\Site $Site): bool
+    public function publishOnSite(QUI\Interfaces\Projects\Site $Site): bool
     {
         return $this->FeedType->publishOnSite($this, $Site);
     }
