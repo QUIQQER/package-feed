@@ -7,7 +7,6 @@
 namespace QUI\Feed\Handler\GoogleSitemap;
 
 use DateTimeInterface;
-
 use Exception;
 use QUI;
 use QUI\ERP\Products\Handler\Products;

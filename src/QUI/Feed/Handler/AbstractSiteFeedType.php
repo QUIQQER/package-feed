@@ -3,7 +3,6 @@
 namespace QUI\Feed\Handler;
 
 use DOMDocument;
-
 use PDO;
 use QUI;
 use QUI\Exception;
