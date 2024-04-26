@@ -3,6 +3,7 @@
 namespace QUI\Feed\Handler;
 
 use DOMDocument;
+
 use PDO;
 use QUI;
 use QUI\Exception;
@@ -42,7 +43,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
      * @param FeedInstance $Feed - The Feed that shall be created
      * @param int|null $page (optional) - Get a specific page of the feed (only required if feed is paginated)
      * @return string - Feed as XML string
-     * @throws Exception
+     * @throws QUI\Exception
      */
     public function create(FeedInstance $Feed, ?int $page = null): string
     {
@@ -130,7 +131,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
 
                     $User = QUI::getUsers()->get($Site->getAttribute("c_user"));
                     $Item->setAttribute("author", $User->getName());
-                } catch (\Exception) {
+                } catch (Exception) {
                     $Item->setAttribute(
                         "author",
                         QUI::getPackage("quiqqer/feed")->getConfig()->get("common", "author")
@@ -155,7 +156,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
      *
      * @param Feed $Feed
      * @return int - Returns the number of pages or 0 if nor pages are used
-     * @throws Exception
+     * @throws QUI\Exception
      */
     public function getPageCount(Feed $Feed): int
     {
@@ -462,7 +463,6 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
         // `id` IN ( id1, id2, id3, id4 )
         if (!empty($childPageIDs)) {
             $childPageIDs = array_unique($childPageIDs);
-
             $idString = "";
 
             for ($i = 0; $i < count($childPageIDs); $i++) {
@@ -470,7 +470,6 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
             }
 
             $idString = rtrim($idString, ",");
-
             $whereParts[] = " id IN ($idString) ";
 
             $i = 0;
@@ -521,9 +520,9 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
      * @param Feed $Feed
      * @param QUI\Projects\Site $Site
      * @return bool
-     * @throws Exception
+     * @throws QUI\Exception
      */
-    public function publishOnSite(Feed $Feed, QUI\Projects\Site $Site): bool
+    public function publishOnSite(Feed $Feed, QUI\Interfaces\Projects\Site $Site): bool
     {
         $publishSitesString = $Feed->getAttribute("publish_sites");
         $feedPublishSiteIDs = $this->parseSiteSelect($Feed->getProject(), $publishSitesString);

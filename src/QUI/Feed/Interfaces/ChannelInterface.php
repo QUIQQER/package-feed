@@ -72,7 +72,7 @@ interface ChannelInterface
     /**
      * Set the main host
      *
-     * @param string $host - http://my.host.com
+     * @param string $host - https://my.host.com
      */
     public function setHost(string $host);
 

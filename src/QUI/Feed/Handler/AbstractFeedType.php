@@ -74,10 +74,10 @@ abstract class AbstractFeedType extends QDOM implements FeedInterface
      * Check if $Feed shall be published on $Site
      *
      * @param Feed $Feed
-     * @param QUI\Projects\Site $Site
+     * @param QUI\Interfaces\Projects\Site $Site
      * @return bool
      */
-    public function publishOnSite(Feed $Feed, QUI\Projects\Site $Site): bool
+    public function publishOnSite(Feed $Feed, QUI\Interfaces\Projects\Site $Site): bool
     {
         return !empty($Feed->getAttribute('publish')) && !empty($this->getAttribute('publishable'));
     }

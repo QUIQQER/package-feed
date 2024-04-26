@@ -6,7 +6,7 @@
 
 namespace QUI\Feed\Handler;
 
-use QUI\Feed\Interfaces\ChannelInterface as InterfaceChannel;
+use QUI\Feed\Interfaces\ChannelInterface;
 use QUI\Feed\Interfaces\FeedItemInterface;
 use QUI\QDOM;
 
@@ -16,7 +16,7 @@ use QUI\QDOM;
  * @package quiqqer/feed
  * @author  www.pcsg.de (Henning Leutz)
  */
-abstract class AbstractChannel extends QDOM implements InterfaceChannel
+abstract class AbstractChannel extends QDOM implements ChannelInterface
 {
     /**
      * Main host

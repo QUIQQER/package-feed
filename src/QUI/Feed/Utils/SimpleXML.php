@@ -2,12 +2,14 @@
 
 namespace QUI\Feed\Utils;
 
+use SimpleXMLElement;
+
 /**
- * SimpleXMLElement extentent
+ * SimpleXMLElement extent
  *
  * @auth
  */
-class SimpleXML extends \SimpleXMLElement
+class SimpleXML extends SimpleXMLElement
 {
     /**
      * Add an ![CDATA[ ]]> Entry

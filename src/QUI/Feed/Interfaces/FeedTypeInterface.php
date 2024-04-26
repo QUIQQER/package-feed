@@ -4,7 +4,6 @@ namespace QUI\Feed\Interfaces;
 
 use QUI;
 use QUI\Feed\Feed;
-use QUI\Feed\Interfaces\ChannelInterface as ChannelInterface;
 
 /**
  * Interface Feed
@@ -65,5 +64,5 @@ interface FeedTypeInterface extends QUI\QDOMInterface
      * @param QUI\Projects\Site $Site
      * @return bool
      */
-    public function publishOnSite(Feed $Feed, QUI\Projects\Site $Site): bool;
+    public function publishOnSite(Feed $Feed, QUI\Interfaces\Projects\Site $Site): bool;
 }

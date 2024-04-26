@@ -39,12 +39,12 @@ class Feed extends QUI\QDOM
     /**
      * @var ?QUI\Projects\Project
      */
-    protected ?QUI\Projects\Project $Project;
+    protected ?QUI\Projects\Project $Project = null;
 
     /**
-     * @var QUI\Feed\Interfaces\FeedTypeInterface
+     * @var ?QUI\Feed\Interfaces\FeedTypeInterface
      */
-    protected Interfaces\FeedTypeInterface $FeedType;
+    protected ?Interfaces\FeedTypeInterface $FeedType = null;
 
     /**
      * Constructor
@@ -232,7 +232,7 @@ class Feed extends QUI\QDOM
     /**
      * Check if this Feed should be published on $Site
      *
-     * @param QUI\Projects\Site $Site
+     * @param QUI\Interfaces\Projects\Site< $Site
      * @return bool
      */
     public function publishOnSite(QUI\Interfaces\Projects\Site $Site): bool

@@ -7,9 +7,10 @@
 namespace QUI\Feed\Handler\GoogleSitemap;
 
 use DateTimeInterface;
+
+use Exception;
 use QUI;
 use QUI\ERP\Products\Handler\Products;
-use QUI\Exception;
 use QUI\Feed\Feed as FeedInstance;
 use QUI\Feed\Handler\AbstractItem;
 use QUI\Feed\Handler\AbstractSiteFeedType;
@@ -72,16 +73,15 @@ class Feed extends AbstractSiteFeedType
     /**
      * Return XML of the feed
      *
-     * @return SimpleXMLElement|SimpleXML
+     * @return SimpleXMLElement
      */
-    public function getXML(): SimpleXMLElement|SimpleXML
+    public function getXML(): SimpleXMLElement
     {
         $Items = [];
         $Channels = $this->getChannels();
 
         foreach ($Channels as $Channel) {
             $ChannelItems = $Channel->getItems();
-
             $Items = array_merge($ChannelItems, $Items);
         }
 
@@ -140,7 +140,7 @@ class Feed extends AbstractSiteFeedType
     {
         $XML = new SimpleXML(
             '<?xml version="1.0" encoding="UTF-8"?>
-            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'
+            <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9" />'
         );
 
         foreach ($items as $Item) {
@@ -168,7 +168,7 @@ class Feed extends AbstractSiteFeedType
     protected function createSitemapIndexXML($pages, $baseURL): SimpleXML
     {
         $XML = new SimpleXML(
-            '<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'
+            '<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="https://www.sitemaps.org/schemas/sitemap/0.9" />'
         );
 
         for ($i = 1; $i <= $pages; $i++) {
@@ -253,7 +253,7 @@ class Feed extends AbstractSiteFeedType
         foreach ($productIds as $productId) {
             try {
                 $Product = Products::getProduct($productId);
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
                 continue;
             }

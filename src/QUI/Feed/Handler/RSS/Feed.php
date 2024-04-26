@@ -36,14 +36,14 @@ class Feed extends AbstractSiteFeedType
     /**
      * Return XML of the feed
      *
-     * @return SimpleXMLElement|SimpleXML
+     * @return SimpleXMLElement
      * @throws Exception
      */
-    public function getXML(): SimpleXMLElement|SimpleXML
+    public function getXML(): SimpleXMLElement
     {
         $XML = new SimpleXML(
             '<?xml version="1.0" encoding="UTF-8" ?>
-             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" />'
+             <rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom" />'
         );
 
         $channels = $this->getChannels();
@@ -107,9 +107,20 @@ class Feed extends AbstractSiteFeedType
                 $Image->setAttribute("maxwidth", $maxSize);
 
                 $EnclosureDom = $ItemXml->addChild('enclosure');
-                $EnclosureDom->addAttribute('url', Utils::fixLinkProtocol($host . trim($Image->getUrl(), '/')));
-                $EnclosureDom->addAttribute('length', $Image->getAttribute('filesize'));
-                $EnclosureDom->addAttribute('type', $Image->getAttribute('mime_type'));
+                $EnclosureDom->addAttribute(
+                    'url',
+                    Utils::fixLinkProtocol($host . trim($Image->getUrl(), '/'))
+                );
+
+                $EnclosureDom->addAttribute(
+                    'length',
+                    $Image->getAttribute('filesize')
+                );
+
+                $EnclosureDom->addAttribute(
+                    'type',
+                    $Image->getAttribute('mime_type')
+                );
             }
         }
 

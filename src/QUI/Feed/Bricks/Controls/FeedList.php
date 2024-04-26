@@ -3,11 +3,11 @@
 namespace QUI\Feed\Bricks\Controls;
 
 use QUI;
-use QUI\Database\Exception;
+use QUI\Exception;
 
 class FeedList extends QUI\Control
 {
-    public function __construct($attributes = [])
+    public function __construct(array $attributes = [])
     {
         $this->setAttributes([
             'title' => '',
@@ -54,7 +54,7 @@ class FeedList extends QUI\Control
      * Gets all currently configured feeds
      *
      * @return array
-     * @throws Exception|QUI\Exception
+     * @throws Exception
      */
     protected function getFeeds(): array
     {

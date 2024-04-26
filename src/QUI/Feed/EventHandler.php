@@ -2,9 +2,9 @@
 
 namespace QUI\Feed;
 
+use Exception;
 use QUI;
 use QUI\Cache\LongTermCache;
-use QUI\Exception;
 use QUI\Rewrite;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -36,13 +36,13 @@ class EventHandler
 
         try {
             self::patchV1();
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
 
         try {
             self::patchV2();
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
     }
@@ -172,7 +172,7 @@ class EventHandler
         try {
             $Manager = new Manager();
             $Feed = $Manager->getFeed($feedId);
-        } catch (\Exception) {
+        } catch (Exception) {
             $Response = new Response("Feed not found", 404);
             $Response->send();
             exit;
@@ -201,8 +201,12 @@ class EventHandler
     /**
      * event : site change it
      *
+     * <<<<<<< HEAD
      * @param QUI\Interfaces\Projects\Site $Site |Edit $Site
+     * @param QUI\Interfaces\Projects\Site $Site
+     * >>>>>>> 59aed0d (feat: missing return types, qualifier imports, function converts to php8.1)
      * @throws QUI\Database\Exception
+     * =======
      */
     public static function onSiteChange(QUI\Interfaces\Projects\Site $Site): void
     {
@@ -243,14 +247,14 @@ class EventHandler
 
             try {
                 $Feed = new Feed($feedID);
-            } catch (\Exception) {
+            } catch (Exception) {
                 QUI\System\Log::addWarning("Attempt to add non existing feed '" . $feedID . "' to header");
                 continue;
             }
 
             try {
                 $FeedType = $Manager->getType($Feed->getTypeId());
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
                 continue;
             }

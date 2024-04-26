@@ -109,9 +109,7 @@ class Manager
 
             QUI::getDataBase()->delete(
                 QUI::getDBTableName(Manager::TABLE),
-                [
-                    'id' => $feedId
-                ]
+                ['id' => $feedId]
             );
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
