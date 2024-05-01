@@ -46,6 +46,8 @@ abstract class AbstractChannel extends QDOM implements ChannelInterface
             'timestamp' => '',
             'language' => ''
         ]);
+
+        $this->setAttributes($params);
     }
 
     /**
