@@ -239,10 +239,6 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
             $siteIds = $this->getSiteIdsBySiteIdControlValues($Feed, $feedSites);
         }
 
-        if (empty($feedSitesExclude)) {
-            return $siteIds;
-        }
-
         $siteIdsExclude = $this->getSiteIdsBySiteIdControlValues($Feed, $feedSitesExclude);
 
         return array_diff($siteIds, $siteIdsExclude);
