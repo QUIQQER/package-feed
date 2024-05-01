@@ -9,7 +9,6 @@ use QUI\Exception;
 use QUI\Feed\Feed;
 use QUI\Feed\Feed as FeedInstance;
 use QUI\Feed\Interfaces\ChannelInterface;
-
 use QUI\Feed\Utils\SimpleXML;
 
 use function array_diff;
