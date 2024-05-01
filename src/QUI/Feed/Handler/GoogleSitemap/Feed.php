@@ -72,9 +72,9 @@ class Feed extends AbstractSiteFeedType
     /**
      * Return XML of the feed
      *
-     * @return SimpleXMLElement
+     * @return SimpleXML
      */
-    public function getXML(): SimpleXMLElement
+    public function getXML(): SimpleXML
     {
         $Items = [];
         $Channels = $this->getChannels();

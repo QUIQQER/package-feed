@@ -10,6 +10,8 @@ use QUI\Feed\Feed;
 use QUI\Feed\Feed as FeedInstance;
 use QUI\Feed\Interfaces\ChannelInterface;
 
+use QUI\Feed\Utils\SimpleXML;
+
 use function array_diff;
 use function array_filter;
 use function array_map;
@@ -21,6 +23,7 @@ use function explode;
 use function implode;
 use function in_array;
 use function is_numeric;
+use function method_exists;
 use function preg_match;
 use function rtrim;
 use function strtotime;
@@ -71,6 +74,11 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
 
         return $Dom->saveXML();
     }
+
+    /**
+     * @return SimpleXML
+     */
+    abstract public function getXML(): SimpleXML;
 
     /**
      * Add all relevant items to a feed channel.

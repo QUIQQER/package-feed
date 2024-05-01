@@ -39,7 +39,7 @@ class Feed extends AbstractSiteFeedType
      * @return SimpleXMLElement
      * @throws Exception
      */
-    public function getXML(): SimpleXMLElement
+    public function getXML(): SimpleXML
     {
         $XML = new SimpleXML(
             '<?xml version="1.0" encoding="UTF-8" ?>
