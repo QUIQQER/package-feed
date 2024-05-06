@@ -8,6 +8,7 @@ namespace QUI\Feed\Handler;
 
 use QUI;
 use QUI\Feed\Interfaces\FeedItemInterface as InterfaceItem;
+use QUI\Projects\Media\Image;
 use QUI\QDOM;
 
 /**
@@ -21,9 +22,9 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
     /**
      * Image for the feed item
      *
-     * @var null
+     * @var ?QUI\Projects\Media\Image
      */
-    protected $Image = null;
+    protected ?QUI\Projects\Media\Image $Image = null;
 
     /**
      * constructor
@@ -40,7 +41,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      *
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->setAttribute('title', $title);
     }
@@ -50,7 +51,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      *
      * @param string $description
      */
-    public function setDescription($description)
+    public function setDescription(string $description): void
     {
         $this->setAttribute('description', $description);
     }
@@ -60,7 +61,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      *
      * @param integer $timestamp - Unix timestamp
      */
-    public function setDate($timestamp)
+    public function setDate(int $timestamp): void
     {
         $this->setAttribute('time', $timestamp);
     }
@@ -70,7 +71,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      *
      * @param string $link
      */
-    public function setLink($link)
+    public function setLink(string $link): void
     {
         $this->setAttribute('link', $link);
     }
@@ -81,7 +82,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      *
      * @param string $link
      */
-    public function setPermaLink($link)
+    public function setPermaLink(string $link): void
     {
         $this->setAttribute('permalink', $link);
     }
@@ -91,7 +92,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      *
      * @param string $language
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language): void
     {
         $this->setAttribute('lang', $language);
     }
@@ -103,9 +104,9 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
     /**
      * Set an image for the feed item
      *
-     * @param $Image
+     * @param Image $Image
      */
-    public function setImage(QUI\Projects\Media\Image $Image)
+    public function setImage(QUI\Projects\Media\Image $Image): void
     {
         $this->Image = $Image;
     }
@@ -115,7 +116,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
      *
      * @return null|QUI\Projects\Media\Image
      */
-    public function getImage()
+    public function getImage(): ?Image
     {
         return $this->Image;
     }
@@ -123,7 +124,7 @@ abstract class AbstractItem extends QDOM implements InterfaceItem
     /**
      * Remove the image for the item
      */
-    public function removeImage()
+    public function removeImage(): void
     {
         $this->Image = null;
     }

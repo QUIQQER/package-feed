@@ -7,6 +7,7 @@
 namespace QUI\Feed\Handler\Atom;
 
 use QUI\Feed\Handler\AbstractChannel;
+use QUI\Feed\Interfaces\FeedItemInterface;
 
 /**
  * Class Channel - Atom Feed
@@ -18,10 +19,9 @@ class Channel extends AbstractChannel
 {
     /**
      * @param array $params
-     *
-     * @return \QUI\Feed\Interfaces\FeedItemInterface
+     * @return FeedItemInterface
      */
-    public function createItem(array $params = [])
+    public function createItem(array $params = []): FeedItemInterface
     {
         $Item = new Item($params);
         $this->addItem($Item);

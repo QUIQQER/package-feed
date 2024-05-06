@@ -2,8 +2,14 @@
 
 namespace QUI\Feed\Handler\Atom;
 
+use DateTimeInterface;
+use QUI;
+use QUI\Exception;
 use QUI\Feed\Handler\AbstractSiteFeedType;
 use QUI\Feed\Utils\SimpleXML;
+use QUI\Projects\Media\Image;
+
+use function date;
 
 /**
  * Class Feed
@@ -18,10 +24,9 @@ class Feed extends AbstractSiteFeedType
      *
      * @return Channel
      */
-    public function createChannel()
+    public function createChannel(): Channel
     {
         $Channel = new Channel();
-
         $this->addChannel($Channel);
 
         return $Channel;
@@ -31,8 +36,9 @@ class Feed extends AbstractSiteFeedType
      * Return the XML of the feed
      *
      * @return SimpleXML
+     * @throws Exception
      */
-    public function getXML()
+    public function getXML(): SimpleXML
     {
         $XML = new SimpleXML(
             '<?xml version="1.0" encoding="UTF-8" ?>
@@ -45,7 +51,7 @@ class Feed extends AbstractSiteFeedType
 
         $host = $Channel->getHost();
         $date = date(
-            \DateTime::RFC3339,
+            DateTimeInterface::RFC3339,
             (int)$Channel->getAttribute('timestamp')
         );
 
@@ -93,13 +99,13 @@ class Feed extends AbstractSiteFeedType
 
         foreach ($items as $Item) {
             /* @var $Item Item */
-            $date = \date(
-                \DateTime::RFC3339,
+            $date = date(
+                DateTimeInterface::RFC3339,
                 (int)$Item->getAttribute('date')
             );
 
-            $editDate = \date(
-                \DateTime::RFC3339,
+            $editDate = date(
+                DateTimeInterface::RFC3339,
                 (int)$Item->getAttribute('e_date')
             );
 
@@ -110,11 +116,8 @@ class Feed extends AbstractSiteFeedType
 
             $ItemXml->addChild('published', $date);
             $ItemXml->addChild('updated', $editDate);
-
             $ItemXml->addChild('id', $Item->getAttribute('permalink'));
-
-            $ItemXml->addChild('title')
-                ->addCData($Item->getAttribute('title'));
+            $ItemXml->addChild('title')->addCData($Item->getAttribute('title'));
 
             if ($Item->getAttribute('description')) {
                 $ItemXml->addChild('summary')
@@ -122,14 +125,10 @@ class Feed extends AbstractSiteFeedType
             }
 
 
-            $AuthorNode = $ItemXml->addChild(
-                'author',
-                ''
-            );
-
+            $AuthorNode = $ItemXml->addChild('author', '');
             $AuthorNode->addChild("name", $Item->getAttribute("author"));
 
-            /* @var $Image \QUI\Projects\Media\Image */
+            /* @var $Image Image */
             $Image = $Item->getImage();
 
             if (!$Image) {
@@ -140,7 +139,7 @@ class Feed extends AbstractSiteFeedType
                 continue;
             }
 
-            $maxSize = \QUI::getPackage("quiqqer/feed")->getConfig()->get("images", "maxsize");
+            $maxSize = QUI::getPackage("quiqqer/feed")->getConfig()->get("images", "maxsize");
             $Image->setAttribute("maxheight", $maxSize);
             $Image->setAttribute("maxwidth", $maxSize);
 
@@ -150,9 +149,8 @@ class Feed extends AbstractSiteFeedType
             $Enclosure->addAttribute("type", $Image->getAttribute('mime_type'));
             $Enclosure->addAttribute("length", $Image->getAttribute('filesize'));
             $Enclosure->addAttribute("title", $Image->getAttribute("title"));
-            $Enclosure->addAttribute("href", $host . trim($Image->getUrl(false), '/'));
+            $Enclosure->addAttribute("href", $host . trim($Image->getUrl(), '/'));
         }
-
 
         return $XML;
     }

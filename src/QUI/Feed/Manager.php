@@ -2,10 +2,24 @@
 
 namespace QUI\Feed;
 
+use DOMDocument;
 use QUI;
 use QUI\Cache\LongTermCache;
+use QUI\Database\Exception;
+use QUI\Package\Package;
 use QUI\Utils\DOM as DOMUtils;
 use QUI\Utils\Grid;
+
+use function array_key_exists;
+use function array_merge;
+use function class_exists;
+use function file_exists;
+use function hash;
+use function is_a;
+use function is_null;
+use function json_decode;
+use function preg_match_all;
+use function str_replace;
 
 /**
  * Class Feed Manager
@@ -38,7 +52,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    public function addFeed(string $typeId, $params)
+    public function addFeed(string $typeId, array $params): Feed
     {
         if (!$this->existsType($typeId)) {
             throw new QUI\Exception([
@@ -78,7 +92,7 @@ class Manager
      * @return Feed
      * @throws QUI\Exception
      */
-    public function getFeed($feedId)
+    public function getFeed(int $feedId): Feed
     {
         return new Feed($feedId);
     }
@@ -88,18 +102,14 @@ class Manager
      *
      * @param integer $feedId - ID of the Feed
      */
-    public function deleteFeed($feedId)
+    public function deleteFeed(int $feedId): void
     {
         try {
-            $feedId = (int)$feedId;
-
             $this->getFeed($feedId);
 
             QUI::getDataBase()->delete(
                 QUI::getDBTableName(Manager::TABLE),
-                [
-                    'id' => $feedId
-                ]
+                ['id' => $feedId]
             );
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
@@ -112,8 +122,9 @@ class Manager
      * @param array $params
      *
      * @return array
+     * @throws Exception
      */
-    public function getList($params = [])
+    public function getList(array $params = []): array
     {
         if (empty($params)) {
             return QUI::getDataBase()->fetch([
@@ -174,7 +185,7 @@ class Manager
 
         try {
             return LongTermCache::get($cacheName);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             // no worries; re-build cache
         }
 
@@ -183,7 +194,7 @@ class Manager
         $types = [];
 
         foreach ($this->getFeedXmlFiles() as $xmlFile) {
-            $Document = new \DOMDocument();
+            $Document = new DOMDocument();
             $Document->load($xmlFile);
 
             $feedTypes = $Document->getElementsByTagName('feedType');
@@ -201,7 +212,7 @@ class Manager
                 }
 
                 if (
-                    !\class_exists($feedClass) || !\is_a(
+                    !class_exists($feedClass) || !is_a(
                         $feedClass,
                         QUI\Feed\Interfaces\FeedTypeInterface::class,
                         true
@@ -249,7 +260,7 @@ class Manager
 
                 foreach ($settings as $settingNode) {
                     $settingsHtml .= DOMUtils::parseCategoryToHTML($settingNode);
-                    $settingsHtml = \str_replace(
+                    $settingsHtml = str_replace(
                         'class="description"',
                         'class="field-container-item-desc"',
                         $settingsHtml
@@ -259,7 +270,7 @@ class Manager
                 $type['settingsHtml'] = $settingsHtml;
 
                 // Parse available attributes from settings HTML
-                \preg_match_all('#name=[\'|"](\w*)[\'|"]#', $settingsHtml, $matches);
+                preg_match_all('#name=[\'|"](\w*)[\'|"]#', $settingsHtml, $matches);
                 $type['attributes'] = !empty($matches[1]) ? $matches[1] : [];
 
                 // Special attributes
@@ -319,7 +330,7 @@ class Manager
     /**
      * Build feed and write to cache.
      *
-     * @param \QUI\Feed\Feed $Feed
+     * @param Feed $Feed
      * @return void
      */
     public function buildFeed(Feed $Feed): void
@@ -341,13 +352,13 @@ class Manager
     /**
      * Check if feed is built and is available in the cache.
      *
-     * @param \QUI\Feed\Feed $Feed
+     * @param Feed $Feed
      * @param int|null $page (optional)
      * @return bool
      */
     public function isFeedBuilt(Feed $Feed, ?int $page = null): bool
     {
-        if (!\is_null($page)) {
+        if (!is_null($page)) {
             $cacheName = $this->getFeedOutputCacheName($Feed, $page);
 
             try {
@@ -377,7 +388,7 @@ class Manager
     /**
      * Returns feed output
      *
-     * @param \QUI\Feed\Feed $Feed
+     * @param Feed $Feed
      * @param int $pageNo (optional)
      * @return string
      */
@@ -387,7 +398,7 @@ class Manager
 
         try {
             return LongTermCache::get($cacheName);
-        } catch (\Exception $Exception) {
+        } catch (\Exception) {
             // re-build cache
         }
 
@@ -401,7 +412,7 @@ class Manager
     /**
      * Delete feed cache
      *
-     * @param \QUI\Feed\Feed $Feed
+     * @param Feed $Feed
      * @return void
      */
     public function deleteFeedOutputCache(Feed $Feed): void
@@ -412,7 +423,7 @@ class Manager
     /**
      * Geed internal cache name of feed output.
      *
-     * @param \QUI\Feed\Feed $Feed
+     * @param Feed $Feed
      * @param int|null $pageNo (optional) - If omitted, return cache path for ALL feed pages
      * @return string
      */
@@ -432,12 +443,12 @@ class Manager
      *
      * @return string[]
      */
-    protected function getFeedXmlFiles()
+    protected function getFeedXmlFiles(): array
     {
         $packages = QUI::getPackageManager()->getInstalled();
         $list = [];
 
-        /* @var $Package \QUI\Package\Package */
+        /* @var $Package Package */
         foreach ($packages as $package) {
             try {
                 $Package = QUI::getPackage($package['name']);
@@ -452,7 +463,7 @@ class Manager
 
             $feedXmlFile = $Package->getDir() . '/feeds.xml';
 
-            if (\file_exists($feedXmlFile)) {
+            if (file_exists($feedXmlFile)) {
                 $list[] = $feedXmlFile;
             }
         }
@@ -464,8 +475,9 @@ class Manager
      * Return the number of the feeds
      *
      * @return integer
+     * @throws Exception
      */
-    public function count()
+    public function count(): int
     {
         $result = QUI::getDataBase()->fetch([
             'count' => [
@@ -484,12 +496,13 @@ class Manager
      * @param string $typeId
      * @param array $params
      * @return array
+     * @throws QUI\Exception
      */
     public function filterFeedParams(string $typeId, array $params): array
     {
         $FeedType = $this->getType($typeId);
 
-        $feedAttributes = \array_merge(
+        $feedAttributes = array_merge(
             [
                 'feedDescription',
                 'feedImage',
@@ -509,14 +522,14 @@ class Manager
         $sanitizedAttributes = [];
 
         foreach ($feedAttributes as $attribute) {
-            if (!\array_key_exists($attribute, $params)) {
+            if (!array_key_exists($attribute, $params)) {
                 $sanitizedAttributes[$attribute] = null;
                 continue;
             }
 
             switch ($attribute) {
                 case 'project':
-                    $projects = \json_decode($params['project'], true);
+                    $projects = json_decode($params['project'], true);
 
                     if (!empty($projects)) {
                         $project = $projects[0];
@@ -540,6 +553,6 @@ class Manager
      */
     protected function parseFeedClassToHash(string $feedClass): string
     {
-        return \hash('sha256', $feedClass);
+        return hash('sha256', $feedClass);
     }
 }

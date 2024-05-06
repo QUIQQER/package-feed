@@ -12,7 +12,7 @@ use QUI;
 class Utils
 {
     /**
-     * Removes the https protocoll if neccessary
+     * Removes the https protocol if necessary
      *
      * @param string $url
      * @return string
