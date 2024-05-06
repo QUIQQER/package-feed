@@ -6,6 +6,8 @@
 
 namespace QUI\Feed\Handler\GoogleSitemap;
 
+use DateTimeInterface;
+use Exception;
 use QUI;
 use QUI\ERP\Products\Handler\Products;
 use QUI\Feed\Feed as FeedInstance;
@@ -13,6 +15,12 @@ use QUI\Feed\Handler\AbstractItem;
 use QUI\Feed\Handler\AbstractSiteFeedType;
 use QUI\Feed\Interfaces\ChannelInterface;
 use QUI\Feed\Utils\SimpleXML;
+use SimpleXMLElement;
+
+use function array_filter;
+use function count;
+use function mb_strpos;
+use function strtotime;
 
 /**
  * Class Feed
@@ -25,22 +33,21 @@ class Feed extends AbstractSiteFeedType
     /**
      * @var int
      */
-    protected $pageSize = 0;
+    protected int $pageSize = 0;
 
     /**
      * @var int
      */
-    protected $page = 0;
+    protected int $page = 0;
 
     /**
      * Create a channel
      *
-     * @return Channel
+     * @return ChannelInterface
      */
-    public function createChannel()
+    public function createChannel(): ChannelInterface
     {
         $Channel = new Channel();
-
         $this->addChannel($Channel);
 
         return $Channel;
@@ -52,6 +59,7 @@ class Feed extends AbstractSiteFeedType
      * @param FeedInstance $Feed - The Feed that shall be created
      * @param int|null $page (optional) - Get a specific page of the feed (only required if feed is paginated)
      * @return string - Feed as XML string
+     * @throws Exception
      */
     public function create(FeedInstance $Feed, ?int $page = null): string
     {
@@ -64,27 +72,24 @@ class Feed extends AbstractSiteFeedType
     /**
      * Return XML of the feed
      *
-     * @return \SimpleXMLElement
+     * @return SimpleXML
      */
-    public function getXML()
+    public function getXML(): SimpleXML
     {
         $Items = [];
-        /** @var Channel[] $Channels */
         $Channels = $this->getChannels();
 
-        /** @var Channel $Channel */
         foreach ($Channels as $Channel) {
             $ChannelItems = $Channel->getItems();
-
             $Items = array_merge($ChannelItems, $Items);
         }
 
         // Filter items
-        $Items = \array_filter($Items, function ($Item) {
+        $Items = array_filter($Items, function ($Item) {
             /** @var AbstractItem $Item */
             $seoDirective = $Item->getAttribute('seoDirective');
 
-            if (!empty($seoDirective) && \mb_strpos($seoDirective, 'noindex') !== false) {
+            if (!empty($seoDirective) && mb_strpos($seoDirective, 'noindex') !== false) {
                 return false;
             }
 
@@ -100,11 +105,11 @@ class Feed extends AbstractSiteFeedType
         // The link attribute ends on .rss - we need to strip that
         $baseURL = $Channels[0]->getAttribute("link");
 
-        if (substr($baseURL, -4) == ".rss") {
+        if (str_ends_with($baseURL, ".rss")) {
             $baseURL = substr($baseURL, 0, -4);
         }
 
-        // Caclcualte the pages
+        // Calculate the pages
         $itemCount = count($Items);
         $pageCount = ceil($itemCount / $this->pageSize);
 
@@ -130,11 +135,11 @@ class Feed extends AbstractSiteFeedType
      *
      * @return SimpleXML
      */
-    protected function createSitemapXML($items)
+    protected function createSitemapXML(array $items): SimpleXML
     {
         $XML = new SimpleXML(
             '<?xml version="1.0" encoding="UTF-8"?>
-            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'
+            <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9" />'
         );
 
         foreach ($items as $Item) {
@@ -146,7 +151,7 @@ class Feed extends AbstractSiteFeedType
 
             $ItemXml->addChild(
                 'lastmod',
-                date(\DateTime::ATOM, (int)$date)
+                date(DateTimeInterface::ATOM, (int)$date)
             );
         }
 
@@ -159,10 +164,10 @@ class Feed extends AbstractSiteFeedType
      *
      * @return SimpleXML
      */
-    protected function createSitemapIndexXML($pages, $baseURL)
+    protected function createSitemapIndexXML($pages, $baseURL): SimpleXML
     {
         $XML = new SimpleXML(
-            '<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'
+            '<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="https://www.sitemaps.org/schemas/sitemap/0.9" />'
         );
 
         for ($i = 1; $i <= $pages; $i++) {
@@ -177,7 +182,7 @@ class Feed extends AbstractSiteFeedType
     /**
      * @param $pageSize
      */
-    protected function setPageSize($pageSize)
+    protected function setPageSize($pageSize): void
     {
         $this->pageSize = $pageSize;
     }
@@ -185,7 +190,7 @@ class Feed extends AbstractSiteFeedType
     /**
      * @param $page
      */
-    protected function setPage($page)
+    protected function setPage($page): void
     {
         $this->page = $page;
     }
@@ -213,7 +218,7 @@ class Feed extends AbstractSiteFeedType
     protected function getTotalItemCount(FeedInstance $Feed): int
     {
         $count = parent::getTotalItemCount($Feed);
-        $count += \count($this->getFeedProductIds());
+        $count += count($this->getFeedProductIds());
 
         return $count;
     }
@@ -226,7 +231,7 @@ class Feed extends AbstractSiteFeedType
      * @return void
      * @throws QUI\Exception
      */
-    protected function addItemsToChannel(FeedInstance $Feed, ChannelInterface $Channel)
+    protected function addItemsToChannel(FeedInstance $Feed, ChannelInterface $Channel): void
     {
         parent::addItemsToChannel($Feed, $Channel);
 
@@ -247,7 +252,7 @@ class Feed extends AbstractSiteFeedType
         foreach ($productIds as $productId) {
             try {
                 $Product = Products::getProduct($productId);
-            } catch (\Exception $Exception) {
+            } catch (Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
                 continue;
             }
@@ -256,8 +261,8 @@ class Feed extends AbstractSiteFeedType
                 'title' => $Product->getTitle($Locale),
                 'description' => $Product->getDescription($Locale),
                 'language' => $Project->getLang(),
-                'date' => \strtotime($Product->getAttribute('c_date')),
-                'e_date' => \strtotime($Product->getAttribute('e_date')),
+                'date' => strtotime($Product->getAttribute('c_date')),
+                'e_date' => strtotime($Product->getAttribute('e_date')),
                 'link' => $Product->getUrlRewrittenWithHost($Project),
                 'permalink' => null,
                 'seoDirective' => null

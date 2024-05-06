@@ -2,9 +2,15 @@
 
 namespace QUI\Feed\Handler\RSS;
 
+use DateTimeInterface;
+use QUI;
+use QUI\Exception;
 use QUI\Feed\Handler\AbstractSiteFeedType;
+use QUI\Feed\Interfaces\ChannelInterface;
 use QUI\Feed\Utils\SimpleXML;
 use QUI\Feed\Utils\Utils;
+use QUI\Projects\Media\Image;
+use SimpleXMLElement;
 
 /**
  * Class Feed - RSS Feed 2.0
@@ -17,12 +23,11 @@ class Feed extends AbstractSiteFeedType
     /**
      * Creat a channel
      *
-     * @return Channel
+     * @return ChannelInterface
      */
-    public function createChannel()
+    public function createChannel(): ChannelInterface
     {
         $Channel = new Channel();
-
         $this->addChannel($Channel);
 
         return $Channel;
@@ -31,13 +36,14 @@ class Feed extends AbstractSiteFeedType
     /**
      * Return XML of the feed
      *
-     * @return \SimpleXMLElement
+     * @return SimpleXMLElement
+     * @throws Exception
      */
-    public function getXML()
+    public function getXML(): SimpleXML
     {
         $XML = new SimpleXML(
             '<?xml version="1.0" encoding="UTF-8" ?>
-             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" />'
+             <rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom" />'
         );
 
         $channels = $this->getChannels();
@@ -48,7 +54,7 @@ class Feed extends AbstractSiteFeedType
 
             $host = $Channel->getHost();
             $date = date(
-                \DateTime::RFC2822,
+                DateTimeInterface::RFC2822,
                 (int)$Channel->getAttribute('timestamp')
             );
 
@@ -64,18 +70,9 @@ class Feed extends AbstractSiteFeedType
 
             $ChannelXml->addChild('link', Utils::fixLinkProtocol($Channel->getAttribute('link')));
             $ChannelXml->addChild('lastBuildDate', $date);
-
-            $ChannelXml->addChild(
-                'language',
-                $Channel->getAttribute('language')
-            );
-
-            $ChannelXml->addChild('description')
-                ->addCData($Channel->getAttribute('description'));
-
-            $ChannelXml->addChild('title')
-                ->addCData($Channel->getAttribute('title'));
-
+            $ChannelXml->addChild('language', $Channel->getAttribute('language'));
+            $ChannelXml->addChild('description')->addCData($Channel->getAttribute('description'));
+            $ChannelXml->addChild('title')->addCData($Channel->getAttribute('title'));
 
             // channel feed items
             $items = $Channel->getItems();
@@ -83,7 +80,7 @@ class Feed extends AbstractSiteFeedType
             foreach ($items as $Item) {
                 /* @var $Item Item */
                 $date = date(
-                    \DateTime::RFC2822,
+                    DateTimeInterface::RFC2822,
                     (int)$Item->getAttribute('date')
                 );
 
@@ -91,14 +88,10 @@ class Feed extends AbstractSiteFeedType
                 $ItemXml->addChild('link', Utils::fixLinkProtocol($Item->getAttribute('link')));
                 $ItemXml->addChild('pubDate', $date);
                 $ItemXml->addChild('guid', Utils::fixLinkProtocol($Item->getAttribute('permalink')));
+                $ItemXml->addChild('title')->addCData($Item->getAttribute('title'));
+                $ItemXml->addChild('description')->addCData($Item->getAttribute('description'));
 
-                $ItemXml->addChild('title')
-                    ->addCData($Item->getAttribute('title'));
-
-                $ItemXml->addChild('description')
-                    ->addCData($Item->getAttribute('description'));
-
-                /* @var $Image \QUI\Projects\Media\Image */
+                /* @var $Image Image */
                 $Image = $Item->getImage();
 
                 if (!$Image) {
@@ -109,14 +102,14 @@ class Feed extends AbstractSiteFeedType
                     continue;
                 }
 
-                $maxSize = \QUI::getPackage("quiqqer/feed")->getConfig()->get("images", "maxsize");
+                $maxSize = QUI::getPackage("quiqqer/feed")->getConfig()->get("images", "maxsize");
                 $Image->setAttribute("maxheight", $maxSize);
                 $Image->setAttribute("maxwidth", $maxSize);
 
                 $EnclosureDom = $ItemXml->addChild('enclosure');
                 $EnclosureDom->addAttribute(
                     'url',
-                    Utils::fixLinkProtocol($host . trim($Image->getUrl(false), '/'))
+                    Utils::fixLinkProtocol($host . trim($Image->getUrl(), '/'))
                 );
 
                 $EnclosureDom->addAttribute(

@@ -1,33 +1,27 @@
 {
-  "name": "quiqqer\/feed",
+  "name": "quiqqer/feed",
   "type": "quiqqer-module",
-  "description": "Create different feeds for your project and \/ or website. The Feed Modul allows you to manage different types of feeds and multiple feeds, such as RSS, Atom, or Google Sitemap",
+  "description": "Create different feeds for your project and / or website. The Feed Modul allows you to manage different types of feeds and multiple feeds, such as RSS, Atom, or Google Sitemap",
   "license": "GPL-3.0+",
   "authors": [
     {
       "name": "Henning Leutz",
       "email": "leutz@pcsg.de",
-      "homepage": "https:\/\/www.pcsg.de",
-      "role": "Developer"
-    },
-    {
-      "name": "Patrick Müller",
-      "email": "p.mueller@pcsg.de",
-      "homepage": "https:\/\/www.pcsg.de",
+      "homepage": "https://www.pcsg.de",
       "role": "Developer"
     }
   ],
   "support": {
     "email": "support@pcsg.de",
-    "url": "https:\/\/www.pcsg.de"
+    "url": "https://www.pcsg.de"
   },
   "require": {
-    "php": "^7.4|^8",
-    "quiqqer\/quiqqer": "^1|*@dev"
+    "php": "^8.1",
+    "quiqqer/core": "^2"
   },
   "autoload": {
     "psr-0": {
-      "QUI": "src\/"
+      "QUI\\Feed\\": "src/QUI/Feed/"
     }
   }
 }
