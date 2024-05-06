@@ -3,6 +3,7 @@
 namespace QUI\Feed;
 
 use QUI;
+use QUI\Database\Exception;
 
 /**
  * Class Cron
@@ -15,10 +16,11 @@ class Cron
      * Generates a cache entry for all feeds
      *
      * @return void
+     * @throws Exception
      */
     public static function buildFeeds(): void
     {
-        $Manager  = new QUI\Feed\Manager();
+        $Manager = new QUI\Feed\Manager();
         $feedList = $Manager->getList();
 
         foreach ($feedList as $feedRow) {

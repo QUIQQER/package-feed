@@ -2,19 +2,21 @@
 
 namespace QUI\Feed\Utils;
 
+use SimpleXMLElement;
+
 /**
- * SimpleXMLElement extentent
+ * SimpleXMLElement extent
  *
  * @auth
  */
-class SimpleXML extends \SimpleXMLElement
+class SimpleXML extends SimpleXMLElement
 {
     /**
      * Add an ![CDATA[ ]]> Entry
      *
      * @param string $cdata - CDATA value
      */
-    public function addCData($cdata)
+    public function addCData(string $cdata): void
     {
         $Node = dom_import_simplexml($this);
         $OwnDoc = $Node->ownerDocument;
