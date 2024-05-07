@@ -21,7 +21,7 @@ use function json_encode;
 class EventHandler
 {
     /**
-     * quiqqer/quiqqer: onPackageSetup
+     * quiqqer/core: onPackageSetup
      *
      * @param QUI\Package\Package $Package
      * @return void
