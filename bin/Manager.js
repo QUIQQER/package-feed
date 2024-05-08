@@ -100,7 +100,7 @@ define('package/quiqqer/feed/bin/Manager', [
                     dataType : 'string',
                     width    : 40
                 }, {
-                    header   : QUILocale.get('quiqqer/quiqqer', 'title'),
+                    header   : QUILocale.get('quiqqer/core', 'title'),
                     dataIndex: 'feedName',
                     dataType : 'string',
                     width    : 200

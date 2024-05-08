@@ -20,7 +20,7 @@
     "quiqqer/core": "^2"
   },
   "autoload": {
-    "psr-0": {
+    "psr-4": {
       "QUI\\Feed\\": "src/QUI/Feed/"
     }
   }
