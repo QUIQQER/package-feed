@@ -35,13 +35,18 @@ try {
         $exit(503);
     }
 
+    $fileExt = match ($Feed->getFeedType()->getAttribute('mimeType')) {
+        'text/csv' => 'csv',
+        default => 'xml',
+    };
+
     $xmlString = $FeedManager->getFeedOutput($Feed);
     $varDir = QUI::getPackage('quiqqer/feed')->getVarDir();
-    $tmpFile = $varDir . hash('sha256', microtime(true)) . '.xml';
+    $tmpFile = $varDir . hash('sha256', microtime(true)) . '.' . $fileExt;
 
     file_put_contents($tmpFile, $xmlString);
 
-    QUI\Utils\System\File::send($tmpFile, 0, 'feed_' . $Feed->getId() . '.xml');
+    QUI\Utils\System\File::send($tmpFile, 0, 'feed_' . $Feed->getId() . '.' . $fileExt);
 } catch (\Exception $Exception) {
     QUI\System\Log::addDebug($Exception->getMessage());
     $exit(500);
