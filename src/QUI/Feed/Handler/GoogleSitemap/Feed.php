@@ -200,6 +200,10 @@ class Feed extends AbstractSiteFeedType
      */
     protected function getFeedProductIds(): array
     {
+        if (!class_exists('QUI\ERP\Products\Handler\Products')) {
+            return [];
+        }
+
         return Products::getProductIds([
             'where' => [
                 'active' => 1,
@@ -236,6 +240,10 @@ class Feed extends AbstractSiteFeedType
         parent::addItemsToChannel($Feed, $Channel);
 
         if (!QUI::getPackageManager()->isInstalled('quiqqer/products')) {
+            return;
+        }
+
+        if (!class_exists('QUI\ERP\Products\Handler\Products')) {
             return;
         }
 
