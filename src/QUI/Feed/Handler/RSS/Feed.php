@@ -36,7 +36,6 @@ class Feed extends AbstractSiteFeedType
     /**
      * Return XML of the feed
      *
-     * @return SimpleXMLElement
      * @throws Exception
      */
     public function getXML(): SimpleXML

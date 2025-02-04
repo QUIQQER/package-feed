@@ -211,7 +211,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
 
         $feedLimit = (int)$Feed->getAttribute('feedlimit');
 
-        if (!$feedLimit && $feedLimit !== 0) {
+        if (empty($feedLimit)) {
             $feedLimit = 10;
         }
 
@@ -278,7 +278,7 @@ abstract class AbstractSiteFeedType extends AbstractFeedType
 
         $feedLimit = (int)$Feed->getAttribute('feedlimit');
 
-        if (!$feedLimit && $feedLimit !== 0) {
+        if (empty($feedLimit)) {
             $feedLimit = 10;
         }
 

@@ -76,7 +76,7 @@ class Manager
         );
 
         $id = QUI::getDataBase()->getPDO()->lastInsertId();
-        $Feed = new Feed($id);
+        $Feed = new Feed((int)$id);
 
         $Feed->setAttributes($this->filterFeedParams($typeId, $params));
         $Feed->save();
