@@ -66,6 +66,12 @@ interface ChannelInterface
     public function setLanguage(string $language);
 
     /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setAttribute(string $name, mixed $value);
+
+    /**
      * Host
      */
 

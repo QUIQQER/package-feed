@@ -59,10 +59,6 @@ interface FeedTypeInterface extends QUI\QDOMInterface
 
     /**
      * Check if $Feed shall be published on $Site
-     *
-     * @param Feed $Feed
-     * @param QUI\Projects\Site $Site
-     * @return bool
      */
     public function publishOnSite(Feed $Feed, QUI\Interfaces\Projects\Site $Site): bool;
 }

@@ -213,17 +213,12 @@ class Feed extends QUI\QDOM
 
     /**
      * Returns the number of pages of this feed.
-     *
-     * @return int - Returns the number of pages or 0 if nor pages are used
      */
     public function getPageCount(): int
     {
         return $this->FeedType->getPageCount($this);
     }
 
-    /**
-     * @return QUI\Projects\Project
-     */
     public function getProject(): QUI\Projects\Project
     {
         return $this->Project;
@@ -231,9 +226,6 @@ class Feed extends QUI\QDOM
 
     /**
      * Check if this Feed should be published on $Site
-     *
-     * @param QUI\Interfaces\Projects\Site< $Site
-     * @return bool
      */
     public function publishOnSite(QUI\Interfaces\Projects\Site $Site): bool
     {
@@ -242,8 +234,6 @@ class Feed extends QUI\QDOM
 
     /**
      * Get feed URL
-     *
-     * @return string
      */
     public function getUrl(): string
     {
