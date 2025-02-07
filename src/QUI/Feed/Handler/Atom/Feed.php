@@ -126,8 +126,7 @@ class Feed extends AbstractSiteFeedType
 
 
             $AuthorNode = $ItemXml->addChild('author', '');
-            $AuthorNode->addChild("name", $Item->getAttribute("author"));
-
+            $AuthorNode->addChild("name", htmlspecialchars($Item->getAttribute("author")));
             /* @var $Image Image */
             $Image = $Item->getImage();
 
